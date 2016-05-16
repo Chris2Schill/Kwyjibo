@@ -36,6 +36,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 
 
 /**
+ * this a new comment!
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
