@@ -36,8 +36,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 //Eric's Test Comment from 'ericedit'
 
 /**
- * A login screen that offers login via email/password.
- * and other kwijybos
+ * this a new comment!
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
