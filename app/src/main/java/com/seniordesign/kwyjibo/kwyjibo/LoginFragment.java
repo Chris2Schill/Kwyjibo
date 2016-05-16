@@ -17,7 +17,7 @@ public class LoginFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.login_fragment, container, false);
 
 
-        // This retrieves the ui-element reference pointers from the rootViews view hierarchy.
+        // This retrieves the ui-element reference pointer from the rootViews view hierarchy.
         guestLoginButton = (Button)rootView.findViewById(R.id.guest_login_button);
 
         // This assigns the View.OnClickListener interface to this button.
