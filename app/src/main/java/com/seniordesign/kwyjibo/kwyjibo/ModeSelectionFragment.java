@@ -25,7 +25,7 @@ public class ModeSelectionFragment extends Fragment {
             public void onClick(View v) {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.main_activity_fragment_container,
-                        MainActivity.recordModeFragment);
+                        MainActivity.getFragment(MainActivity.Screens.RECORD_MODE));
                 transaction.addToBackStack(null);
                 transaction.commit();
 

@@ -30,7 +30,7 @@ public class LoginFragment extends Fragment {
             public void onClick(View v) {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.main_activity_fragment_container,
-                        ((MainActivity)getActivity()).modeSelectionFragment);
+                        MainActivity.getFragment(MainActivity.Screens.MODE_SELECTION));
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
