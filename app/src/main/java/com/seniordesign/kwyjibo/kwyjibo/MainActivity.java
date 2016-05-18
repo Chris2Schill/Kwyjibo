@@ -28,11 +28,6 @@ public class MainActivity extends AppCompatActivity {
                     .add(R.id.main_activity_fragment_container,loginFragment).commit();
 
         }
-
-
-
-
     }
-
 }
 
