@@ -10,7 +10,9 @@ import android.widget.Button;
 
 
 public class LoginFragment extends Fragment {
+
     private Button guestLoginButton;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // In android, all ui-elements extend the 'View' class.
         // rootView is the RelativeLayout from login_fragment.xml
@@ -27,7 +29,8 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.main_activity_fragment_container, new ModeSelectionFragment());
+                transaction.replace(R.id.main_activity_fragment_container,
+                        ((MainActivity)getActivity()).modeSelectionFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
