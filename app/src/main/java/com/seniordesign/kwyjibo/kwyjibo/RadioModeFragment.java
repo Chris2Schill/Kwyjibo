@@ -53,13 +53,13 @@ class StationSelectionFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.station_selection_fragment, container, false);
-        initStationListView(rootView);
-        initCreateStationButton(rootView);
+        enableStationListView(rootView);
+        enableCreateStationButton(rootView);
         new StationPopulatorAsyncTask().execute();
         return rootView;
     }
 
-    private void initStationListView(View v){
+    private void enableStationListView(View v){
         listAdapter = new ArrayAdapter<>(getActivity(), R.layout.radio_mode_list_item,
                 R.id.radio_mode_list_item_textview,
                 new ArrayList<String>());
@@ -79,12 +79,17 @@ class StationSelectionFragment extends Fragment{
         });
     }
 
-    private void initCreateStationButton(View v){
+    private void enableCreateStationButton(View v){
         createStationButton = (Button)v.findViewById(R.id.create_station_button);
         createStationButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager()
+                        .beginTransaction();
+                transaction.replace(R.id.main_activity_fragment_container,
+                        MainActivity.getFragment(MainActivity.Screens.CREATE_STATION));
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
     }

@@ -5,8 +5,8 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/orange</item>
         <item name="colorPrimaryDark">@color/darkOrange</item>
-        <item name="colorAccent">@color/orange</item>
-        <item name="colorButtonNormal">@color/orange</item>
+        <item name="colorAccent">@color/green</item>
+        <item name="colorButtonNormal">@color/green</item>
     </style>
 
 </resources>
