@@ -32,6 +32,16 @@ public class ModeSelectionFragment extends Fragment {
             }
         });
         goRadioMode = (Button)rootView.findViewById(R.id.radio_mode_button);
+        goRadioMode.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.main_activity_fragment_container,
+                        MainActivity.getFragment(MainActivity.Screens.RADIO_MODE));
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
         goStudioMode = (Button)rootView.findViewById(R.id.studio_mode_button);
         return rootView;
     }

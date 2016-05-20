@@ -65,6 +65,11 @@ public class RecordModeFragment extends Fragment {
         }
     }
 
+    private boolean havePermission(String permission){
+        return ContextCompat.checkSelfPermission(getActivity(), permission)
+                == PackageManager.PERMISSION_GRANTED;
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == MY_PERMISSIONS_REQUEST_AUDIO_STORAGE){
@@ -85,10 +90,6 @@ public class RecordModeFragment extends Fragment {
         }
     }
 
-    private boolean havePermission(String permission){
-        return ContextCompat.checkSelfPermission(getActivity(), permission)
-                == PackageManager.PERMISSION_GRANTED;
-    }
 
     // FragmentPagerAdapter allows horizontal swiping between Fragment views.
     class RecordModePagerAdapter extends FragmentPagerAdapter {
@@ -179,6 +180,7 @@ public class RecordModeFragment extends Fragment {
                 }
             });
         }
+
         private void initMediaRecorder(){
             mRecorder = new MediaRecorder();
             mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);

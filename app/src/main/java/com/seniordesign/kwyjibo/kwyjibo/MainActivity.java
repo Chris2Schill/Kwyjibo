@@ -13,7 +13,7 @@ public class MainActivity extends AppCompatActivity {
     private static Map<Screens,Fragment> fragments = new HashMap<>();
 
     public enum Screens{
-        LOGIN, MODE_SELECTION, RECORD_MODE
+        LOGIN, MODE_SELECTION, RECORD_MODE, RADIO_MODE, CREATE_STATION
     }
 
     @Override
@@ -24,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
         fragments.put(Screens.LOGIN, new LoginFragment());
         fragments.put(Screens.MODE_SELECTION, new ModeSelectionFragment());
         fragments.put(Screens.RECORD_MODE, new RecordModeFragment());
+        fragments.put(Screens.RADIO_MODE, new RadioModeFragment());
+        fragments.put(Screens.CREATE_STATION, new CreateStationFragment());
 
         if (findViewById(R.id.main_activity_fragment_container) != null){
             if (savedInstanceState != null){
