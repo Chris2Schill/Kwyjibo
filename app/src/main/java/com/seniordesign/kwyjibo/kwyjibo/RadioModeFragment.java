@@ -112,7 +112,7 @@ class StationSelectionFragment extends Fragment{
 //                  return null;
             }
 
-            String baseURL = "http://motw.tech/code/GetStations.aspx";
+            String baseURL = "http://motw.tech/api/GetStations.aspx";
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
             String jsonResponse = null;
@@ -124,7 +124,7 @@ class StationSelectionFragment extends Fragment{
                 urlConnection.connect();
 
                 InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
+                StringBuilder buffer = new StringBuilder();
                 if (inputStream == null){
                     return null;
                 }

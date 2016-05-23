@@ -1,6 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/create_station_activity_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".CreateStationActivity">
 
-</LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:hint="Station Name"
+        android:id="@+id/create_station_name_textview"
+        android:layout_marginTop="15dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Cool Chris Tunes"
+        android:id="@+id/create_station_name_edittext"
+        android:layout_below="@+id/create_station_name_textview"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="?android:listDivider"
+        android:layout_below="@+id/create_station_name_edittext"
+        android:id="@+id/create_station_line_separator_1" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:id="@+id/create_station_yourname_textview"
+        android:hint="Your Name"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/create_station_line_separator_1"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/create_station_yourname_edittext"
+        android:hint="Chris"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/create_station_yourname_textview"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="?android:listDivider"
+        android:layout_below="@+id/create_station_yourname_edittext"
+        android:id="@+id/create_station_line_separator_2" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:hint="Genre"
+        android:id="@+id/create_station_genre_textview"
+        android:layout_marginTop="15dp"
+        android:layout_below="@+id/create_station_line_separator_2"
+        android:layout_alignTop="@+id/create_station_line_separator_2"
+        android:layout_centerHorizontal="true" />
+
+    <RadioGroup
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:id="@+id/create_station_radio_group"
+        android:orientation="horizontal"
+        android:layout_below="@+id/create_station_genre_textview"
+        android:layout_marginBottom="10dp"
+        android:layout_centerHorizontal="true">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="EDM"
+            android:id="@+id/create_station_edm_radio_button"
+            android:layout_marginRight="10dp"
+            android:enabled="true"
+            android:checked="true" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dubstep"
+            android:id="@+id/create_station_dubstep_radio_button"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:enabled="true" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Jazz"
+            android:id="@+id/create_station_jazz_radio_button"
+            android:layout_marginLeft="10dp"
+            android:enabled="true" />
+
+    </RadioGroup>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="?android:listDivider"
+        android:layout_below="@+id/create_station_radio_group"
+        android:id="@+id/create_station_line_separator_3" />
+
+    <Button
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="?android:actionBarSize"
+        android:text="Create Station"
+        android:id="@+id/create_station_confirm_button"
+        android:textColor="@color/white"
+        android:layout_below="@+id/create_station_line_separator_3"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+
+
+
+</RelativeLayout>
