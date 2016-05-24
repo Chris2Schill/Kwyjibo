@@ -7,13 +7,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/radio_mode_list_view"
+        android:divider="@color/lightGray"
+        android:dividerHeight="1dp"
         android:layout_gravity="center_horizontal" />
 
     <Button
-        style="@style/Widget.AppCompat.Button.Colored"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
         android:text="Create Station"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:background="@drawable/signup_button"
         android:id="@+id/create_station_button"
         android:layout_gravity="bottom"
         android:layout_alignParentBottom="true"/>

@@ -1,6 +1,7 @@
 package com.seniordesign.kwyjibo.kwyjibo;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,7 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -68,6 +72,10 @@ public class CreateStationFragment extends Fragment {
                     String genre = genres.get(index);
                     Log.e(TAG,genre);
                     new AddStationAsyncTask(getContext()).execute(newStationName, createdBy, genre);
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.main_activity_fragment_container, MainActivity.getFragment(MainActivity.Screens.RADIO_MODE))
+                            .commit();
+
                 }else{
                     Log.e(TAG, "Reference to RadioGroup create_station_radio_group is null");
                 }
@@ -77,7 +85,39 @@ public class CreateStationFragment extends Fragment {
         stationNameEditText = (EditText)rootView.findViewById(R.id.create_station_name_edittext);
         userNameEditText = (EditText)rootView.findViewById(R.id.create_station_yourname_edittext);
 
+        initLayoutDesign(rootView);
+
         return rootView;
+    }
+
+    private void initLayoutDesign(View rootView){
+        Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/ProximaNova-Semibold.otf");
+        ViewGroup v = (ViewGroup)rootView;
+        for (int i = 0; i < v.getChildCount(); i++){
+            View child = v.getChildAt(i);
+            if (child instanceof TextView){
+                ((TextView) child).setTypeface(font);
+            }
+            if (child instanceof EditText){
+               ((EditText) child).setTypeface(font);
+                child.setBackgroundColor(getResources().getColor(R.color.darkGray));
+            }
+            if (child instanceof Button){
+                ((Button) child).setTypeface(font);
+            }
+            if (child instanceof RadioGroup){
+                RadioGroup rg = (RadioGroup)child;
+                for (int j = 0; j < rg.getChildCount(); j++){
+                    RadioButton b = (RadioButton)rg.getChildAt(j);
+                    b.setTypeface(font);
+                }
+            }
+
+        }
+    }
+
+    private void setEditTextBackground() {
+        userNameEditText.setBackgroundColor(getResources().getColor(R.color.darkGray));
     }
 
     private static class AddStationAsyncTask extends AsyncTask<String, Void, String> {

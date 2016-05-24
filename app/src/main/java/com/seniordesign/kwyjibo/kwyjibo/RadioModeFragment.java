@@ -1,5 +1,7 @@
 package com.seniordesign.kwyjibo.kwyjibo;
 
+import android.content.Context;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,6 +27,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 public class RadioModeFragment extends Fragment {
 
@@ -48,20 +52,20 @@ public class RadioModeFragment extends Fragment {
 
 class StationSelectionFragment extends Fragment{
     private ListView stationsListView;
-    private ArrayAdapter<String> listAdapter;
+    private StationSelectListAdapter listAdapter;
     private Button createStationButton;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.station_selection_fragment, container, false);
         enableStationListView(rootView);
         enableCreateStationButton(rootView);
+        setFont();
         new StationPopulatorAsyncTask().execute();
         return rootView;
     }
 
     private void enableStationListView(View v){
-        listAdapter = new ArrayAdapter<>(getActivity(), R.layout.radio_mode_list_item,
-                R.id.radio_mode_list_item_textview,
+        listAdapter = new StationSelectListAdapter(getActivity(), R.layout.radio_mode_list_item,
                 new ArrayList<String>());
 
         stationsListView = (ListView) v.findViewById(R.id.radio_mode_list_view);
@@ -92,6 +96,11 @@ class StationSelectionFragment extends Fragment{
                 transaction.commit();
             }
         });
+    }
+
+    private void setFont(){
+        Typeface proximaNova = Typeface.createFromAsset(getActivity().getAssets(),"fonts/ProximaNova-Semibold.otf");
+        createStationButton.setTypeface(proximaNova);
     }
 
     public class StationPopulatorAsyncTask extends AsyncTask<Void, Void, String[]> {
@@ -180,5 +189,37 @@ class StationFragment extends Fragment{
         View rootView = inflater.inflate(R.layout.station_fragment, container, false);
         return rootView;
     }
+}
 
+class StationSelectListAdapter extends ArrayAdapter{
+
+    private Context context;
+    private int id;
+    private List<String> items;
+
+    public StationSelectListAdapter(Context context, int id, List<String> items) {
+        super(context, id, items);
+        this.context = context;
+        this.id = id;
+        this.items = items;
+    }
+
+    @Override
+    public View getView(int position, View v, ViewGroup parent) {
+        View mView = v ;
+        if(mView == null){
+            LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            mView = inflater.inflate(R.layout.radio_mode_list_item, null);
+        }
+
+        TextView text = (TextView)mView.findViewById(R.id.radio_mode_list_item_textview);
+
+        if(items.get(position) != null ) {
+            Typeface proximaNova = Typeface.createFromAsset(context.getAssets(),"fonts/ProximaNova-Semibold.otf");
+            text.setTypeface(proximaNova);
+            text.setText(items.get(position));
+        }
+
+        return mView;
+    }
 }

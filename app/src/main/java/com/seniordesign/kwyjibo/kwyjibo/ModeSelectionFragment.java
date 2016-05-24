@@ -1,5 +1,6 @@
 package com.seniordesign.kwyjibo.kwyjibo;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -9,9 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class ModeSelectionFragment extends Fragment {
 
+    private TextView titleTextView;
     private Button goRecordMode;
     private Button goRadioMode;
     private Button goStudioMode;
@@ -19,6 +22,8 @@ public class ModeSelectionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.mode_selection_fragment, container, false);
+
+        titleTextView = (TextView)rootView.findViewById(R.id.mode_selection_title_textview);
 
         goRecordMode = (Button)rootView.findViewById(R.id.record_mode_button);
         goRecordMode.setOnClickListener(new View.OnClickListener(){
@@ -44,6 +49,15 @@ public class ModeSelectionFragment extends Fragment {
             }
         });
         goStudioMode = (Button)rootView.findViewById(R.id.studio_mode_button);
+
+        setFont();
         return rootView;
+    }
+    private void setFont(){
+        Typeface montserrat = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Montserrat-Regular.ttf");
+        titleTextView.setTypeface(montserrat);
+        goRecordMode.setTypeface(montserrat);
+        goRadioMode.setTypeface(montserrat);
+        goStudioMode.setTypeface(montserrat);
     }
 }

@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
     private static Map<Screens,Fragment> fragments = new HashMap<>();
 
     public enum Screens{
-        LOGIN, MODE_SELECTION, RECORD_MODE, RADIO_MODE, CREATE_STATION
+        LOGIN_SIGNUP, MODE_SELECTION, RECORD_MODE, RADIO_MODE, CREATE_STATION
     }
 
     @Override
@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        fragments.put(Screens.LOGIN, new LoginFragment());
+        fragments.put(Screens.LOGIN_SIGNUP, new StartupFragment());
         fragments.put(Screens.MODE_SELECTION, new ModeSelectionFragment());
         fragments.put(Screens.RECORD_MODE, new RecordModeFragment());
         fragments.put(Screens.RADIO_MODE, new RadioModeFragment());
@@ -35,7 +35,8 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.main_activity_fragment_container, getFragment(Screens.LOGIN)).commit();
+                    .add(R.id.main_activity_fragment_container, getFragment(Screens.LOGIN_SIGNUP))
+                    .commit();
 
         }
     }
