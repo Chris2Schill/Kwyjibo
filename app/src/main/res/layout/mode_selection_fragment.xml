@@ -59,6 +59,17 @@
         android:layout_marginTop="15dp"
         android:layout_marginBottom="15dp" />
 
+    <Button
+        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Signout"
+        android:id="@+id/signout_button"
+        android:background="@drawable/signup_button"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:textColor="@color/white" />
 
 
 </RelativeLayout>

@@ -5,6 +5,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -69,9 +70,15 @@ public class CreateStationFragment extends Fragment {
                 if (radioGroup != null){
                     int index = radioGroup.indexOfChild(
                             getActivity().findViewById(radioGroup.getCheckedRadioButtonId()));
+
+                    String authToken = PreferenceManager.getDefaultSharedPreferences(getActivity())
+                            .getString("authToken", "");
+                    String userId = PreferenceManager.getDefaultSharedPreferences(getActivity())
+                            .getString("userId", "");
                     String genre = genres.get(index);
-                    Log.e(TAG,genre);
-                    new AddStationAsyncTask(getContext()).execute(newStationName, createdBy, genre);
+
+                    new AddStationAsyncTask(getContext())
+                            .execute(newStationName, createdBy, genre, authToken);
                     getActivity().getSupportFragmentManager().beginTransaction()
                             .replace(R.id.main_activity_fragment_container, MainActivity.getFragment(MainActivity.Screens.RADIO_MODE))
                             .commit();
@@ -116,10 +123,6 @@ public class CreateStationFragment extends Fragment {
         }
     }
 
-    private void setEditTextBackground() {
-        userNameEditText.setBackgroundColor(getResources().getColor(R.color.darkGray));
-    }
-
     private static class AddStationAsyncTask extends AsyncTask<String, Void, String> {
 
         private Context context;
@@ -141,6 +144,8 @@ public class CreateStationFragment extends Fragment {
             postDataMap.put("stationName", params[0]);
             postDataMap.put("createdBy", params[1]);
             postDataMap.put("genre", params[2]);
+            postDataMap.put("authToken", params[3]);
+            postDataMap.put("userId", params[4]);
 
             // Get the post parameters as a byte buffer
             byte[] postDataBytes = null;

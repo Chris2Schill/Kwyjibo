@@ -50,14 +50,22 @@ public class ModeSelectionFragment extends Fragment {
         });
         goStudioMode = (Button)rootView.findViewById(R.id.studio_mode_button);
 
+        rootView.findViewById(R.id.signout_button).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)getActivity()).destroyUserSession();
+                ((MainActivity)getActivity()).replaceScreen(MainActivity.Screens.LOGIN_SIGNUP, false);
+            }
+        });
+
         setFont();
         return rootView;
     }
     private void setFont(){
-        Typeface montserrat = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Montserrat-Regular.ttf");
-        titleTextView.setTypeface(montserrat);
-        goRecordMode.setTypeface(montserrat);
-        goRadioMode.setTypeface(montserrat);
-        goStudioMode.setTypeface(montserrat);
+        Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/ProximaNova-Semibold.otf");
+        titleTextView.setTypeface(font);
+        goRecordMode.setTypeface(font);
+        goRadioMode.setTypeface(font);
+        goStudioMode.setTypeface(font);
     }
 }

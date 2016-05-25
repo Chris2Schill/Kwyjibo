@@ -105,6 +105,8 @@ class StationSelectionFragment extends Fragment{
 
     public class StationPopulatorAsyncTask extends AsyncTask<Void, Void, String[]> {
 
+        private static final String TAG = "StationPopulatorAsyncTask";
+
         @Override
         protected void onPostExecute(String[] stations) {
             if (stations != null){
@@ -117,15 +119,10 @@ class StationSelectionFragment extends Fragment{
 
         @Override
         protected String[] doInBackground(Void... params) {
-            if (params.length == 0){
-//                  return null;
-            }
-
             String baseURL = "http://motw.tech/api/GetStations.aspx";
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
             String jsonResponse = null;
-
             try{
                 URL url = new URL(baseURL);
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -155,8 +152,8 @@ class StationSelectionFragment extends Fragment{
                 if (reader != null){
                     try{
                         reader.close();
-                    } catch (final IOException e) {
-//                        Log.e(TAG, e.getMessage());
+                    } catch (IOException e) {
+                        Log.e(TAG, e.getMessage());
                     }
                 }
             }
