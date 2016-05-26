@@ -1,14 +1,11 @@
-package com.seniordesign.kwyjibo.kwyjibo;
+package com.seniordesign.kwyjibo.fragments;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +16,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.google.android.gms.common.SignInButton;
+import com.seniordesign.kwyjibo.interfaces.HasUserInfo;
+import com.seniordesign.kwyjibo.kwyjibo.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -163,7 +163,8 @@ class LoginFragment extends Fragment{
         }
     }
 
-    private class LoginAsyncTask extends AsyncTask<String,Void,Map<String,String>> {
+    private class LoginAsyncTask extends AsyncTask<String,Void,Map<String,String>>
+            implements HasUserInfo {
 
         private Context context;
 
@@ -175,13 +176,13 @@ class LoginFragment extends Fragment{
 
         @Override
         protected void onPostExecute(Map<String,String> user) {
-            boolean authenticated = Boolean.parseBoolean(user.get("Authenticated"));
-            if (authenticated){
-                ((MainActivity)getActivity()) .storePreference("userId", user.get("Id"))
-                        .storePreference("username", user.get("Username"))
-                        .storePreference("email", user.get("Email"))
-                        .storePreference("authToken", user.get("AuthToken"))
-                        .storePreference("authenticated", true);
+            boolean isAuthenticated = Boolean.parseBoolean(user.get(IS_AUTHENTICATED));
+            if (isAuthenticated){
+                ((MainActivity)getActivity()) .storePreference(USER_ID, user.get(USER_ID))
+                        .storePreference(USER_NAME, user.get(USER_NAME))
+                        .storePreference(USER_EMAIL, user.get(USER_EMAIL))
+                        .storePreference(AUTH_TOKEN, user.get(AUTH_TOKEN))
+                        .storePreference(IS_AUTHENTICATED, true);
                 ((MainActivity)context).replaceScreen(MainActivity.Screens.MODE_SELECTION, true);
             }else{
                 ((MainActivity)getActivity()).destroyUserSession();
@@ -235,12 +236,14 @@ class LoginFragment extends Fragment{
             Map<String,String> map = new HashMap<>();
             try{
                 JSONObject user = new JSONObject(jsonResponse);
-                map.put("Id", user.getString("Id"));
-                map.put("Username",user.getString("Username"));
-                map.put("Email",user.getString("Email"));
-                map.put("AuthToken",user.getString("AuthToken"));
-                map.put("Authenticated" , user.getString("Authenticated"));
+                map.put(USER_ID, user.getString(USER_ID));
+                map.put(USER_NAME,user.getString(USER_NAME));
+                map.put(USER_EMAIL,user.getString(USER_EMAIL));
+                map.put(AUTH_TOKEN,user.getString(AUTH_TOKEN));
+                map.put(IS_AUTHENTICATED, user.getString(IS_AUTHENTICATED));
 
+                Log.e(TAG,user.getString(AUTH_TOKEN));
+                Log.e(TAG,user.getString(USER_ID));
             }catch(JSONException e){
                 Log.e(TAG,e.getMessage());
             }
@@ -316,7 +319,8 @@ class SignupFragment extends Fragment {
         }
     }
 
-    private class SignupAsyncTask extends AsyncTask<String, Void, Map<String,String>> {
+    private class SignupAsyncTask extends AsyncTask<String, Void, Map<String,String>>
+            implements HasUserInfo{
 
         private Context context;
 
@@ -326,12 +330,12 @@ class SignupFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Map<String,String> user) {
-            boolean creationSuccessful = Boolean.parseBoolean(user.get("Authenticated"));
+            boolean creationSuccessful = Boolean.parseBoolean(user.get(IS_AUTHENTICATED));
             if (creationSuccessful){
-                ((MainActivity)getActivity()).storePreference("userId", user.get("Id"))
-                        .storePreference("username", user.get("Username"))
+                ((MainActivity)getActivity()).storePreference(USER_ID, user.get("Id"))
+                        .storePreference(USER_NAME, user.get("Username"))
                         .storePreference("email", user.get("Email"))
-                        .storePreference("authToken", user.get("AuthToken"))
+                        .storePreference("authToken", user.get(AUTH_TOKEN))
                         .storePreference("authenticated", true);
 
                 ((MainActivity)context).replaceScreen(MainActivity.Screens.MODE_SELECTION, true);
@@ -345,7 +349,7 @@ class SignupFragment extends Fragment {
         @Override
         protected Map<String,String> doInBackground(String... params) {
 
-            // The new station's parameters
+            // The post request's parameters
             Map<String, String> postDataMap = new LinkedHashMap<>();
             postDataMap.put("username", params[0]);
             postDataMap.put("email", params[1]);
@@ -416,20 +420,21 @@ class SignupFragment extends Fragment {
             }
             return response;
         }
+
+        private Map<String,String> parseJSONResponse(String response){
+            Map<String,String> map = new HashMap<>();
+            try {
+                JSONObject user = new JSONObject(response);
+                map.put(USER_ID, user.getString(USER_ID));
+                map.put(USER_NAME,user.getString(USER_NAME));
+                map.put(USER_EMAIL,user.getString(USER_EMAIL));
+                map.put(AUTH_TOKEN,user.getString(AUTH_TOKEN));
+                map.put(IS_AUTHENTICATED, user.getString(IS_AUTHENTICATED));
+            } catch (JSONException e) {
+                Log.e(TAG,e.getMessage());
+            }
+            return map;
+        }
     }
 
-    private Map<String,String> parseJSONResponse(String response){
-        Map<String,String> map = new HashMap<>();
-        try {
-            JSONObject user = new JSONObject(response);
-            map.put("Id", user.getString("Id"));
-            map.put("Username",user.getString("Username"));
-            map.put("Email",user.getString("Email"));
-            map.put("AuthToken",user.getString("AuthToken"));
-            map.put("Authenticated" , user.getString("Authenticated"));
-        } catch (JSONException e) {
-            Log.e(TAG,e.getMessage());
-        }
-        return map;
-    }
 }

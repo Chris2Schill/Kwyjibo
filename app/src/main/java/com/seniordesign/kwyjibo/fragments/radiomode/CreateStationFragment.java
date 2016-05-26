@@ -1,4 +1,4 @@
-package com.seniordesign.kwyjibo.kwyjibo;
+package com.seniordesign.kwyjibo.fragments.radiomode;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -15,15 +15,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.seniordesign.kwyjibo.activities.MainActivity;
+import com.seniordesign.kwyjibo.kwyjibo.R;
 
 import org.json.JSONException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -33,11 +34,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 
 
 public class CreateStationFragment extends Fragment {

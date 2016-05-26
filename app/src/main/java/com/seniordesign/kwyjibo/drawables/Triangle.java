@@ -1,4 +1,4 @@
-package com.seniordesign.kwyjibo.kwyjibo;
+package com.seniordesign.kwyjibo.drawables;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -10,6 +10,8 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.view.View;
+
+import com.seniordesign.kwyjibo.kwyjibo.R;
 
 
 public class Triangle extends View {

@@ -1,24 +1,25 @@
-package com.seniordesign.kwyjibo.kwyjibo;
+package com.seniordesign.kwyjibo.activities;
 
 
-import android.app.Application;
 import android.support.v4.app.FragmentTransaction;
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Toast;
+
+import com.seniordesign.kwyjibo.fragments.radiomode.CreateStationFragment;
+import com.seniordesign.kwyjibo.fragments.ModeSelectionFragment;
+import com.seniordesign.kwyjibo.kwyjibo.R;
+import com.seniordesign.kwyjibo.fragments.radiomode.RadioModeFragment;
+import com.seniordesign.kwyjibo.fragments.recordmode.RecordModeFragment;
+import com.seniordesign.kwyjibo.fragments.StartupFragment;
+import com.seniordesign.kwyjibo.interfaces.HasUserInfo;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements HasUserInfo {
 
     private static Map<Screens,Fragment> fragments = new HashMap<>();
 
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         boolean authenticated = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean("authenticated", false);
+                .getBoolean(IS_AUTHENTICATED, false);
         if (authenticated){
             replaceScreen(Screens.MODE_SELECTION, false);
         }
@@ -66,31 +67,16 @@ public class MainActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_settings){
-            startActivity(new Intent(this, SettingsActivity.class));
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     public static Fragment getFragment(Screens screen){
         return fragments.get(screen);
     }
 
     public void destroyUserSession(){
-        storePreference("userId", "");
-        storePreference("authToken", "");
-        storePreference("username", "");
-        storePreference("email", "");
-        storePreference("authenticated", false);
+        storePreference(USER_ID, "");
+        storePreference(AUTH_TOKEN, "");
+        storePreference(USER_NAME, "");
+        storePreference(USER_EMAIL, "");
+        storePreference(IS_AUTHENTICATED, false);
     }
 
     public <T> MainActivity storePreference(String key, T value){
@@ -106,4 +92,3 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
-

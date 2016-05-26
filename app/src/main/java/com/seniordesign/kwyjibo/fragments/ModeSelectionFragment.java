@@ -1,16 +1,17 @@
-package com.seniordesign.kwyjibo.kwyjibo;
+package com.seniordesign.kwyjibo.fragments;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
-import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.seniordesign.kwyjibo.activities.MainActivity;
+import com.seniordesign.kwyjibo.kwyjibo.R;
 
 public class ModeSelectionFragment extends Fragment {
 

@@ -1,6 +1,6 @@
-package com.seniordesign.kwyjibo.kwyjibo;
+package com.seniordesign.kwyjibo.fragments.radiomode;
 
-import android.content.Context;
+
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,14 +11,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
+
+import com.seniordesign.kwyjibo.activities.MainActivity;
+import com.seniordesign.kwyjibo.adapters.StationSelectListAdapter;
+import com.seniordesign.kwyjibo.kwyjibo.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,30 +28,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
-public class RadioModeFragment extends Fragment {
-
-    private static final String TAG = "RadioModeFragment";
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.radio_mode_fragment, container, false);
-
-        if (rootView.findViewById(R.id.radio_mode_fragment_container) != null){
-            if (savedInstanceState != null){
-                return rootView;
-            }
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .add(R.id.radio_mode_fragment_container, new StationSelectionFragment())
-                    .commit();
-
-        }
-        return rootView;
-    }
-}
-
-class StationSelectionFragment extends Fragment{
+public class StationSelectionFragment extends Fragment {
     private ListView stationsListView;
     private StationSelectListAdapter listAdapter;
     private Button createStationButton;
@@ -99,7 +78,7 @@ class StationSelectionFragment extends Fragment{
     }
 
     private void setFont(){
-        Typeface proximaNova = Typeface.createFromAsset(getActivity().getAssets(),"fonts/ProximaNova-Semibold.otf");
+        Typeface proximaNova = Typeface.createFromAsset(getActivity().getAssets(), "fonts/ProximaNova-Semibold.otf");
         createStationButton.setTypeface(proximaNova);
     }
 
@@ -153,7 +132,7 @@ class StationSelectionFragment extends Fragment{
                     try{
                         reader.close();
                     } catch (IOException e) {
-                        Log.e(TAG, e.getMessage());
+//                        Log.e(TAG, e.getMessage());
                     }
                 }
             }
@@ -179,44 +158,3 @@ class StationSelectionFragment extends Fragment{
     }
 }
 
-class StationFragment extends Fragment{
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.station_fragment, container, false);
-        return rootView;
-    }
-}
-
-class StationSelectListAdapter extends ArrayAdapter{
-
-    private Context context;
-    private int id;
-    private List<String> items;
-
-    public StationSelectListAdapter(Context context, int id, List<String> items) {
-        super(context, id, items);
-        this.context = context;
-        this.id = id;
-        this.items = items;
-    }
-
-    @Override
-    public View getView(int position, View v, ViewGroup parent) {
-        View mView = v ;
-        if(mView == null){
-            LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            mView = inflater.inflate(R.layout.radio_mode_list_item, null);
-        }
-
-        TextView text = (TextView)mView.findViewById(R.id.radio_mode_list_item_textview);
-
-        if(items.get(position) != null ) {
-            Typeface proximaNova = Typeface.createFromAsset(context.getAssets(),"fonts/ProximaNova-Semibold.otf");
-            text.setTypeface(proximaNova);
-            text.setText(items.get(position));
-        }
-
-        return mView;
-    }
-}

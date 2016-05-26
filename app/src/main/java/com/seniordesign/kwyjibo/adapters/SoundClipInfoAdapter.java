@@ -1,4 +1,4 @@
-package com.seniordesign.kwyjibo.kwyjibo;
+package com.seniordesign.kwyjibo.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,6 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.seniordesign.kwyjibo.kwyjibo.R;
+import com.seniordesign.kwyjibo.beans.SoundClipInfo;
 
 import java.util.List;
 

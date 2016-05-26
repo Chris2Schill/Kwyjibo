@@ -1,4 +1,4 @@
-package com.seniordesign.kwyjibo.kwyjibo;
+package com.seniordesign.kwyjibo.activities;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,8 +8,9 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
+
+import com.seniordesign.kwyjibo.kwyjibo.R;
 
 public class SettingsActivity extends AppCompatActivity {
 

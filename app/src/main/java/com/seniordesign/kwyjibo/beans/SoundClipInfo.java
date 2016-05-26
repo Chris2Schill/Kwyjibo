@@ -1,4 +1,4 @@
-package com.seniordesign.kwyjibo.kwyjibo;
+package com.seniordesign.kwyjibo.beans;
 
 public class SoundClipInfo {
     private int _id;
