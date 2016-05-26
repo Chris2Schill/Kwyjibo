@@ -13,7 +13,7 @@ import com.seniordesign.kwyjibo.fragments.ModeSelectionFragment;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 import com.seniordesign.kwyjibo.fragments.radiomode.RadioModeFragment;
 import com.seniordesign.kwyjibo.fragments.recordmode.RecordModeFragment;
-import com.seniordesign.kwyjibo.fragments.StartupFragment;
+import com.seniordesign.kwyjibo.fragments.login_signup.StartupFragment;
 import com.seniordesign.kwyjibo.interfaces.HasUserInfo;
 
 import java.util.HashMap;
