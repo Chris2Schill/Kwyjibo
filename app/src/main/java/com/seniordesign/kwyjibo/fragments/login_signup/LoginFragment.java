@@ -108,7 +108,7 @@ public class LoginFragment extends Fragment {
         protected void onPostExecute(Map<String,String> user) {
             boolean isAuthenticated = Boolean.parseBoolean(user.get(IS_AUTHENTICATED));
             if (isAuthenticated){
-                ((MainActivity)getActivity()) .storePreference(USER_ID, user.get(USER_ID))
+                ((MainActivity)getActivity()).storePreference(USER_ID, user.get(USER_ID))
                         .storePreference(USER_NAME, user.get(USER_NAME))
                         .storePreference(USER_EMAIL, user.get(USER_EMAIL))
                         .storePreference(AUTH_TOKEN, user.get(AUTH_TOKEN))
@@ -130,7 +130,7 @@ public class LoginFragment extends Fragment {
                         .appendQueryParameter("username", params[0])
                         .appendQueryParameter("password", params[1])
                         .build();
-                Log.e(TAG, builtUri.toString());
+                Log.v(TAG, builtUri.toString());
                 URL url = new URL(builtUri.toString());
                 urlConnection = (HttpURLConnection)url.openConnection();
                 urlConnection.setRequestMethod("GET");
@@ -172,8 +172,11 @@ public class LoginFragment extends Fragment {
                 map.put(AUTH_TOKEN,user.getString(AUTH_TOKEN));
                 map.put(IS_AUTHENTICATED, user.getString(IS_AUTHENTICATED));
 
-                Log.e(TAG,user.getString(AUTH_TOKEN));
-                Log.e(TAG,user.getString(USER_ID));
+                Log.v(TAG, "User Id: " + user.getString(USER_ID));
+                Log.v(TAG, "Username: " + user.getString(USER_NAME));
+                Log.v(TAG, "User Email: " + user.getString(USER_EMAIL));
+                Log.v(TAG, "AuthToken: " + user.getString(AUTH_TOKEN));
+                Log.v(TAG, "Authenticated: " + user.getString(IS_AUTHENTICATED));
             }catch(JSONException e){
                 Log.e(TAG,e.getMessage());
             }
