@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.SignInButton;
 import com.seniordesign.kwyjibo.activities.MainActivity;
-import com.seniordesign.kwyjibo.interfaces.HasUserInfo;
+import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 
 import org.json.JSONException;
@@ -94,7 +94,7 @@ public class LoginFragment extends Fragment {
     }
 
     private class LoginAsyncTask extends AsyncTask<String,Void,Map<String,String>>
-            implements HasUserInfo {
+            implements HasSessionInfo {
 
         private Context context;
 

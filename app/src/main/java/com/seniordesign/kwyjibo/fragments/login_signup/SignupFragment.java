@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.SignInButton;
 import com.seniordesign.kwyjibo.activities.MainActivity;
-import com.seniordesign.kwyjibo.interfaces.HasUserInfo;
+import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 
 import org.json.JSONException;
@@ -101,7 +101,7 @@ public class SignupFragment extends Fragment {
     }
 
     private class SignupAsyncTask extends AsyncTask<String, Void, Map<String,String>>
-            implements HasUserInfo {
+            implements HasSessionInfo {
 
         private Context context;
 
@@ -113,11 +113,11 @@ public class SignupFragment extends Fragment {
         protected void onPostExecute(Map<String,String> user) {
             boolean creationSuccessful = Boolean.parseBoolean(user.get(IS_AUTHENTICATED));
             if (creationSuccessful){
-                ((MainActivity)getActivity()).storePreference(USER_ID, user.get("Id"))
-                        .storePreference(USER_NAME, user.get("Username"))
-                        .storePreference("email", user.get("Email"))
-                        .storePreference("authToken", user.get(AUTH_TOKEN))
-                        .storePreference("authenticated", true);
+                ((MainActivity)getActivity()).storePreference(USER_ID, user.get(USER_ID))
+                        .storePreference(USER_NAME, user.get(USER_NAME))
+                        .storePreference(USER_EMAIL, user.get(USER_EMAIL))
+                        .storePreference(AUTH_TOKEN, user.get(AUTH_TOKEN))
+                        .storePreference(IS_AUTHENTICATED, true);
 
                 ((MainActivity)context).replaceScreen(MainActivity.Screens.MODE_SELECTION, true);
                 Toast.makeText(context, "Success", Toast.LENGTH_LONG).show();

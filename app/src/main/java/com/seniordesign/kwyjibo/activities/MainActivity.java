@@ -18,7 +18,7 @@ import com.seniordesign.kwyjibo.kwyjibo.R;
 import com.seniordesign.kwyjibo.fragments.radiomode.RadioModeFragment;
 import com.seniordesign.kwyjibo.fragments.recordmode.RecordModeFragment;
 import com.seniordesign.kwyjibo.fragments.login_signup.StartupFragment;
-import com.seniordesign.kwyjibo.interfaces.HasUserInfo;
+import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,7 +31,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements HasUserInfo {
+public class MainActivity extends AppCompatActivity implements HasSessionInfo {
 
     private static Map<Screens,Fragment> fragments = new HashMap<>();
     private static final String TAG = "MainActivity";
@@ -71,11 +71,13 @@ public class MainActivity extends AppCompatActivity implements HasUserInfo {
                     replaceScreen(Screens.MODE_SELECTION, false);
                     Log.d(TAG, "AUTHENTICATION SUCCESSFUL.");
                 }else{
+                    destroyUserSession();
                     replaceScreen(Screens.LOGIN_SIGNUP, false);
                     Log.d(TAG, "AUTHENTICATION FAILED.");
                 }
             }
-        }).execute("1", PreferenceManager.getDefaultSharedPreferences(this).getString(AUTH_TOKEN, ""));
+        }).execute(PreferenceManager.getDefaultSharedPreferences(this).getString(USER_ID, "userid missing"),
+                PreferenceManager.getDefaultSharedPreferences(this).getString(AUTH_TOKEN, "authToken missing"));
     }
 
     public void replaceScreen(Screens screen, boolean addToBackStack){
@@ -172,6 +174,7 @@ public class MainActivity extends AppCompatActivity implements HasUserInfo {
         private Boolean parseJsonResponse(String jsonResponse) {
             try {
                 JSONObject user = new JSONObject(jsonResponse);
+                Log.d(TAG, "jsonResponse: " + user.getBoolean(IS_AUTHENTICATED));
                 return user.getBoolean(IS_AUTHENTICATED);
             } catch (JSONException e) {
                 e.printStackTrace();
