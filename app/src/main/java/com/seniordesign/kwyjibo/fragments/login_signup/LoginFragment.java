@@ -11,35 +11,35 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.gms.common.SignInButton;
+import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.seniordesign.kwyjibo.asynctasks.LoginTask;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 
 public class LoginFragment extends Fragment {
 
-    private EditText usernameET;
-    private EditText passwordET;
+    private EditText usernameEditText;
+    private EditText passwordEditText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.login_fragment, container, false);
         initGoogleLoginButton(rootView);
 
-        usernameET = ((EditText) rootView.findViewById(R.id.login_fragment_username_edittext));
-        passwordET = ((EditText) rootView.findViewById(R.id.login_fragment_password_edittext));
+        usernameEditText = ((EditText) rootView.findViewById(R.id.login_fragment_username_edittext));
+        passwordEditText = ((EditText) rootView.findViewById(R.id.login_fragment_password_edittext));
 
         Button submitLoginButton = (Button)rootView.findViewById(R.id.login_fragment_login_button);
         submitLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = usernameET.getText().toString();
-                String password = passwordET.getText().toString();
+                String username = usernameEditText.getText().toString();
+                String password = passwordEditText.getText().toString();
 
                 new LoginTask(getActivity()).execute(username, password);
-
             }
         });
 
-        initLayoutDesign(rootView);
+        MainActivity.applyLayoutDesign(rootView);
 
         return rootView;
     }
@@ -57,23 +57,4 @@ public class LoginFragment extends Fragment {
             }
         }
     }
-
-    private void initLayoutDesign(View rootView){
-        Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/ProximaNova-Semibold.otf");
-        ViewGroup v = (ViewGroup)rootView;
-        for (int i = 0; i < v.getChildCount(); i++){
-            View child = v.getChildAt(i);
-            if (child instanceof TextView){
-                ((TextView) child).setTypeface(font);
-            }
-            if (child instanceof EditText){
-                ((EditText) child).setTypeface(font);
-                child.setBackgroundColor(getResources().getColor(R.color.darkGray));
-            }
-            if (child instanceof Button){
-                ((Button) child).setTypeface(font);
-            }
-        }
-    }
-
 }

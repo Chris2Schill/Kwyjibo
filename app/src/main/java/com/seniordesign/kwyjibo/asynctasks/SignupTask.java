@@ -38,16 +38,16 @@ public class SignupTask extends AsyncTask<String, Void, Map<String,String>>
     protected void onPostExecute(Map<String,String> user) {
         boolean creationSuccessful = Boolean.parseBoolean(user.get(IS_AUTHENTICATED));
         if (creationSuccessful){
-            ((MainActivity)context).storePreference(USER_ID, user.get(USER_ID))
-                    .storePreference(USER_NAME, user.get(USER_NAME))
-                    .storePreference(USER_EMAIL, user.get(USER_EMAIL))
-                    .storePreference(AUTH_TOKEN, user.get(AUTH_TOKEN))
-                    .storePreference(IS_AUTHENTICATED, true);
+            MainActivity.storePreference(USER_ID, user.get(USER_ID));
+            MainActivity.storePreference(USER_NAME, user.get(USER_NAME));
+            MainActivity.storePreference(USER_EMAIL, user.get(USER_EMAIL));
+            MainActivity.storePreference(AUTH_TOKEN, user.get(AUTH_TOKEN));
+            MainActivity.storePreference(IS_AUTHENTICATED, true);
 
-            ((MainActivity)context).replaceScreen(MainActivity.Screens.MODE_SELECTION, true);
+            MainActivity.replaceScreen(MainActivity.Screens.MODE_SELECTION, true);
             Toast.makeText(context, "Success", Toast.LENGTH_LONG).show();
         } else{
-            ((MainActivity)context).destroyUserSession();
+            MainActivity.destroyUserSession();
             Toast.makeText(context, "Unsuccessful", Toast.LENGTH_LONG).show();
         }
     }

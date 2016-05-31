@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.gms.common.SignInButton;
+import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.seniordesign.kwyjibo.asynctasks.SignupTask;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 
@@ -43,7 +44,7 @@ public class SignupFragment extends Fragment {
         );
 
         initGoogleSignInButton(rootView);
-        initLayoutDesign(rootView);
+        MainActivity.applyLayoutDesign(rootView);
 
         return rootView;
     }
@@ -61,24 +62,4 @@ public class SignupFragment extends Fragment {
             }
         }
     }
-
-    private void initLayoutDesign(View rootView) {
-        Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/ProximaNova-Semibold.otf");
-        ViewGroup v = (ViewGroup) rootView;
-        for (int i = 0; i < v.getChildCount(); i++) {
-            View child = v.getChildAt(i);
-            if (child instanceof TextView) {
-                ((TextView) child).setTypeface(font);
-            }
-            if (child instanceof EditText) {
-                ((EditText) child).setTypeface(font);
-                child.setBackgroundColor(getResources().getColor(R.color.darkGray));
-            }
-            if (child instanceof Button) {
-                ((Button) child).setTypeface(font);
-            }
-        }
-    }
-
-
 }

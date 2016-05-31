@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 
 public class IntroTitleFragment extends Fragment {
@@ -17,26 +18,8 @@ public class IntroTitleFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.intro_title_fragment, container, false);
         setOnClickListeners(rootView);
-        initLayoutDesign(rootView);
+        MainActivity.applyLayoutDesign(rootView);
         return rootView;
-    }
-
-    private void initLayoutDesign(View rootView) {
-        Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/ProximaNova-Semibold.otf");
-        ViewGroup v = (ViewGroup)rootView;
-        for (int i = 0; i < v.getChildCount(); i++){
-            View child = v.getChildAt(i);
-            if (child instanceof TextView){
-                ((TextView) child).setTypeface(font);
-            }
-            if (child instanceof EditText){
-                ((EditText) child).setTypeface(font);
-                child.setBackgroundColor(getResources().getColor(R.color.darkGray));
-            }
-            if (child instanceof Button){
-                ((Button) child).setTypeface(font);
-            }
-        }
     }
 
     private void setOnClickListeners(View v){

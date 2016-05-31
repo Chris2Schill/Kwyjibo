@@ -1,4 +1,4 @@
-package com.seniordesign.kwyjibo.fragments.radiomode;
+package com.seniordesign.kwyjibo.fragments;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -21,11 +21,11 @@ import com.seniordesign.kwyjibo.kwyjibo.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 public class CreateStationFragment extends Fragment implements HasSessionInfo{
 
-    private Button addStationButton;
     private EditText stationNameEditText;
     private EditText userNameEditText;
 
@@ -42,15 +42,15 @@ public class CreateStationFragment extends Fragment implements HasSessionInfo{
         genres.add("Dubstep");
         genres.add("Jazz");
 
-        addStationButton = (Button)rootView.findViewById(R.id.create_station_confirm_button);
-        addStationButton.setOnClickListener(new View.OnClickListener(){
+        Button addStationButton = (Button) rootView.findViewById(R.id.create_station_confirm_button);
+        addStationButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 String newStationName = stationNameEditText.getText().toString();
                 String createdBy = userNameEditText.getText().toString();
 
-                RadioGroup radioGroup = (RadioGroup)getActivity().findViewById(R.id.create_station_radio_group);
-                if (radioGroup != null){
+                RadioGroup radioGroup = (RadioGroup) getActivity().findViewById(R.id.create_station_radio_group);
+                if (radioGroup != null) {
                     int index = radioGroup.indexOfChild(
                             getActivity().findViewById(radioGroup.getCheckedRadioButtonId()));
 
@@ -62,11 +62,10 @@ public class CreateStationFragment extends Fragment implements HasSessionInfo{
 
                     new CreateStationTask(getContext())
                             .execute(newStationName, createdBy, genre, authToken, userId);
-                    getActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.main_activity_fragment_container, MainActivity.getFragment(MainActivity.Screens.RADIO_MODE))
-                            .commit();
 
-                }else{
+                    MainActivity.replaceScreen(MainActivity.Screens.RADIO_MODE, false);
+
+                } else {
                     Log.e(TAG, "Reference to RadioGroup create_station_radio_group is null");
                 }
             }
@@ -75,36 +74,8 @@ public class CreateStationFragment extends Fragment implements HasSessionInfo{
         stationNameEditText = (EditText)rootView.findViewById(R.id.create_station_name_edittext);
         userNameEditText = (EditText)rootView.findViewById(R.id.create_station_yourname_edittext);
 
-        initLayoutDesign(rootView);
+        MainActivity.applyLayoutDesign(rootView);
 
         return rootView;
     }
-
-    private void initLayoutDesign(View rootView){
-        Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/ProximaNova-Semibold.otf");
-        ViewGroup v = (ViewGroup)rootView;
-        for (int i = 0; i < v.getChildCount(); i++){
-            View child = v.getChildAt(i);
-            if (child instanceof TextView){
-                ((TextView) child).setTypeface(font);
-            }
-            if (child instanceof EditText){
-               ((EditText) child).setTypeface(font);
-                child.setBackgroundColor(getResources().getColor(R.color.darkGray));
-            }
-            if (child instanceof Button){
-                ((Button) child).setTypeface(font);
-            }
-            if (child instanceof RadioGroup){
-                RadioGroup rg = (RadioGroup)child;
-                for (int j = 0; j < rg.getChildCount(); j++){
-                    RadioButton b = (RadioButton)rg.getChildAt(j);
-                    b.setTypeface(font);
-                }
-            }
-
-        }
-    }
-
-
 }

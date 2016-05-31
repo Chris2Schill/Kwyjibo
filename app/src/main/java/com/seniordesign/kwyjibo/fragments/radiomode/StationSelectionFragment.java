@@ -22,9 +22,7 @@ import java.util.ArrayList;
 
 public class StationSelectionFragment extends Fragment {
 
-    private ListView stationsListView;
-    private StationSelectListAdapter listAdapter;
-    private Button createStationButton;
+    private StationSelectListAdapter<String> listAdapter;
 
     private static final String TAG = "StationSelectionFrag";
 
@@ -33,26 +31,26 @@ public class StationSelectionFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.station_selection_fragment, container, false);
         enableStationListView(rootView);
         enableCreateStationButton(rootView);
-        setFont();
         new GetAllStationsTask(new ListViewHandler(){
             @Override
             public void updateListView(Object[] stations){
                 if (stations != null){
                     listAdapter.clear();
                     for (Object s : stations){
-                        listAdapter.add(s);
+                        listAdapter.add((String)s);
                     }
                 }
             }
         }).execute();
+        MainActivity.applyLayoutDesign(rootView);
         return rootView;
     }
 
     private void enableStationListView(View v){
-        listAdapter = new StationSelectListAdapter(getActivity(), R.layout.radio_mode_list_item,
+        listAdapter = new StationSelectListAdapter<>(getActivity(), R.layout.radio_mode_list_item,
                 new ArrayList<String>());
 
-        stationsListView = (ListView) v.findViewById(R.id.radio_mode_list_view);
+        ListView stationsListView = (ListView) v.findViewById(R.id.radio_mode_list_view);
         stationsListView.setAdapter(listAdapter);
 
         stationsListView.setOnItemClickListener(new ListView.OnItemClickListener() {
@@ -60,7 +58,7 @@ public class StationSelectionFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Fragment stationFragment = new StationFragment();
                 Bundle bundle = new Bundle();
-                bundle.putString("Name", listAdapter.getItem(position).toString());
+                bundle.putString("Name", listAdapter.getItem(position));
                 stationFragment.setArguments(bundle);
 
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager()
@@ -73,7 +71,7 @@ public class StationSelectionFragment extends Fragment {
     }
 
     private void enableCreateStationButton(View v){
-        createStationButton = (Button)v.findViewById(R.id.create_station_button);
+        Button createStationButton = (Button) v.findViewById(R.id.create_station_button);
         createStationButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,11 +84,5 @@ public class StationSelectionFragment extends Fragment {
             }
         });
     }
-
-    private void setFont(){
-        Typeface proximaNova = Typeface.createFromAsset(getActivity().getAssets(), "fonts/ProximaNova-Semibold.otf");
-        createStationButton.setTypeface(proximaNova);
-    }
-
 }
 

@@ -35,15 +35,15 @@ public class LoginTask extends AsyncTask<String,Void,Map<String,String>>
     protected void onPostExecute(Map<String,String> user) {
         boolean isAuthenticated = Boolean.parseBoolean(user.get(IS_AUTHENTICATED));
         if (isAuthenticated){
-            // context here?
-            ((MainActivity)context).storePreference(USER_ID, user.get(USER_ID))
-                    .storePreference(USER_NAME, user.get(USER_NAME))
-                    .storePreference(USER_EMAIL, user.get(USER_EMAIL))
-                    .storePreference(AUTH_TOKEN, user.get(AUTH_TOKEN))
-                    .storePreference(IS_AUTHENTICATED, true);
-            ((MainActivity)context).replaceScreen(MainActivity.Screens.MODE_SELECTION, true);
+            MainActivity.storePreference(USER_ID, user.get(USER_ID));
+            MainActivity.storePreference(USER_NAME, user.get(USER_NAME));
+            MainActivity.storePreference(USER_EMAIL, user.get(USER_EMAIL));
+            MainActivity.storePreference(AUTH_TOKEN, user.get(AUTH_TOKEN));
+            MainActivity.storePreference(IS_AUTHENTICATED, true);
+
+            MainActivity.replaceScreen(MainActivity.Screens.MODE_SELECTION, true);
         }else{
-            ((MainActivity)context).destroyUserSession();
+            MainActivity.destroyUserSession();
             Toast.makeText(context, "Account Credentials Invalid.", Toast.LENGTH_LONG).show();
         }
     }
