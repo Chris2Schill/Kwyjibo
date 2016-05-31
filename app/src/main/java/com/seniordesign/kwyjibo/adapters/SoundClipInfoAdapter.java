@@ -1,6 +1,7 @@
 package com.seniordesign.kwyjibo.adapters;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +16,17 @@ import java.util.List;
 public class SoundClipInfoAdapter extends ArrayAdapter<SoundClipInfo> {
 
     private List<SoundClipInfo> soundClipInfoList;
+    private Typeface font = null;
 
-    SoundClipInfoAdapter(Context context, int resource, List<SoundClipInfo> clips) {
+    public SoundClipInfoAdapter(Context context, int resource, List<SoundClipInfo> clips) {
         super(context, resource, clips);
         this.soundClipInfoList = clips;
+    }
+
+    public SoundClipInfoAdapter(Context context, int resource, List<SoundClipInfo> clips, Typeface font){
+        super(context, resource, clips);
+        this.soundClipInfoList = clips;
+        this.font = font;
     }
 
     @Override
@@ -38,12 +46,21 @@ public class SoundClipInfoAdapter extends ArrayAdapter<SoundClipInfo> {
             TextView location = (TextView) convertView
                     .findViewById(R.id.studio_mode_list_item_location_textview);
             if (soundName != null){
-                soundName.setText(clip.getSoundClipName());
+                if (font != null){
+                    soundName.setTypeface(font);
+                }
+                soundName.setText(clip.getName());
             }
             if (contributor != null){
-                contributor.setText(clip.getContributor());
+                if (font != null){
+                    contributor.setTypeface(font);
+                }
+                contributor.setText(clip.getCreatedBy());
             }
             if (location != null){
+                if (font != null){
+                    location.setTypeface(font);
+                }
                 location.setText(clip.getLocation());
             }
         }

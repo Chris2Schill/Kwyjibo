@@ -2,12 +2,13 @@
 <RelativeLayout
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:minHeight="30dp"
+    android:minHeight="50dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
@@ -19,8 +20,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
-            android:textSize="15sp"
-            android:textColor="@color/black"
+            android:textSize="25sp"
+            android:textColor="@color/white"
             android:text="sound name"
             android:layout_gravity="left|center_vertical"
             android:layout_centerVertical="true" />
@@ -29,7 +30,7 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
@@ -41,9 +42,11 @@
             android:id="@+id/studio_mode_list_item_contributors_name_textview"
             android:textSize="12sp"
             android:text="name"
+            android:textColor="@color/lightestGray"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"/>
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="top" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -54,7 +57,7 @@
             android:layout_below="@+id/studio_mode_list_item_contributors_name_textview"
             android:textSize="12sp"
             android:text="location"
-            android:textColor="@color/black"/>
+            android:textColor="@color/lightestGray"/>
 
     </RelativeLayout>
 </RelativeLayout>

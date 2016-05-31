@@ -40,7 +40,7 @@ public class IntroTitleFragment extends Fragment {
     }
 
     private void setOnClickListeners(View v){
-        ((Button)v.findViewById(R.id.login_button)).setOnClickListener(new View.OnClickListener() {
+        v.findViewById(R.id.login_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getActivity().getSupportFragmentManager().beginTransaction()
@@ -50,7 +50,7 @@ public class IntroTitleFragment extends Fragment {
             }
         });
 
-        ((Button)v.findViewById(R.id.intro_fragment_signup_button))
+        v.findViewById(R.id.intro_fragment_signup_button)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

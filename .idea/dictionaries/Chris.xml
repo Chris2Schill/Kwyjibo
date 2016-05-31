@@ -2,6 +2,14 @@
   <dictionary name="Chris">
     <words>
       <w>edittext</w>
+      <w>framelayout</w>
+      <w>imagebutton</w>
+      <w>listview</w>
+      <w>populator</w>
+      <w>proxima</w>
+      <w>relativelayout</w>
+      <w>request's</w>
+      <w>soundname</w>
       <w>textview</w>
     </words>
   </dictionary>

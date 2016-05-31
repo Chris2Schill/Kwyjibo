@@ -12,13 +12,13 @@ import com.seniordesign.kwyjibo.kwyjibo.R;
 
 import java.util.List;
 
-public class StationSelectListAdapter extends ArrayAdapter {
+public class StationSelectListAdapter<T> extends ArrayAdapter<T> {
 
     private Context context;
     private int id;
-    private List<String> items;
+    private List<T> items;
 
-    public StationSelectListAdapter(Context context, int id, List<String> items) {
+    public StationSelectListAdapter(Context context, int id, List<T> items) {
         super(context, id, items);
         this.context = context;
         this.id = id;
@@ -30,15 +30,17 @@ public class StationSelectListAdapter extends ArrayAdapter {
         View mView = v ;
         if(mView == null){
             LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            mView = inflater.inflate(R.layout.radio_mode_list_item, null);
+            mView = inflater.inflate(id, parent, false);
         }
 
         TextView text = (TextView)mView.findViewById(R.id.radio_mode_list_item_textview);
 
         if(items.get(position) != null ) {
             Typeface proximaNova = Typeface.createFromAsset(context.getAssets(),"fonts/ProximaNova-Semibold.otf");
-            text.setTypeface(proximaNova);
-            text.setText(items.get(position));
+            if (items.get(position) instanceof String){
+                text.setTypeface(proximaNova);
+                text.setText((String)items.get(position));
+            }
         }
 
         return mView;

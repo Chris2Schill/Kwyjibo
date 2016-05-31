@@ -1,8 +1,6 @@
 package com.seniordesign.kwyjibo.activities;
 
 
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.v4.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.seniordesign.kwyjibo.asynctasks.AuthenticationTask;
 import com.seniordesign.kwyjibo.fragments.radiomode.CreateStationFragment;
 import com.seniordesign.kwyjibo.fragments.ModeSelectionFragment;
 import com.seniordesign.kwyjibo.interfaces.AuthenticationHandler;
@@ -20,14 +19,7 @@ import com.seniordesign.kwyjibo.fragments.recordmode.RecordModeFragment;
 import com.seniordesign.kwyjibo.fragments.login_signup.StartupFragment;
 import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,6 +27,9 @@ public class MainActivity extends AppCompatActivity implements HasSessionInfo {
 
     private static Map<Screens,Fragment> fragments = new HashMap<>();
     private static final String TAG = "MainActivity";
+
+    private SharedPreferences.Editor prefsEditor;
+    private boolean fromOrientation = false;
 
     public enum Screens{
         LOGIN_SIGNUP, MODE_SELECTION, RECORD_MODE, RADIO_MODE, CREATE_STATION
@@ -44,6 +39,9 @@ public class MainActivity extends AppCompatActivity implements HasSessionInfo {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+
+        SharedPreferences settings = PreferenceManager .getDefaultSharedPreferences(this);
+        prefsEditor = settings.edit();
 
         fragments.put(Screens.LOGIN_SIGNUP, new StartupFragment());
         fragments.put(Screens.MODE_SELECTION, new ModeSelectionFragment());
@@ -64,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements HasSessionInfo {
     @Override
     protected void onResume() {
         super.onResume();
-        new AuthCheckAsyncTask(new AuthenticationHandler() {
+        new AuthenticationTask(new AuthenticationHandler() {
             @Override
             public void isAuthenticated(boolean authenticated) {
                 if (authenticated){
@@ -78,6 +76,22 @@ public class MainActivity extends AppCompatActivity implements HasSessionInfo {
             }
         }).execute(PreferenceManager.getDefaultSharedPreferences(this).getString(USER_ID, "userid missing"),
                 PreferenceManager.getDefaultSharedPreferences(this).getString(AUTH_TOKEN, "authToken missing"));
+    }
+
+    @Override
+    public Object onRetainCustomNonConfigurationInstance() {
+        prefsEditor.putBoolean("fromOrientation", true);
+        prefsEditor.commit();
+        return null;
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (fromOrientation){
+            prefsEditor.putBoolean("fromOrientation", false);
+            prefsEditor.commit();
+        }
+        super.onDestroy();
     }
 
     public void replaceScreen(Screens screen, boolean addToBackStack){
@@ -102,84 +116,14 @@ public class MainActivity extends AppCompatActivity implements HasSessionInfo {
     }
 
     public <T> MainActivity storePreference(String key, T value){
-        SharedPreferences settings = PreferenceManager .getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = settings.edit();
         if (value instanceof String){
-            editor.putString(key, (String) value);
+            prefsEditor.putString(key, (String) value);
         }else if (value instanceof Boolean){
-            editor.putBoolean(key,(Boolean)value);
+            prefsEditor.putBoolean(key,(Boolean)value);
         }
-        editor.apply();
+        prefsEditor.apply();
         return this;
     }
 
 
-    private static class AuthCheckAsyncTask extends AsyncTask<String, Void, Boolean>{
-
-        private static final String TAG = "AuthCheckAsyncTask";
-
-        AuthenticationHandler handler;
-
-        AuthCheckAsyncTask(AuthenticationHandler handler){
-            this.handler = handler;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean authenticated) {
-            handler.isAuthenticated(authenticated);
-        }
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
-            String jsonResponse = "";
-            try{
-                Uri builtUri = Uri.parse("http://motw.tech/api/AuthenticateUser.aspx").buildUpon()
-                        .appendQueryParameter("userId", params[0])
-                        .appendQueryParameter("authToken", params[1])
-                        .build();
-                Log.v(TAG, builtUri.toString());
-                URL url = new URL(builtUri.toString());
-                urlConnection = (HttpURLConnection)url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
-
-                StringBuilder sb = new StringBuilder();
-                reader = new BufferedReader(new InputStreamReader(
-                        urlConnection.getInputStream()));
-                String line;
-                while ((line = reader.readLine()) != null){
-                    sb.append(line).append('\n');
-                }
-                jsonResponse = sb.toString();
-            }catch (IOException e){
-                Log.e(TAG, e.getMessage());
-            }finally{
-                if (urlConnection != null){
-                    urlConnection.disconnect();
-                }
-                if (reader != null){
-                    try{
-                        reader.close();
-                    }catch(IOException e){
-                        Log.e(TAG, e.getMessage());
-                    }
-                }
-            }
-
-            return parseJsonResponse(jsonResponse);
-        }
-
-        private Boolean parseJsonResponse(String jsonResponse) {
-            try {
-                JSONObject user = new JSONObject(jsonResponse);
-                Log.d(TAG, "jsonResponse: " + user.getBoolean(IS_AUTHENTICATED));
-                return user.getBoolean(IS_AUTHENTICATED);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return false;
-        }
-    }
 }
