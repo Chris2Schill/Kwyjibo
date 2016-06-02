@@ -2,9 +2,13 @@ package com.seniordesign.kwyjibo.asynctasks;
 
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.seniordesign.kwyjibo.beans.SoundClipInfo;
+import com.seniordesign.kwyjibo.interfaces.AsyncTaskCallback;
+import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
 import com.seniordesign.kwyjibo.interfaces.ListViewHandler;
 
 import org.json.JSONException;
@@ -20,18 +24,19 @@ import java.net.URLEncoder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class UploadSoundClipTask extends AsyncTask<String, Void, SoundClipInfo> {
+public class UploadSoundClipTask extends AsyncTask<String, Void, SoundClipInfo>
+        implements HasSessionInfo {
 
-    private ListViewHandler handler;
+    private AsyncTaskCallback handler;
     private static final String TAG = "UploadSoundClipTask";
 
-    public UploadSoundClipTask(ListViewHandler handler) {
+    public UploadSoundClipTask(AsyncTaskCallback handler) {
         this.handler = handler;
     }
 
     @Override
     protected void onPostExecute(SoundClipInfo clip) {
-        handler.updateListView(clip);
+        handler.callback(clip);
     }
 
     @Override
@@ -39,11 +44,13 @@ public class UploadSoundClipTask extends AsyncTask<String, Void, SoundClipInfo> 
 
         // The new station's parameters
         Map<String,String> postDataMap = new LinkedHashMap<>();
-        postDataMap.put("stationName", params[0]);
-        postDataMap.put("createdBy", params[1]);
-        postDataMap.put("genre", params[2]);
-        postDataMap.put("authToken", params[3]);
-        postDataMap.put("userId", params[4]);
+        postDataMap.put("stationName", MainActivity.getStringPreference("currentStation"));
+        postDataMap.put("clipName", params[0]);
+        postDataMap.put("userId", MainActivity.getStringPreference(USER_ID));
+        postDataMap.put("username", MainActivity.getStringPreference(USER_NAME));
+        postDataMap.put("location", "Orlando");
+        postDataMap.put("category", params[1]);
+        postDataMap.put("authToken", MainActivity.getStringPreference(AUTH_TOKEN));
 
         // Get the post parameters as a byte buffer
         byte[] postDataBytes = null;
@@ -79,7 +86,7 @@ public class UploadSoundClipTask extends AsyncTask<String, Void, SoundClipInfo> 
         String response = "";
         try{
             // Open Connection
-            Uri builtUri = Uri.parse("http://motw.tech/api/AddStation.aspx").buildUpon().build();
+            Uri builtUri = Uri.parse("http://motw.tech/api/AddSoundToStation.aspx").buildUpon().build();
             URL url = new URL(builtUri.toString());
             urlConnection = (HttpURLConnection)url.openConnection();
             urlConnection.setDoOutput(true);
@@ -117,7 +124,9 @@ public class UploadSoundClipTask extends AsyncTask<String, Void, SoundClipInfo> 
     }
 
     private SoundClipInfo parseJSONResponse(String jsonStr) throws JSONException {
+        Log.d(TAG, jsonStr);
         JSONObject clipJson = new JSONObject(jsonStr);
+
 
         int id = clipJson.getInt("Id");
         String name = clipJson.getString("Name");

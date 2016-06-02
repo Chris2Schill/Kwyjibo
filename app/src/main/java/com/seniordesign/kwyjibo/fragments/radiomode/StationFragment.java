@@ -31,14 +31,10 @@ public class StationFragment extends Fragment{
     private Button addSoundButton;
 
     private static final String TAG = "StationFragment";
-    private String stationName;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.station_fragment, container, false);
-
-        Bundle bundle = this.getArguments();
-        stationName = bundle.getString("Name", "");
 
         initButtons(rootView);
 
@@ -52,7 +48,7 @@ public class StationFragment extends Fragment{
 
     private void initButtons(View rootView){
         addSoundButton = (Button)rootView.findViewById(R.id.add_sound_to_station_button);
-        addSoundButton.setOnClickListener(new View.OnClickListener(){
+        addSoundButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(v.getContext());
@@ -64,9 +60,10 @@ public class StationFragment extends Fragment{
                             }
                         })
                         .setNegativeButton("New Recording", new DialogInterface.OnClickListener() {
+
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-//                                startActivity(new Intent(getActivity(), RecordActivity.class));
+                                MainActivity.replaceScreen(MainActivity.Screens.RECORD_MODE, true, "currentStation");
                             }
                         })
                         .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
@@ -75,18 +72,6 @@ public class StationFragment extends Fragment{
 
                             }
                         }).create().show();
-
-                /*new AddSoundToStationAsyncTask(new ListViewHandler(){
-                    @Override
-                    public void updateListView(Object... items) {
-                        if (items != null){
-                            for (Object clip : items){
-                                listAdapter.add((SoundClipInfo)clip);
-                            }
-                        }
-                    }
-                }).execute(stationName);
-                */
             }
         });
     }
@@ -113,7 +98,7 @@ public class StationFragment extends Fragment{
                     }
                 }
             }
-        }).execute(stationName);
+        }).execute();
     }
 }
 

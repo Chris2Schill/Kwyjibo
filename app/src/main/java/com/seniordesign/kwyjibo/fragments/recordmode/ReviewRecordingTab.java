@@ -2,28 +2,54 @@ package com.seniordesign.kwyjibo.fragments.recordmode;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
+import com.seniordesign.kwyjibo.activities.MainActivity;
+import com.seniordesign.kwyjibo.asynctasks.GetCategoriesTask;
+import com.seniordesign.kwyjibo.asynctasks.UploadSoundClipTask;
+import com.seniordesign.kwyjibo.beans.SoundClipInfo;
 import com.seniordesign.kwyjibo.drawables.Triangle;
+import com.seniordesign.kwyjibo.interfaces.AsyncTaskCallback;
+import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ReviewRecordingTab extends Fragment {
+public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
     private Triangle playbackButton;
     private Button uploadSoundButton;
+    private Spinner spinner;
+    private ArrayAdapter<String> spinnerAdapter;
+    private EditText clipNameEditText;
     private static final String TAG = "ReviewRecordingTab";
     private static final String outputFile = "/storage/emulated/0/recording.3gp";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.record_mode_review_tab, container, false);
+
         enableButtons(rootView);
+        updateSpinner(rootView);
+
+
+        clipNameEditText = (EditText)rootView.findViewById(R.id.review_recording_soundclip_name_edittext);
+
+        MainActivity.applyLayoutDesign(rootView);
         return rootView;
     }
 
@@ -60,11 +86,56 @@ public class ReviewRecordingTab extends Fragment {
 
     private void enableUploadSoundButton(View v){
         uploadSoundButton = (Button) v.findViewById(R.id.upload_sound_to_server_button);
-        uploadSoundButton.setOnClickListener(new Button.OnClickListener(){
+        uploadSoundButton.setOnClickListener(new Button.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), "This button does not work yet!", Toast.LENGTH_LONG).show();
+                String clipName = clipNameEditText.getText().toString();
+                String category = (spinner.getSelectedItemPosition() + 1) + "";
+
+                new UploadSoundClipTask(new AsyncTaskCallback() {
+                    @Override
+                    public void callback(Object obj) {
+                        SoundClipInfo clipInfo = (SoundClipInfo) obj;
+                        if (obj != null) {
+                            getActivity().getSupportFragmentManager().popBackStack();
+                            MainActivity.replaceScreen(MainActivity.Screens.CURRENT_STATION, false);
+                        }
+                    }
+                }).execute(clipName, category);
             }
         });
     }
+
+    private void updateSpinner(View rootView){
+        spinner = (Spinner)rootView.findViewById(R.id.review_recording_category_spinner);
+        spinnerAdapter = new ArrayAdapter<>(getActivity(),
+                R.layout.radio_mode_list_item, new ArrayList<String>());
+        spinner.setAdapter(spinnerAdapter);
+
+        new GetCategoriesTask(new AsyncTaskCallback(){
+            @Override
+            public void callback(Object obj) {
+                if (obj != null){
+                    String[] categories = (String[])obj;
+                    spinnerAdapter.clear();
+                    for (String category : categories) {
+                        spinnerAdapter.add(category);
+                    }
+                }
+            }
+        }).execute();
+    }
+
+    protected Fragment getCurrentBackStackFragment(){
+        return (Fragment)getActivity().getSupportFragmentManager()
+                .getBackStackEntryAt(getActivity().getSupportFragmentManager()
+                        .getBackStackEntryCount());
+    }
+
+    protected int getFragmentCount() {
+        return getActivity().getSupportFragmentManager().getBackStackEntryCount();
+    }
+
+
 }

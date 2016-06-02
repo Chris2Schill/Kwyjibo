@@ -2,8 +2,10 @@ package com.seniordesign.kwyjibo.asynctasks;
 
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.seniordesign.kwyjibo.beans.SoundClipInfo;
 import com.seniordesign.kwyjibo.interfaces.ListViewHandler;
 
@@ -37,7 +39,8 @@ public class GetStationSoundClips extends AsyncTask<String, Void, SoundClipInfo[
     protected SoundClipInfo[] doInBackground(String... params) {
         String baseURL = "http://motw.tech/api/GetStationSoundClips.aspx";
         Uri builtUri = Uri.parse(baseURL).buildUpon()
-                .appendQueryParameter("stationName", params[0])
+                .appendQueryParameter("stationName",
+                        MainActivity.getStringPreference("currentStation"))
                 .build();
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;

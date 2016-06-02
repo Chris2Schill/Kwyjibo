@@ -4,16 +4,25 @@
     android:layout_height="match_parent"
     xmlns:triangle="http://schemas.android.com/apk/res-auto">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SoundClipName"
+        android:id="@+id/review_recording_soundclip_name_textview"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:textSize="20sp" />
+
     <Button
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="UPLOAD"
         android:id="@+id/upload_sound_to_server_button"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:paddingLeft="3dp"
-        android:paddingRight="3dp"/>
+        android:paddingRight="3dp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/playback_button" />
 
     <com.seniordesign.kwyjibo.drawables.Triangle
         android:id="@+id/playback_button"
@@ -27,6 +36,30 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"/>
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/review_recording_soundclip_name_edittext"
+        android:layout_below="@+id/review_recording_soundclip_name_textview"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Category"
+        android:id="@+id/review_recording_category_spinner_textview"
+        android:layout_below="@+id/review_recording_soundclip_name_edittext"
+        android:layout_centerHorizontal="true"
+        android:textSize="20sp" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:spinnerMode="dialog"
+        android:id="@+id/review_recording_category_spinner"
+        android:background="@color/darkGray"
+        android:layout_below="@+id/review_recording_category_spinner_textview"
+        android:layout_centerHorizontal="true"/>
 
 
 </RelativeLayout>

@@ -42,6 +42,18 @@ public class CreateStationFragment extends Fragment implements HasSessionInfo{
         genres.add("Dubstep");
         genres.add("Jazz");
 
+
+        initButtons(rootView);
+
+        stationNameEditText = (EditText)rootView.findViewById(R.id.create_station_name_edittext);
+        userNameEditText = (EditText)rootView.findViewById(R.id.create_station_yourname_edittext);
+
+        MainActivity.applyLayoutDesign(rootView);
+
+        return rootView;
+    }
+
+    private void initButtons(View rootView){
         Button addStationButton = (Button) rootView.findViewById(R.id.create_station_confirm_button);
         addStationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,19 +75,12 @@ public class CreateStationFragment extends Fragment implements HasSessionInfo{
                     new CreateStationTask(getContext())
                             .execute(newStationName, createdBy, genre, authToken, userId);
 
-                    MainActivity.replaceScreen(MainActivity.Screens.RADIO_MODE, false);
+                    MainActivity.replaceScreen(MainActivity.Screens.STATION_SELECTION, false);
 
                 } else {
                     Log.e(TAG, "Reference to RadioGroup create_station_radio_group is null");
                 }
             }
         });
-
-        stationNameEditText = (EditText)rootView.findViewById(R.id.create_station_name_edittext);
-        userNameEditText = (EditText)rootView.findViewById(R.id.create_station_yourname_edittext);
-
-        MainActivity.applyLayoutDesign(rootView);
-
-        return rootView;
     }
 }

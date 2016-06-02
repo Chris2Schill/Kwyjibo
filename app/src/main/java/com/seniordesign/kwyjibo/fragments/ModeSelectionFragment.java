@@ -29,7 +29,7 @@ public class ModeSelectionFragment extends Fragment {
         rootView.findViewById(R.id.radio_mode_button).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                MainActivity.replaceScreen(MainActivity.Screens.RADIO_MODE, true);
+                MainActivity.replaceScreen(MainActivity.Screens.STATION_SELECTION, true);
             }
         });
 
@@ -37,7 +37,7 @@ public class ModeSelectionFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 MainActivity.destroyUserSession();
-                MainActivity.replaceScreen(MainActivity.Screens.LOGIN_SIGNUP, false);
+                MainActivity.replaceScreen(MainActivity.Screens.INTRO_TITLE, false);
             }
         });
 

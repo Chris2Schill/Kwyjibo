@@ -26,22 +26,15 @@ public class IntroTitleFragment extends Fragment {
         v.findViewById(R.id.login_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.login_signup_container, new LoginFragment())
-                        .addToBackStack(null)
-                        .commit();
+                MainActivity.replaceScreen(MainActivity.Screens.LOGIN, true);
             }
         });
 
-        v.findViewById(R.id.intro_fragment_signup_button)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.login_signup_container, new SignupFragment())
-                                .addToBackStack(null)
-                                .commit();
-                    }
-                });
+        v.findViewById(R.id.intro_fragment_signup_button) .setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.replaceScreen(MainActivity.Screens.SIGNUP, true);
+            }
+        });
     }
 }

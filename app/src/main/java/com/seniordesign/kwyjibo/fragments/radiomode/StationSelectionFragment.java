@@ -56,16 +56,8 @@ public class StationSelectionFragment extends Fragment {
         stationsListView.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Fragment stationFragment = new StationFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("Name", listAdapter.getItem(position));
-                stationFragment.setArguments(bundle);
-
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager()
-                        .beginTransaction();
-                transaction.replace(R.id.radio_mode_fragment_container, stationFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                MainActivity.storePreference("currentStation", listAdapter.getItem(position));
+                MainActivity.replaceScreen(MainActivity.Screens.CURRENT_STATION, true);
             }
         });
     }

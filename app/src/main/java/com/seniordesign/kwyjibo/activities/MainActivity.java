@@ -2,6 +2,7 @@ package com.seniordesign.kwyjibo.activities;
 
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v4.app.FragmentTransaction;
 import android.content.SharedPreferences;
@@ -21,11 +22,14 @@ import android.widget.TextView;
 import com.seniordesign.kwyjibo.asynctasks.AuthenticationTask;
 import com.seniordesign.kwyjibo.fragments.CreateStationFragment;
 import com.seniordesign.kwyjibo.fragments.ModeSelectionFragment;
+import com.seniordesign.kwyjibo.fragments.login_signup.IntroTitleFragment;
+import com.seniordesign.kwyjibo.fragments.login_signup.LoginFragment;
+import com.seniordesign.kwyjibo.fragments.login_signup.SignupFragment;
+import com.seniordesign.kwyjibo.fragments.radiomode.StationFragment;
+import com.seniordesign.kwyjibo.fragments.radiomode.StationSelectionFragment;
 import com.seniordesign.kwyjibo.interfaces.AuthenticationHandler;
 import com.seniordesign.kwyjibo.kwyjibo.R;
-import com.seniordesign.kwyjibo.fragments.radiomode.RadioModeFragment;
 import com.seniordesign.kwyjibo.fragments.recordmode.RecordModeFragment;
-import com.seniordesign.kwyjibo.fragments.login_signup.StartupFragment;
 import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
 
 
@@ -44,7 +48,8 @@ public class MainActivity extends AppCompatActivity implements HasSessionInfo {
     private static final String TAG = "MainActivity";
 
     public enum Screens{
-        LOGIN_SIGNUP, MODE_SELECTION, RECORD_MODE, RADIO_MODE, CREATE_STATION
+        INTRO_TITLE, LOGIN, SIGNUP, MODE_SELECTION, RECORD_MODE, STATION_SELECTION, CREATE_STATION,
+        CURRENT_STATION
     }
 
     @Override
@@ -55,18 +60,22 @@ public class MainActivity extends AppCompatActivity implements HasSessionInfo {
 
         prefsEditor = PreferenceManager.getDefaultSharedPreferences(this).edit();
 
-        fragments.put(Screens.LOGIN_SIGNUP, new StartupFragment());
+        fragments.put(Screens.INTRO_TITLE, new IntroTitleFragment());
+        fragments.put(Screens.LOGIN, new LoginFragment());
+        fragments.put(Screens.SIGNUP, new SignupFragment());
         fragments.put(Screens.MODE_SELECTION, new ModeSelectionFragment());
         fragments.put(Screens.RECORD_MODE, new RecordModeFragment());
-        fragments.put(Screens.RADIO_MODE, new RadioModeFragment());
+        fragments.put(Screens.STATION_SELECTION, new StationSelectionFragment());
         fragments.put(Screens.CREATE_STATION, new CreateStationFragment());
+        fragments.put(Screens.CURRENT_STATION, new StationFragment());
+
 
         if (findViewById(R.id.main_activity_fragment_container) != null){
             if (savedInstanceState != null){
                 return;
             }
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.main_activity_fragment_container, getFragment(Screens.LOGIN_SIGNUP))
+                    .add(R.id.main_activity_fragment_container, getFragment(Screens.INTRO_TITLE))
                     .commit();
         }
     }
@@ -82,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements HasSessionInfo {
                     Log.d(TAG, "AUTHENTICATION SUCCESSFUL.");
                 }else{
                     destroyUserSession();
-                    replaceScreen(Screens.LOGIN_SIGNUP, false);
+                    replaceScreen(Screens.INTRO_TITLE, false);
                     Log.d(TAG, "AUTHENTICATION FAILED.");
                 }
             }
@@ -115,6 +124,15 @@ public class MainActivity extends AppCompatActivity implements HasSessionInfo {
         }
         transaction.commit();
     }
+    public static void replaceScreen(Screens screen, boolean addToBackStack, String tag){
+        FragmentTransaction transaction = ((MainActivity)context).getSupportFragmentManager()
+                .beginTransaction();
+        transaction.replace(R.id.main_activity_fragment_container, getFragment(screen));
+        if (addToBackStack){
+            transaction.addToBackStack(tag);
+        }
+        transaction.commit();
+    }
 
     public static Fragment getFragment(Screens screen){
         return fragments.get(screen);
@@ -131,12 +149,27 @@ public class MainActivity extends AppCompatActivity implements HasSessionInfo {
         prefsEditor.apply();
     }
 
+    public static String getStringPreference(String key){
+        return PreferenceManager.getDefaultSharedPreferences(context).getString(key, "");
+    }
+    public static boolean getBooleanPreference(String key){
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(key, false);
+    }
+    public static int getIntPreference(String key){
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt(key, 0);
+    }
+
+
     public static void destroyUserSession(){
         storePreference(USER_ID, "");
         storePreference(AUTH_TOKEN, "");
         storePreference(USER_NAME, "");
         storePreference(USER_EMAIL, "");
         storePreference(IS_AUTHENTICATED, false);
+    }
+
+    public void setCurrentStation(Fragment fragment){
+        fragments.put(Screens.CURRENT_STATION, fragment);
     }
 
     public static void applyLayoutDesign(View rootView) {
@@ -146,6 +179,7 @@ public class MainActivity extends AppCompatActivity implements HasSessionInfo {
             View child = v.getChildAt(i);
             if (child instanceof TextView) {
                 ((TextView) child).setTypeface(font);
+                ((TextView) child).setTextColor(Color.WHITE);
             }
             if (child instanceof EditText) {
                 ((EditText) child).setTypeface(font);
@@ -163,6 +197,4 @@ public class MainActivity extends AppCompatActivity implements HasSessionInfo {
             }
         }
     }
-
-
 }
