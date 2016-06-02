@@ -20,7 +20,7 @@ public class AuthenticationTask extends AsyncTask<String, Void, Boolean> impleme
 
     private static final String TAG = "AuthenticationTask";
 
-    AuthenticationHandler handler;
+    private AuthenticationHandler handler;
 
     public AuthenticationTask(AuthenticationHandler handler){
         this.handler = handler;

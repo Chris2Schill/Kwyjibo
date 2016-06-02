@@ -1,12 +1,10 @@
 package com.seniordesign.kwyjibo.asynctasks;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.seniordesign.kwyjibo.activities.MainActivity;
+import com.seniordesign.kwyjibo.interfaces.AsyncTaskCallback;
 import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
 
 import org.json.JSONException;
@@ -23,29 +21,17 @@ import java.util.Map;
 public class LoginTask extends AsyncTask<String,Void,Map<String,String>>
         implements HasSessionInfo {
 
-    private Context context;
+    private AsyncTaskCallback handler;
 
     private static final String TAG = "LoginTask";
 
-    public LoginTask(Context context){
-        this.context = context;
+    public LoginTask(AsyncTaskCallback handler){
+        this.handler = handler;
     }
 
     @Override
     protected void onPostExecute(Map<String,String> user) {
-        boolean isAuthenticated = Boolean.parseBoolean(user.get(IS_AUTHENTICATED));
-        if (isAuthenticated){
-            MainActivity.storePreference(USER_ID, user.get(USER_ID));
-            MainActivity.storePreference(USER_NAME, user.get(USER_NAME));
-            MainActivity.storePreference(USER_EMAIL, user.get(USER_EMAIL));
-            MainActivity.storePreference(AUTH_TOKEN, user.get(AUTH_TOKEN));
-            MainActivity.storePreference(IS_AUTHENTICATED, true);
-
-            MainActivity.replaceScreen(MainActivity.Screens.MODE_SELECTION, true);
-        }else{
-            MainActivity.destroyUserSession();
-            Toast.makeText(context, "Account Credentials Invalid.", Toast.LENGTH_LONG).show();
-        }
+        handler.callback(user);
     }
 
     @Override

@@ -9,13 +9,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.SignInButton;
 import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.seniordesign.kwyjibo.asynctasks.LoginTask;
+import com.seniordesign.kwyjibo.interfaces.AsyncTaskCallback;
+import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 
-public class LoginFragment extends Fragment {
+import java.util.HashMap;
+import java.util.Map;
+
+public class LoginFragment extends Fragment implements HasSessionInfo{
 
     private EditText usernameEditText;
     private EditText passwordEditText;
@@ -35,7 +41,26 @@ public class LoginFragment extends Fragment {
                 String username = usernameEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
 
-                new LoginTask(getActivity()).execute(username, password);
+                new LoginTask(new AsyncTaskCallback() {
+                    @Override
+                    public void callback(Object obj) {
+                        Map<String,String> user = (HashMap<String,String>)obj;
+                        boolean isAuthenticated = Boolean.parseBoolean(user.get(IS_AUTHENTICATED));
+                        if (isAuthenticated){
+                            MainActivity.storePreference(USER_ID, user.get(USER_ID));
+                            MainActivity.storePreference(USER_NAME, user.get(USER_NAME));
+                            MainActivity.storePreference(USER_EMAIL, user.get(USER_EMAIL));
+                            MainActivity.storePreference(AUTH_TOKEN, user.get(AUTH_TOKEN));
+                            MainActivity.storePreference(IS_AUTHENTICATED, true);
+
+                            MainActivity.replaceScreen(MainActivity.Screens.MODE_SELECTION, true);
+                        }else{
+                            MainActivity.destroyUserSession();
+                            Toast.makeText(getActivity(), "Account Credentials Invalid.", Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+                }).execute(username, password);
             }
         });
 

@@ -1,21 +1,25 @@
 package com.seniordesign.kwyjibo.fragments.login_signup;
 
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.SignInButton;
 import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.seniordesign.kwyjibo.asynctasks.SignupTask;
+import com.seniordesign.kwyjibo.interfaces.AsyncTaskCallback;
+import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 
-public class SignupFragment extends Fragment {
+import java.util.HashMap;
+import java.util.Map;
+
+public class SignupFragment extends Fragment implements HasSessionInfo{
 
     private static final String TAG = "SignupFragment";
 
@@ -38,7 +42,26 @@ public class SignupFragment extends Fragment {
                         String username = usernameEditText.getText().toString();
                         String email = emailEditText.getText().toString();
                         String password = passwordEditText.getText().toString();
-                        new SignupTask(getActivity()).execute(username, email, password);
+                        new SignupTask(new AsyncTaskCallback() {
+                            @Override
+                            public void callback(Object obj) {
+                                Map<String,String> user = (HashMap<String,String>)obj;
+                                boolean creationSuccessful = Boolean.parseBoolean(user.get(IS_AUTHENTICATED));
+                                if (creationSuccessful){
+                                    MainActivity.storePreference(USER_ID, user.get(USER_ID));
+                                    MainActivity.storePreference(USER_NAME, user.get(USER_NAME));
+                                    MainActivity.storePreference(USER_EMAIL, user.get(USER_EMAIL));
+                                    MainActivity.storePreference(AUTH_TOKEN, user.get(AUTH_TOKEN));
+                                    MainActivity.storePreference(IS_AUTHENTICATED, true);
+
+                                    MainActivity.replaceScreen(MainActivity.Screens.MODE_SELECTION, true);
+                                    Toast.makeText(getActivity(), "Success", Toast.LENGTH_LONG).show();
+                                } else{
+                                    MainActivity.destroyUserSession();
+                                    Toast.makeText(getActivity(), "Unsuccessful", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        }).execute(username, email, password);
                     }
                 }
         );

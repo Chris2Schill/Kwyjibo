@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.seniordesign.kwyjibo.activities.MainActivity;
+import com.seniordesign.kwyjibo.interfaces.AsyncTaskCallback;
 import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
 
 import org.json.JSONException;
@@ -26,30 +27,17 @@ import java.util.Map;
 public class SignupTask extends AsyncTask<String, Void, Map<String,String>>
         implements HasSessionInfo {
 
-    private Context context;
+    private AsyncTaskCallback handler;
 
     private static final String TAG = "SignupTask";
 
-    public SignupTask(Context c) {
-        context = c;
+    public SignupTask(AsyncTaskCallback handler) {
+        this.handler = handler;
     }
 
     @Override
     protected void onPostExecute(Map<String,String> user) {
-        boolean creationSuccessful = Boolean.parseBoolean(user.get(IS_AUTHENTICATED));
-        if (creationSuccessful){
-            MainActivity.storePreference(USER_ID, user.get(USER_ID));
-            MainActivity.storePreference(USER_NAME, user.get(USER_NAME));
-            MainActivity.storePreference(USER_EMAIL, user.get(USER_EMAIL));
-            MainActivity.storePreference(AUTH_TOKEN, user.get(AUTH_TOKEN));
-            MainActivity.storePreference(IS_AUTHENTICATED, true);
-
-            MainActivity.replaceScreen(MainActivity.Screens.MODE_SELECTION, true);
-            Toast.makeText(context, "Success", Toast.LENGTH_LONG).show();
-        } else{
-            MainActivity.destroyUserSession();
-            Toast.makeText(context, "Unsuccessful", Toast.LENGTH_LONG).show();
-        }
+        handler.callback(user);
     }
 
     @Override

@@ -126,16 +126,4 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
             }
         }).execute();
     }
-
-    protected Fragment getCurrentBackStackFragment(){
-        return (Fragment)getActivity().getSupportFragmentManager()
-                .getBackStackEntryAt(getActivity().getSupportFragmentManager()
-                        .getBackStackEntryCount());
-    }
-
-    protected int getFragmentCount() {
-        return getActivity().getSupportFragmentManager().getBackStackEntryCount();
-    }
-
-
 }

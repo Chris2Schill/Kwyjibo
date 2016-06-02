@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements HasSessionInfo {
         fragments.put(Screens.CREATE_STATION, new CreateStationFragment());
         fragments.put(Screens.CURRENT_STATION, new StationFragment());
 
-
         if (findViewById(R.id.main_activity_fragment_container) != null){
             if (savedInstanceState != null){
                 return;

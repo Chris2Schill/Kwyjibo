@@ -1,6 +1,5 @@
 package com.seniordesign.kwyjibo.fragments;
 
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -10,18 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.seniordesign.kwyjibo.asynctasks.CreateStationTask;
+import com.seniordesign.kwyjibo.interfaces.AsyncTaskCallback;
 import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 public class CreateStationFragment extends Fragment implements HasSessionInfo{
@@ -72,8 +70,12 @@ public class CreateStationFragment extends Fragment implements HasSessionInfo{
                             .getString(USER_ID, "");
                     String genre = genres.get(index);
 
-                    new CreateStationTask(getContext())
-                            .execute(newStationName, createdBy, genre, authToken, userId);
+                    new CreateStationTask(new AsyncTaskCallback() {
+                        @Override
+                        public void callback(Object obj) {
+                            Toast.makeText(getActivity(), "Station Added", Toast.LENGTH_LONG).show();
+                        }
+                    }).execute(newStationName, createdBy, genre, authToken, userId);
 
                     MainActivity.replaceScreen(MainActivity.Screens.STATION_SELECTION, false);
 

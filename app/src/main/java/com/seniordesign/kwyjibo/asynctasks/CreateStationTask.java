@@ -1,10 +1,10 @@
 package com.seniordesign.kwyjibo.asynctasks;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
+
+import com.seniordesign.kwyjibo.interfaces.AsyncTaskCallback;
 
 import org.json.JSONException;
 
@@ -20,16 +20,17 @@ import java.util.Map;
 
 public class CreateStationTask extends AsyncTask<String, Void, String> {
 
-    private Context context;
     private static final String TAG = "CreateStationTask";
 
-    public CreateStationTask(Context c){
-        context = c;
+    private AsyncTaskCallback handler;
+
+    public CreateStationTask(AsyncTaskCallback handler){
+        this.handler = handler;
     }
 
     @Override
     protected void onPostExecute(String s) {
-        Toast.makeText(context, "Station Added", Toast.LENGTH_LONG).show();
+        handler.callback(s);
     }
 
     @Override
