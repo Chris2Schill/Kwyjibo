@@ -5,8 +5,11 @@ import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.QuickContactBadge;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.seniordesign.kwyjibo.kwyjibo.R;
 import com.seniordesign.kwyjibo.beans.SoundClipInfo;
@@ -64,6 +67,14 @@ public class SoundClipInfoAdapter extends ArrayAdapter<SoundClipInfo> {
                 location.setText(clip.getLocation());
             }
         }
+
+        convertView.findViewById(R.id.sound_clip_list_item_playsoundclip_button)
+                .setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getContext(), "Play button not implemented yet!", Toast.LENGTH_LONG).show();
+                    }
+                });
         return convertView;
     }
 }

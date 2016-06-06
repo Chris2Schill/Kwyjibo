@@ -13,7 +13,9 @@ import android.widget.TextView;
 import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 
+
 public class IntroTitleFragment extends Fragment {
+
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.intro_title_fragment, container, false);

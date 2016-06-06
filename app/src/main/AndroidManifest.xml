@@ -24,6 +24,9 @@
             android:name="com.seniordesign.kwyjibo.activities.SettingsActivity"
             android:label="@string/action_settings">
         </activity>
+        <service
+            android:name="com.seniordesign.kwyjibo.services.ObserverService">
+        </service>
     </application>
 
 </manifest>

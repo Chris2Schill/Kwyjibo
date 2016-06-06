@@ -3,6 +3,7 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="horizontal"
+    android:background="@color/darkGray"
     android:minHeight="50dp"
     android:weightSum="6"
     xmlns:android="http://schemas.android.com/apk/res/android">
@@ -32,8 +33,7 @@
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="2 "
-        android:gravity="center_horizontal">
+        android:layout_weight="2 ">
 
         <TextView
             android:layout_width="wrap_content"
@@ -41,10 +41,12 @@
             android:id="@+id/studio_mode_list_item_contributors_name_textview"
             android:textSize="12sp"
             android:text="name"
-            android:layout_alignParentTop="true"
             android:textColor="@color/lightestGray"
-            android:layout_gravity="top"
-            android:layout_centerHorizontal="true" />
+            android:layout_gravity="top|end"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:paddingTop="10dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -52,10 +54,11 @@
             android:id="@+id/studio_mode_list_item_location_textview"
             android:textSize="12sp"
             android:text="location"
-            android:layout_alignParentBottom="true"
             android:textColor="@color/lightestGray"
-            android:layout_alignBottom="@+id/studio_mode_list_item_contributors_name_textview"
-            android:layout_centerHorizontal="true" />
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:paddingBottom="10dp" />
 
     </RelativeLayout>
 
@@ -70,7 +73,7 @@
             android:layout_width="36dp"
             android:contentDescription="Play sound button"
             android:layout_height="36dp"
-            android:id="@+id/play_sound_clip_button"
+            android:id="@+id/sound_clip_list_item_playsoundclip_button"
             android:src="@drawable/arrow_right_drop_circle_outline"
             android:layout_gravity="center" />
 

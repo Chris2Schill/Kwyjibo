@@ -1,7 +1,6 @@
 package com.seniordesign.kwyjibo.fragments.radiomode;
 
 
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -15,12 +14,13 @@ import android.widget.ListView;
 import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.seniordesign.kwyjibo.adapters.StationSelectListAdapter;
 import com.seniordesign.kwyjibo.asynctasks.GetAllStationsTask;
+import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
 import com.seniordesign.kwyjibo.interfaces.ListViewHandler;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 
 import java.util.ArrayList;
 
-public class StationSelectionFragment extends Fragment {
+public class StationSelectionFragment extends Fragment implements HasSessionInfo {
 
     private StationSelectListAdapter<String> listAdapter;
 
@@ -47,7 +47,7 @@ public class StationSelectionFragment extends Fragment {
     }
 
     private void enableStationListView(View v){
-        listAdapter = new StationSelectListAdapter<>(getActivity(), R.layout.radio_mode_list_item,
+        listAdapter = new StationSelectListAdapter<>(getActivity(), R.layout.station_selection_list_item,
                 new ArrayList<String>());
 
         ListView stationsListView = (ListView) v.findViewById(R.id.radio_mode_list_view);
@@ -56,7 +56,7 @@ public class StationSelectionFragment extends Fragment {
         stationsListView.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                MainActivity.storePreference("currentStation", listAdapter.getItem(position));
+                MainActivity.storePreference(CURRENT_STATION, listAdapter.getItem(position));
                 MainActivity.replaceScreen(MainActivity.Screens.CURRENT_STATION, true);
             }
         });
@@ -67,12 +67,7 @@ public class StationSelectionFragment extends Fragment {
         createStationButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager()
-                        .beginTransaction();
-                transaction.replace(R.id.main_activity_fragment_container,
-                        MainActivity.getFragment(MainActivity.Screens.CREATE_STATION));
-                transaction.addToBackStack(null);
-                transaction.commit();
+                MainActivity.replaceScreen(MainActivity.Screens.CREATE_STATION, true);
             }
         });
     }

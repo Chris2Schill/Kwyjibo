@@ -6,4 +6,5 @@ public interface HasSessionInfo {
     String USER_EMAIL = "Email";
     String AUTH_TOKEN = "AuthToken";
     String IS_AUTHENTICATED = "Authenticated";
+    String CURRENT_STATION = "CurrentStation";
 }

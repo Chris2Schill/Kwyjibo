@@ -2,10 +2,7 @@ package com.seniordesign.kwyjibo.fragments.recordmode;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,13 +11,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
-import android.widget.Toast;
 
 import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.seniordesign.kwyjibo.asynctasks.GetCategoriesTask;
 import com.seniordesign.kwyjibo.asynctasks.UploadSoundClipTask;
-import com.seniordesign.kwyjibo.beans.SoundClipInfo;
 import com.seniordesign.kwyjibo.drawables.Triangle;
 import com.seniordesign.kwyjibo.interfaces.AsyncTaskCallback;
 import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
@@ -28,7 +22,6 @@ import com.seniordesign.kwyjibo.kwyjibo.R;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
     private Triangle playbackButton;
@@ -96,7 +89,6 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
                 new UploadSoundClipTask(new AsyncTaskCallback() {
                     @Override
                     public void callback(Object obj) {
-                        SoundClipInfo clipInfo = (SoundClipInfo) obj;
                         if (obj != null) {
                             getActivity().getSupportFragmentManager().popBackStack();
                             MainActivity.replaceScreen(MainActivity.Screens.CURRENT_STATION, false);
@@ -110,7 +102,7 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
     private void updateSpinner(View rootView){
         spinner = (Spinner)rootView.findViewById(R.id.review_recording_category_spinner);
         spinnerAdapter = new ArrayAdapter<>(getActivity(),
-                R.layout.radio_mode_list_item, new ArrayList<String>());
+                R.layout.station_selection_list_item, new ArrayList<String>());
         spinner.setAdapter(spinnerAdapter);
 
         new GetCategoriesTask(new AsyncTaskCallback(){

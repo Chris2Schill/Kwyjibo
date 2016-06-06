@@ -9,21 +9,30 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.seniordesign.kwyjibo.adapters.SoundClipInfoAdapter;
 import com.seniordesign.kwyjibo.asynctasks.GetStationSoundClips;
 import com.seniordesign.kwyjibo.beans.SoundClipInfo;
+import com.seniordesign.kwyjibo.events.PauseObserverService;
+import com.seniordesign.kwyjibo.events.SoundClipsDataSetChanged;
+import com.seniordesign.kwyjibo.events.UnpauseObserverService;
+import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
 import com.seniordesign.kwyjibo.interfaces.ListViewHandler;
 import com.seniordesign.kwyjibo.kwyjibo.R;
+import com.seniordesign.kwyjibo.services.ObserverService;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
-public class StationFragment extends Fragment{
+public class StationFragment extends Fragment implements HasSessionInfo{
 
     private SoundClipInfoAdapter listAdapter;
     private ListView clipListView;
@@ -40,15 +49,33 @@ public class StationFragment extends Fragment{
 
         initCurrentSoundsListView(rootView);
 
-        populateCurrentSoundsList();
+        //populateCurrentSoundsList();
+        EventBus.getDefault().post(new UnpauseObserverService());
         MainActivity.applyLayoutDesign(rootView);
 
         return rootView;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        EventBus.getDefault().post(new PauseObserverService());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(Object event){
+        if (event instanceof SoundClipsDataSetChanged){
+            listAdapter.clear();
+            SoundClipInfo[] clips = ((SoundClipsDataSetChanged)event).newClips;
+            for (SoundClipInfo clip : clips){
+                listAdapter.add(clip);
+                listAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
     private void initButtons(View rootView){
-        addSoundButton = (Button)rootView.findViewById(R.id.add_sound_to_station_button);
-        addSoundButton.setOnClickListener(new View.OnClickListener() {
+        rootView.findViewById(R.id.add_sound_to_station_button) .setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(v.getContext());
@@ -63,7 +90,7 @@ public class StationFragment extends Fragment{
 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                MainActivity.replaceScreen(MainActivity.Screens.RECORD_MODE, true, "currentStation");
+                                MainActivity.replaceScreen(MainActivity.Screens.RECORD_MODE, true);
                             }
                         })
                         .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
@@ -84,6 +111,25 @@ public class StationFragment extends Fragment{
 
         clipListView = (ListView)rootView.findViewById(R.id.station_fragment_current_sounds_listview);
         clipListView.setAdapter(listAdapter);
+        clipListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                new AlertDialog.Builder(getActivity())
+                        .setMessage("Sound Clip")
+                        .setPositiveButton("Ok!", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                            }
+                        }).create().show();
+                return true;
+            }
+        });
     }
 
     private void populateCurrentSoundsList(){
@@ -91,7 +137,7 @@ public class StationFragment extends Fragment{
             @Override
             public void updateListView(Object[] items){
                 if (items != null) {
-                    listAdapter.clear();
+                    //listAdapter.clear();
                     for (Object clip : items) {
                         Log.d(TAG, clip.toString());
                         listAdapter.add((SoundClipInfo) clip);
