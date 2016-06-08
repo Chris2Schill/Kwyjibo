@@ -2,6 +2,7 @@ package com.seniordesign.kwyjibo.fragments.login_signup;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,14 +11,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.SignInButton;
+import com.seniordesign.kwyjibo.restapi.RestAPI;
 import com.seniordesign.kwyjibo.activities.MainActivity;
-import com.seniordesign.kwyjibo.asynctasks.SignupTask;
-import com.seniordesign.kwyjibo.interfaces.AsyncTaskCallback;
+import com.seniordesign.kwyjibo.beans.SessionInfo;
 import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SignupFragment extends Fragment implements HasSessionInfo{
 
@@ -42,26 +47,33 @@ public class SignupFragment extends Fragment implements HasSessionInfo{
                         String username = usernameEditText.getText().toString();
                         String email = emailEditText.getText().toString();
                         String password = passwordEditText.getText().toString();
-                        new SignupTask(new AsyncTaskCallback() {
+
+                        RestAPI.requestSignup(username, email, password, new Callback<SessionInfo>() {
                             @Override
-                            public void callback(Object obj) {
-                                Map<String,String> user = (HashMap<String,String>)obj;
-                                boolean creationSuccessful = Boolean.parseBoolean(user.get(IS_AUTHENTICATED));
-                                if (creationSuccessful){
-                                    MainActivity.storePreference(USER_ID, user.get(USER_ID));
-                                    MainActivity.storePreference(USER_NAME, user.get(USER_NAME));
-                                    MainActivity.storePreference(USER_EMAIL, user.get(USER_EMAIL));
-                                    MainActivity.storePreference(AUTH_TOKEN, user.get(AUTH_TOKEN));
+                            public void onResponse(Call<SessionInfo> call, Response<SessionInfo> response) {
+                                Log.e(TAG,response.body().toString());
+                                boolean creationSuccessful = response.body().IS_AUTHENTICATED;
+                                if (creationSuccessful) {
+                                    MainActivity.storePreference(USER_ID, response.body().USER_ID);
+                                    MainActivity.storePreference(USER_NAME, response.body().USER_NAME);
+                                    MainActivity.storePreference(USER_EMAIL, response.body().USER_EMAIL);
+                                    MainActivity.storePreference(AUTH_TOKEN, response.body().AUTH_TOKEN);
                                     MainActivity.storePreference(IS_AUTHENTICATED, true);
 
                                     MainActivity.replaceScreen(MainActivity.Screens.MODE_SELECTION, true);
                                     Toast.makeText(getActivity(), "Success", Toast.LENGTH_LONG).show();
-                                } else{
+                                } else {
                                     MainActivity.destroyUserSession();
-                                    Toast.makeText(getActivity(), "Unsuccessful", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity(), "Denied", Toast.LENGTH_LONG).show();
                                 }
                             }
-                        }).execute(username, email, password);
+
+                            @Override
+                            public void onFailure(Call<SessionInfo> call, Throwable t) {
+                                MainActivity.destroyUserSession();
+                                Toast.makeText(getActivity(), "Unsuccessful", Toast.LENGTH_LONG).show();
+                            }
+                        });
                     }
                 }
         );
@@ -73,7 +85,7 @@ public class SignupFragment extends Fragment implements HasSessionInfo{
     }
 
     private void initGoogleSignInButton(View v) {
-        // This finds and centers the 'Sign in' textview on the button.
+        // This finds and centers the 'Sign in with Google' textview on the button.
         SignInButton signInButton = (SignInButton)v.findViewById(R.id.signup_fragment_google_signin_button);
         for (int i = 0; i < signInButton.getChildCount(); i++) {
             View child = signInButton.getChildAt(i);

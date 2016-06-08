@@ -1,6 +1,5 @@
 package com.seniordesign.kwyjibo.fragments.login_signup;
 
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,14 +11,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.SignInButton;
+import com.seniordesign.kwyjibo.restapi.RestAPI;
 import com.seniordesign.kwyjibo.activities.MainActivity;
-import com.seniordesign.kwyjibo.asynctasks.LoginTask;
-import com.seniordesign.kwyjibo.interfaces.AsyncTaskCallback;
+import com.seniordesign.kwyjibo.beans.SessionInfo;
 import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 
-import java.util.HashMap;
-import java.util.Map;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginFragment extends Fragment implements HasSessionInfo{
 
@@ -41,26 +41,29 @@ public class LoginFragment extends Fragment implements HasSessionInfo{
                 String username = usernameEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
 
-                new LoginTask(new AsyncTaskCallback() {
+                RestAPI.requestLogin(username, password, new Callback<SessionInfo>() {
                     @Override
-                    public void callback(Object obj) {
-                        Map<String,String> user = (HashMap<String,String>)obj;
-                        boolean isAuthenticated = Boolean.parseBoolean(user.get(IS_AUTHENTICATED));
-                        if (isAuthenticated){
-                            MainActivity.storePreference(USER_ID, user.get(USER_ID));
-                            MainActivity.storePreference(USER_NAME, user.get(USER_NAME));
-                            MainActivity.storePreference(USER_EMAIL, user.get(USER_EMAIL));
-                            MainActivity.storePreference(AUTH_TOKEN, user.get(AUTH_TOKEN));
+                    public void onResponse(Call<SessionInfo> call, Response<SessionInfo> response) {
+                        if (response.body().IS_AUTHENTICATED) {
+                            MainActivity.storePreference(USER_ID, response.body().USER_ID);
+                            MainActivity.storePreference(USER_NAME, response.body().USER_NAME);
+                            MainActivity.storePreference(USER_EMAIL, response.body().USER_EMAIL);
+                            MainActivity.storePreference(AUTH_TOKEN, response.body().AUTH_TOKEN);
                             MainActivity.storePreference(IS_AUTHENTICATED, true);
 
                             MainActivity.replaceScreen(MainActivity.Screens.MODE_SELECTION, true);
-                        }else{
+                        } else {
                             MainActivity.destroyUserSession();
                             Toast.makeText(getActivity(), "Account Credentials Invalid.", Toast.LENGTH_LONG).show();
                         }
-
                     }
-                }).execute(username, password);
+
+                    @Override
+                    public void onFailure(Call<SessionInfo> call, Throwable t) {
+                        MainActivity.destroyUserSession();
+                        Toast.makeText(getActivity(), "Login failed to complete", Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
 

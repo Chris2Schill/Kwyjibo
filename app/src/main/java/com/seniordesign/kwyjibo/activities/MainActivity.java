@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import com.seniordesign.kwyjibo.asynctasks.AuthenticationTask;
+import com.seniordesign.kwyjibo.restapi.RestAPI;
 import com.seniordesign.kwyjibo.fragments.CreateStationFragment;
 import com.seniordesign.kwyjibo.fragments.ModeSelectionFragment;
 import com.seniordesign.kwyjibo.fragments.login_signup.IntroTitleFragment;
@@ -15,7 +15,6 @@ import com.seniordesign.kwyjibo.fragments.login_signup.LoginFragment;
 import com.seniordesign.kwyjibo.fragments.login_signup.SignupFragment;
 import com.seniordesign.kwyjibo.fragments.radiomode.StationFragment;
 import com.seniordesign.kwyjibo.fragments.radiomode.StationSelectionFragment;
-import com.seniordesign.kwyjibo.interfaces.AuthenticationHandler;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 import com.seniordesign.kwyjibo.fragments.recordmode.RecordModeFragment;
 import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
@@ -25,6 +24,10 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
 
@@ -68,19 +71,29 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
     @Override
     protected void onResume() {
         super.onResume();
-        new AuthenticationTask(new AuthenticationHandler() {
-            @Override
-            public void isAuthenticated(boolean authenticated) {
-                if (authenticated){
-                    replaceScreen(Screens.MODE_SELECTION, false);
-                    Log.d(TAG, "AUTHENTICATION SUCCESSFUL.");
-                }else{
-                    destroyUserSession();
-                    replaceScreen(Screens.INTRO_TITLE, false);
-                    Log.d(TAG, "AUTHENTICATION FAILED.");
-                }
-            }
-        }).execute(getStringPreference(USER_ID), getStringPreference(AUTH_TOKEN));
+
+        RestAPI.authenticateSession(getStringPreference(USER_ID), getStringPreference(AUTH_TOKEN),
+                new Callback<Boolean>() {
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                        boolean authenticated = response.body();
+                        if (authenticated) {
+                            replaceScreen(Screens.MODE_SELECTION, false);
+                            Log.d(TAG, "AUTHENTICATION SUCCESSFUL.");
+                        } else {
+                            destroyUserSession();
+                            replaceScreen(Screens.INTRO_TITLE, false);
+                            Log.d(TAG, "AUTHENTICATION DENIED.");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Boolean> call, Throwable t) {
+                        destroyUserSession();
+                        replaceScreen(Screens.INTRO_TITLE, false);
+                        Log.d(TAG, "Authentication Request Failed.");
+                    }
+                });
     }
 
     @Override
@@ -96,15 +109,6 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
         transaction.replace(R.id.main_activity_fragment_container, getFragment(screen));
         if (addToBackStack){
             transaction.addToBackStack(null);
-        }
-        transaction.commit();
-    }
-    public static void replaceScreen(Screens screen, boolean addToBackStack, String tag){
-        FragmentTransaction transaction = ((MainActivity)context).getSupportFragmentManager()
-                .beginTransaction();
-        transaction.replace(R.id.main_activity_fragment_container, getFragment(screen));
-        if (addToBackStack){
-            transaction.addToBackStack(tag);
         }
         transaction.commit();
     }

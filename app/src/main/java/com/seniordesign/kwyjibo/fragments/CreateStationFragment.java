@@ -1,7 +1,6 @@
 package com.seniordesign.kwyjibo.fragments;
 
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,14 +11,18 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.seniordesign.kwyjibo.restapi.RestAPI;
 import com.seniordesign.kwyjibo.activities.MainActivity;
-import com.seniordesign.kwyjibo.asynctasks.CreateStationTask;
-import com.seniordesign.kwyjibo.interfaces.AsyncTaskCallback;
+import com.seniordesign.kwyjibo.beans.RadioStation;
 import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class CreateStationFragment extends Fragment implements HasSessionInfo{
@@ -56,31 +59,34 @@ public class CreateStationFragment extends Fragment implements HasSessionInfo{
         addStationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String newStationName = stationNameEditText.getText().toString();
-                String createdBy = userNameEditText.getText().toString();
-
                 RadioGroup radioGroup = (RadioGroup) getActivity().findViewById(R.id.create_station_radio_group);
                 if (radioGroup != null) {
-                    int index = radioGroup.indexOfChild(
-                            getActivity().findViewById(radioGroup.getCheckedRadioButtonId()));
+                    int genreIndex = radioGroup.indexOfChild(getActivity().
+                            findViewById(radioGroup.getCheckedRadioButtonId()));
 
-                    String authToken = PreferenceManager.getDefaultSharedPreferences(getActivity())
-                            .getString(AUTH_TOKEN, "");
-                    String userId = PreferenceManager.getDefaultSharedPreferences(getActivity())
-                            .getString(USER_ID, "");
-                    String genre = genres.get(index);
+                    RadioStation newStation = new RadioStation();
+                    newStation.Name = stationNameEditText.getText().toString();
+                    newStation.CreatedBy = userNameEditText.getText().toString();
+                    newStation.Genre = genres.get(genreIndex);
+                    String userId = MainActivity.getStringPreference(USER_ID);
+                    String authToken = MainActivity.getStringPreference(AUTH_TOKEN);
 
-                    new CreateStationTask(new AsyncTaskCallback() {
+                    RestAPI.createStation(newStation, userId, authToken, new Callback<Boolean>() {
                         @Override
-                        public void callback(Object obj) {
+                        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                             Toast.makeText(getActivity(), "Station Added", Toast.LENGTH_LONG).show();
+                            MainActivity.replaceScreen(MainActivity.Screens.STATION_SELECTION, false);
                         }
-                    }).execute(newStationName, createdBy, genre, authToken, userId);
 
-                    MainActivity.replaceScreen(MainActivity.Screens.STATION_SELECTION, false);
+                        @Override
+                        public void onFailure(Call<Boolean> call, Throwable t) {
+                            Toast.makeText(getActivity(), "Station Not Added", Toast.LENGTH_LONG).show();
+                            Log.e(TAG,t.getMessage());
 
+                        }
+                    });
                 } else {
-                    Log.e(TAG, "Reference to RadioGroup create_station_radio_group is null");
+                    Log.e(TAG, "Reference to RadioGroup create_station_radio_group is null.");
                 }
             }
         });

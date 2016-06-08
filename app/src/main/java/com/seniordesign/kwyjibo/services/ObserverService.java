@@ -2,11 +2,10 @@ package com.seniordesign.kwyjibo.services;
 
 import android.app.Service;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.seniordesign.kwyjibo.restapi.RestAPI;
 import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.seniordesign.kwyjibo.beans.SoundClipInfo;
 import com.seniordesign.kwyjibo.events.PauseObserverService;
@@ -17,18 +16,12 @@ import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ObserverService extends Service implements HasSessionInfo {
 
@@ -36,7 +29,7 @@ public class ObserverService extends Service implements HasSessionInfo {
     private boolean paused = true; // temporarily pause
     private boolean stopped = false; // exit loop to call stopStop()
 
-    public static SoundClipInfo[] currentStationSoundClips;
+    public static SoundClipInfo[] currentStationSoundClips = new SoundClipInfo[0];
     public static String[] stationsList;
 
     @Override
@@ -49,14 +42,24 @@ public class ObserverService extends Service implements HasSessionInfo {
                 try{
                     while (!stopped){
                         if(!paused){
-                            Log.d(TAG, "onStartCommand()");
-                            SoundClipInfo[] clips = getCurrentStationSoundClips();
-                            if (dataSetChanged(currentStationSoundClips, clips)){
-                                EventBus.getDefault().post(new SoundClipsDataSetChanged(clips));
-                            }
-                            currentStationSoundClips = clips;
-                            Thread.sleep(1000);
+                            RestAPI.getStationSoundClips(MainActivity.getStringPreference(CURRENT_STATION),
+                                    new Callback<List<SoundClipInfo>>() {
+                                        @Override
+                                        public void onResponse(Call<List<SoundClipInfo>> call, Response<List<SoundClipInfo>> response) {
+                                            SoundClipInfo[] clips = response.body().toArray(new SoundClipInfo[response.body().size()]);
+                                            if (dataSetChanged(currentStationSoundClips, clips)) {
+                                                EventBus.getDefault().post(new SoundClipsDataSetChanged(clips));
+                                                currentStationSoundClips = clips;
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<List<SoundClipInfo>> call, Throwable t) {
+
+                                        }
+                                    });
                         }
+                        Thread.sleep(1000);
                     }
                 }catch(Exception e){
                     Log.e(TAG, e.getMessage());
@@ -84,91 +87,16 @@ public class ObserverService extends Service implements HasSessionInfo {
         return null;
     }
 
-    private SoundClipInfo[] getCurrentStationSoundClips() {
-        String baseURL = "http://motw.tech/api/GetStationSoundClips.aspx";
-        Uri builtUri = Uri.parse(baseURL).buildUpon()
-                .appendQueryParameter("stationName",
-                        MainActivity.getStringPreference(CURRENT_STATION))
-                .build();
-        HttpURLConnection urlConnection = null;
-        BufferedReader reader = null;
-        String jsonResponse = null;
-
-        try {
-            URL url = new URL(builtUri.toString());
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
-
-            InputStream inputStream = urlConnection.getInputStream();
-            StringBuilder sb = new StringBuilder();
-            if (inputStream == null) {
-                return null;
-            }
-            reader = new BufferedReader(new InputStreamReader(inputStream));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line).append("\n");
-            }
-            if (sb.length() == 0) {
-                return null;
-            }
-            jsonResponse = sb.toString();
-
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (final IOException e) {
-                    Log.e(TAG, e.getMessage());
-                }
-            }
-        }
-
-        try {
-            Log.v(TAG, "jsonResponse: " + jsonResponse);
-            return getSoundDataFromJson(jsonResponse);
-        } catch (JSONException e) {
-            Log.e(TAG, e.getMessage());
-        }
-        return null;
-    }
-
-    private SoundClipInfo[] getSoundDataFromJson(String jsonStr) throws JSONException {
-
-        JSONArray itemsArray = new JSONArray(jsonStr);
-
-        SoundClipInfo[] clips = new SoundClipInfo[itemsArray.length()];
-        for (int i = 0; i < itemsArray.length(); i++) {
-            JSONObject itemObj = (JSONObject) itemsArray.get(i);
-            int id = itemObj.getInt("Id");
-            String name = itemObj.getString("Name");
-            String createdBy = itemObj.getString("CreatedBy");
-            String location = itemObj.getString("Location");
-            String category = itemObj.getString("Category");
-            String filepath = itemObj.getString("Filepath");
-            String uploadDate = itemObj.getString("UploadDate");
-            clips[i] = new SoundClipInfo(id, name, createdBy, location, category, filepath, uploadDate);
-        }
-
-        return clips;
-    }
-
     private boolean dataSetChanged(SoundClipInfo[] clips1, SoundClipInfo[] clips2){
         if (clips1 == null || clips2 == null){
             Log.e(TAG, "A SoundClipInfo[] source passed in to dataSetChanged() was null");
             return false;
         }
         if (clips1.length != clips2.length){
-            return false;
+            return true;
         }
         for (int i = 0; i < clips1.length && i < clips2.length; i++){
-            if (clips1[i].getId() != clips2[i].getId()){
+            if (clips1[i].Id != clips2[i].Id){
                 return false;
             }
         }

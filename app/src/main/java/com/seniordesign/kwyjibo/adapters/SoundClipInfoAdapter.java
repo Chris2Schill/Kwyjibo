@@ -52,19 +52,19 @@ public class SoundClipInfoAdapter extends ArrayAdapter<SoundClipInfo> {
                 if (font != null){
                     soundName.setTypeface(font);
                 }
-                soundName.setText(clip.getName());
+                soundName.setText(clip.Name);
             }
             if (contributor != null){
                 if (font != null){
                     contributor.setTypeface(font);
                 }
-                contributor.setText(clip.getCreatedBy());
+                contributor.setText(clip.CreatedBy);
             }
             if (location != null){
                 if (font != null){
                     location.setTypeface(font);
                 }
-                location.setText(clip.getLocation());
+                location.setText(clip.Location);
             }
         }
 

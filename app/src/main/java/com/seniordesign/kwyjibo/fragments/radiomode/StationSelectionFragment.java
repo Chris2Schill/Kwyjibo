@@ -3,7 +3,6 @@ package com.seniordesign.kwyjibo.fragments.radiomode;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +10,19 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.seniordesign.kwyjibo.restapi.RestAPI;
 import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.seniordesign.kwyjibo.adapters.StationSelectListAdapter;
-import com.seniordesign.kwyjibo.asynctasks.GetAllStationsTask;
+import com.seniordesign.kwyjibo.beans.RadioStation;
 import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
-import com.seniordesign.kwyjibo.interfaces.ListViewHandler;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class StationSelectionFragment extends Fragment implements HasSessionInfo {
 
@@ -31,20 +35,26 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
         View rootView = inflater.inflate(R.layout.station_selection_fragment, container, false);
         enableStationListView(rootView);
         enableCreateStationButton(rootView);
-        new GetAllStationsTask(new ListViewHandler(){
+
+        RestAPI.getStations(new Callback<List<RadioStation>>() {
             @Override
-            public void updateListView(Object[] stations){
-                if (stations != null){
-                    listAdapter.clear();
-                    for (Object s : stations){
-                        listAdapter.add((String)s);
-                    }
+            public void onResponse(Call<List<RadioStation>> call, Response<List<RadioStation>> response) {
+                listAdapter.clear();
+                for (RadioStation station : response.body()){
+                    listAdapter.add(station.Name);
                 }
             }
-        }).execute();
+
+            @Override
+            public void onFailure(Call<List<RadioStation>> call, Throwable t) {
+
+            }
+        });
+
         MainActivity.applyLayoutDesign(rootView);
         return rootView;
     }
+
 
     private void enableStationListView(View v){
         listAdapter = new StationSelectListAdapter<>(getActivity(), R.layout.station_selection_list_item,
@@ -52,7 +62,6 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
 
         ListView stationsListView = (ListView) v.findViewById(R.id.radio_mode_list_view);
         stationsListView.setAdapter(listAdapter);
-
         stationsListView.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

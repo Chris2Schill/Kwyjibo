@@ -14,23 +14,26 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.seniordesign.kwyjibo.restapi.RestAPI;
 import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.seniordesign.kwyjibo.adapters.SoundClipInfoAdapter;
-import com.seniordesign.kwyjibo.asynctasks.GetStationSoundClips;
 import com.seniordesign.kwyjibo.beans.SoundClipInfo;
 import com.seniordesign.kwyjibo.events.PauseObserverService;
 import com.seniordesign.kwyjibo.events.SoundClipsDataSetChanged;
 import com.seniordesign.kwyjibo.events.UnpauseObserverService;
 import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
-import com.seniordesign.kwyjibo.interfaces.ListViewHandler;
 import com.seniordesign.kwyjibo.kwyjibo.R;
-import com.seniordesign.kwyjibo.services.ObserverService;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class StationFragment extends Fragment implements HasSessionInfo{
 
@@ -49,7 +52,6 @@ public class StationFragment extends Fragment implements HasSessionInfo{
 
         initCurrentSoundsListView(rootView);
 
-        //populateCurrentSoundsList();
         EventBus.getDefault().post(new UnpauseObserverService());
         MainActivity.applyLayoutDesign(rootView);
 
@@ -75,7 +77,7 @@ public class StationFragment extends Fragment implements HasSessionInfo{
     }
 
     private void initButtons(View rootView){
-        rootView.findViewById(R.id.add_sound_to_station_button) .setOnClickListener(new View.OnClickListener() {
+        rootView.findViewById(R.id.add_sound_to_station_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(v.getContext());
@@ -133,18 +135,22 @@ public class StationFragment extends Fragment implements HasSessionInfo{
     }
 
     private void populateCurrentSoundsList(){
-        new GetStationSoundClips(new ListViewHandler(){
+        RestAPI.getStationSoundClips(CURRENT_STATION, new Callback<List<SoundClipInfo>>() {
             @Override
-            public void updateListView(Object[] items){
-                if (items != null) {
-                    //listAdapter.clear();
-                    for (Object clip : items) {
-                        Log.d(TAG, clip.toString());
-                        listAdapter.add((SoundClipInfo) clip);
-                    }
+            public void onResponse(Call<List<SoundClipInfo>> call, Response<List<SoundClipInfo>> response) {
+                listAdapter.clear();
+                for (SoundClipInfo clip : response.body()) {
+                    Log.d(TAG, clip.toString());
+                    listAdapter.add(clip);
                 }
             }
-        }).execute();
+
+            @Override
+            public void onFailure(Call<List<SoundClipInfo>> call, Throwable t) {
+                Toast.makeText(getContext(), "Sound clips failed to load.", Toast.LENGTH_LONG).show();
+                Log.e(TAG, t.getMessage());
+            }
+        });
     }
 }
 
