@@ -11,6 +11,12 @@ import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+
+/*
+ * This class provides us with a simple interface to the server. The Callback parameter is how
+ * we handle the request after it has completed. onResponse() is the success condition. onFailed()
+ * is the failure condition.
+ */
 public class RestAPI{
 
     public static void requestLogin(String username, String password, Callback<SessionInfo> callback){

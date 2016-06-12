@@ -18,6 +18,10 @@ import android.widget.TextView;
 
 import com.seniordesign.kwyjibo.kwyjibo.R;
 
+/*
+ *  This class is responsible for the applications global context. It wraps the MainActivity
+ *  object while adding static functionality that helps make the code-base easier to read.
+ */
 public class ApplicationWrapper extends AppCompatActivity{
     protected static MainActivity context;
     protected static SharedPreferences.Editor prefsEditor;
@@ -28,6 +32,11 @@ public class ApplicationWrapper extends AppCompatActivity{
         prefsEditor = PreferenceManager.getDefaultSharedPreferences(this).edit();
     }
 
+    /*
+     *  Applies various layout settings to all views within the rootView.
+     *  This sort of acts as a global settings manager for different types of view objects.
+     *  TODO: Support nested ViewGroups
+     */
     public static void applyLayoutDesign(View rootView) {
         Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/ProximaNova-Semibold.otf");
         ViewGroup v = (ViewGroup) rootView;
@@ -54,7 +63,7 @@ public class ApplicationWrapper extends AppCompatActivity{
         }
     }
 
-
+    // Easily store a key-value pair in shared preferences.
     public static <T> void storePreference(String key, T value){
         if (value instanceof String){
             prefsEditor.putString(key, (String) value);
@@ -66,6 +75,7 @@ public class ApplicationWrapper extends AppCompatActivity{
         prefsEditor.apply();
     }
 
+    // This set of functions exist to make retrieving shared preferences easier to read.
     public static String getStringPreference(String key){
         return PreferenceManager.getDefaultSharedPreferences(context).getString(key, "");
     }

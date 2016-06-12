@@ -23,6 +23,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/*
+ * This service is responsible for providing real-time data retrieval from the server.
+ */
 public class ObserverService extends Service implements HasSessionInfo {
 
     private static final String TAG = "ObserverService";
@@ -69,6 +72,8 @@ public class ObserverService extends Service implements HasSessionInfo {
         return START_NOT_STICKY;
     }
 
+    // This function is called when EventBus.post() is called.
+    // It is wrong to call this function yourself.
     @Subscribe
     public void onEvent(Object event){
         if (event instanceof PauseObserverService){
@@ -82,6 +87,8 @@ public class ObserverService extends Service implements HasSessionInfo {
         }
     }
 
+    // This function is required when extending Service.  We are using EventBus instead of
+    // an IBinder to provide communication to/from this service so we simply return null.
     @Override
     public IBinder onBind(Intent intent) {
         return null;

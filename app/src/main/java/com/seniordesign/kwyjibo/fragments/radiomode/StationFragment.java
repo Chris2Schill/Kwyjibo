@@ -49,7 +49,6 @@ public class StationFragment extends Fragment implements HasSessionInfo{
         View rootView = inflater.inflate(R.layout.station_fragment, container, false);
 
         initButtons(rootView);
-
         initCurrentSoundsListView(rootView);
 
         EventBus.getDefault().post(new UnpauseObserverService());
@@ -64,6 +63,8 @@ public class StationFragment extends Fragment implements HasSessionInfo{
         EventBus.getDefault().post(new PauseObserverService());
     }
 
+    // This function is called when an event is posted to the EventBus. It is configured to run
+    // on the main thread to allow UI updates.
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(Object event){
         if (event instanceof SoundClipsDataSetChanged){

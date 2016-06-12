@@ -9,7 +9,10 @@ import android.view.ViewGroup;
 import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 
-
+/*
+ * This class is the screen fragment you will see when the application is started for the first time.
+ * It provides the user with buttons to login or signup.
+ */
 public class IntroTitleFragment extends Fragment {
 
 

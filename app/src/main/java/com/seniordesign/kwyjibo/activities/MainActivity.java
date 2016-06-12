@@ -30,6 +30,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+ /*
+  * This is the central activity class for the entire application. It contains a HashMap of all the
+  * 'Screen' fragments. The screen fragments are different than regular fragments because they
+  * have been designed to take up the entire screen and act as pseudo-activities for the different
+  * screens the user will see when using the app. This class provides static methods which
+  * allow you to switch screens anytime using a single line of code.
+  */
 public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
 
     private static Map<Screens,Fragment> fragments = new HashMap<>();
@@ -143,6 +150,4 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
     public void setCurrentStation(Fragment fragment){
         fragments.put(Screens.CURRENT_STATION, fragment);
     }
-
-
 }
