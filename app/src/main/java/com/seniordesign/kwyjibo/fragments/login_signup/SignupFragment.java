@@ -85,7 +85,7 @@ public class SignupFragment extends Fragment implements HasSessionInfo{
     }
 
     private void initGoogleSignInButton(View v) {
-        // This finds and centers the 'Sign in with Google' textview on the button.
+        // This finds and horizontally centers the 'Sign in with Google' textview on the button.
         SignInButton signInButton = (SignInButton)v.findViewById(R.id.signup_fragment_google_signin_button);
         for (int i = 0; i < signInButton.getChildCount(); i++) {
             View child = signInButton.getChildAt(i);
