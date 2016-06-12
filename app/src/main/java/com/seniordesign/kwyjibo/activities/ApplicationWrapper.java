@@ -1,5 +1,6 @@
 package com.seniordesign.kwyjibo.activities;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -18,13 +19,12 @@ import android.widget.TextView;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 
 public class ApplicationWrapper extends AppCompatActivity{
-    protected static Context context;
+    protected static MainActivity context;
     protected static SharedPreferences.Editor prefsEditor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        context = this;
         prefsEditor = PreferenceManager.getDefaultSharedPreferences(this).edit();
     }
 
@@ -76,4 +76,13 @@ public class ApplicationWrapper extends AppCompatActivity{
         return PreferenceManager.getDefaultSharedPreferences(context).getInt(key, 0);
     }
 
+    protected static boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

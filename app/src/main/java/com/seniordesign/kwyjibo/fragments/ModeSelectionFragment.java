@@ -22,14 +22,14 @@ public class ModeSelectionFragment extends Fragment {
         rootView.findViewById(R.id.record_mode_button).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                MainActivity.replaceScreen(MainActivity.Screens.RECORD_MODE, true);
+                MainActivity.replaceScreen(MainActivity.Screens.RECORD_MODE, "RECORD_MODE");
             }
         });
 
         rootView.findViewById(R.id.radio_mode_button).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                MainActivity.replaceScreen(MainActivity.Screens.STATION_SELECTION, true);
+                MainActivity.replaceScreen(MainActivity.Screens.STATION_SELECTION, "STATION_SELECTION");
             }
         });
 
@@ -37,7 +37,8 @@ public class ModeSelectionFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 MainActivity.destroyUserSession();
-                MainActivity.replaceScreen(MainActivity.Screens.INTRO_TITLE, false);
+                MainActivity.destroyBackStack();
+                MainActivity.replaceScreen(MainActivity.Screens.INTRO_TITLE, null);
             }
         });
 

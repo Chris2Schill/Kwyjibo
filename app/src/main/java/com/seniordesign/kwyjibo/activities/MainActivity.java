@@ -2,6 +2,7 @@ package com.seniordesign.kwyjibo.activities;
 
 
 import android.content.Intent;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -44,6 +45,7 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+        context = this;
 
         fragments.put(Screens.INTRO_TITLE, new IntroTitleFragment());
         fragments.put(Screens.LOGIN, new LoginFragment());
@@ -60,12 +62,13 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
             if (savedInstanceState != null){
                 return;
             }
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.main_activity_fragment_container, getFragment(Screens.INTRO_TITLE))
-                    .commit();
+
+            replaceScreen(Screens.INTRO_TITLE, null);
         }
 
-        startService(new Intent(getBaseContext(), ObserverService.class));
+        if (!isMyServiceRunning(ObserverService.class)){
+            startService(new Intent(getBaseContext(), ObserverService.class));
+        }
     }
 
     @Override
@@ -78,11 +81,12 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
                     public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                         boolean authenticated = response.body();
                         if (authenticated) {
-                            replaceScreen(Screens.MODE_SELECTION, false);
+                            replaceScreen(Screens.MODE_SELECTION, null);
                             Log.d(TAG, "AUTHENTICATION SUCCESSFUL.");
                         } else {
                             destroyUserSession();
-                            replaceScreen(Screens.INTRO_TITLE, false);
+                            destroyBackStack();
+                            replaceScreen(Screens.INTRO_TITLE, "INTRO_TITLE");
                             Log.d(TAG, "AUTHENTICATION DENIED.");
                         }
                     }
@@ -90,7 +94,8 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
                     @Override
                     public void onFailure(Call<Boolean> call, Throwable t) {
                         destroyUserSession();
-                        replaceScreen(Screens.INTRO_TITLE, false);
+                        destroyBackStack();
+                        replaceScreen(Screens.INTRO_TITLE, "INTRO_TITLE");
                         Log.d(TAG, "Authentication Request Failed.");
                     }
                 });
@@ -103,12 +108,21 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
         super.onDestroy();
     }
 
-    public static void replaceScreen(Screens screen, boolean addToBackStack){
-        FragmentTransaction transaction = ((MainActivity)context).getSupportFragmentManager()
+    public static void destroyBackStack(){
+//        context.getSupportFragmentManager().popBackStack("LOGIN", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        FragmentManager fm = context.getSupportFragmentManager();
+        for (int i = 0; i < fm.getBackStackEntryCount(); i++){
+            fm.popBackStack();
+        }
+
+    }
+
+    public static void replaceScreen(Screens screen, String tag){
+        FragmentTransaction transaction = context.getSupportFragmentManager()
                 .beginTransaction();
         transaction.replace(R.id.main_activity_fragment_container, getFragment(screen));
-        if (addToBackStack){
-            transaction.addToBackStack(null);
+        if (tag != null){
+            transaction.addToBackStack(tag);
         }
         transaction.commit();
     }
@@ -129,5 +143,6 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
     public void setCurrentStation(Fragment fragment){
         fragments.put(Screens.CURRENT_STATION, fragment);
     }
+
 
 }

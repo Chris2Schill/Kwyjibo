@@ -75,7 +75,7 @@ public class CreateStationFragment extends Fragment implements HasSessionInfo{
                         @Override
                         public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                             Toast.makeText(getActivity(), "Station Added", Toast.LENGTH_LONG).show();
-                            MainActivity.replaceScreen(MainActivity.Screens.STATION_SELECTION, false);
+                            MainActivity.replaceScreen(MainActivity.Screens.STATION_SELECTION, "STATION_SELECTION");
                         }
 
                         @Override

@@ -2,7 +2,9 @@ package com.seniordesign.kwyjibo.fragments.radiomode;
 
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +28,10 @@ import retrofit2.Response;
 
 public class StationSelectionFragment extends Fragment implements HasSessionInfo {
 
+    private ListView stationsListView;
     private StationSelectListAdapter<String> listAdapter;
+
+    private Parcelable state;
 
     private static final String TAG = "StationSelectionFrag";
 
@@ -40,7 +45,7 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
             @Override
             public void onResponse(Call<List<RadioStation>> call, Response<List<RadioStation>> response) {
                 listAdapter.clear();
-                for (RadioStation station : response.body()){
+                for (RadioStation station : response.body()) {
                     listAdapter.add(station.Name);
                 }
             }
@@ -55,18 +60,38 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
         return rootView;
     }
 
+    @Override
+    public void onPause() {
+        // Save ListView state @ onPause
+        Log.d(TAG, "saving listview state @ onPause");
+        state = stationsListView.onSaveInstanceState();
+        super.onPause();
+    }
+
+    @Override
+    public void onViewCreated(final View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        // Set new items
+//        stationsListView.setAdapter(adapter);
+        // Restore previous state (including selected item index and scroll position)
+        if(state != null) {
+            Log.d(TAG, "trying to restore listview state..");
+            stationsListView.onRestoreInstanceState(state);
+        }
+    }
+
 
     private void enableStationListView(View v){
         listAdapter = new StationSelectListAdapter<>(getActivity(), R.layout.station_selection_list_item,
                 new ArrayList<String>());
 
-        ListView stationsListView = (ListView) v.findViewById(R.id.radio_mode_list_view);
+        stationsListView = (ListView) v.findViewById(R.id.radio_mode_list_view);
         stationsListView.setAdapter(listAdapter);
         stationsListView.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 MainActivity.storePreference(CURRENT_STATION, listAdapter.getItem(position));
-                MainActivity.replaceScreen(MainActivity.Screens.CURRENT_STATION, true);
+                MainActivity.replaceScreen(MainActivity.Screens.CURRENT_STATION, "CURRENT_STATION");
             }
         });
     }
@@ -76,7 +101,7 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
         createStationButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.replaceScreen(MainActivity.Screens.CREATE_STATION, true);
+                MainActivity.replaceScreen(MainActivity.Screens.CREATE_STATION, "CREATE_STATION");
             }
         });
     }

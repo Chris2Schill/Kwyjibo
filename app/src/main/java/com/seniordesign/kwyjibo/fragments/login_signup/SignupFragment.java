@@ -60,7 +60,7 @@ public class SignupFragment extends Fragment implements HasSessionInfo{
                                     MainActivity.storePreference(AUTH_TOKEN, response.body().AUTH_TOKEN);
                                     MainActivity.storePreference(IS_AUTHENTICATED, true);
 
-                                    MainActivity.replaceScreen(MainActivity.Screens.MODE_SELECTION, true);
+                                    MainActivity.replaceScreen(MainActivity.Screens.MODE_SELECTION, "MODE_SELECTION");
                                     Toast.makeText(getActivity(), "Success", Toast.LENGTH_LONG).show();
                                 } else {
                                     MainActivity.destroyUserSession();

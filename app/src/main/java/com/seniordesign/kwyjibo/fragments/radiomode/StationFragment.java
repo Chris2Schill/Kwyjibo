@@ -92,7 +92,7 @@ public class StationFragment extends Fragment implements HasSessionInfo{
 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                MainActivity.replaceScreen(MainActivity.Screens.RECORD_MODE, true);
+                                MainActivity.replaceScreen(MainActivity.Screens.RECORD_MODE, "RECORD_MODE");
                             }
                         })
                         .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {

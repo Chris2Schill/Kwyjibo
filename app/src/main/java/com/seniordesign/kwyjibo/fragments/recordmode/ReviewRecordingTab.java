@@ -105,7 +105,7 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
                             public void onResponse(Call<SoundClipInfo> call, Response<SoundClipInfo> response) {
                                 Log.d(TAG, response.body().toString());
                                 getActivity().getSupportFragmentManager().popBackStack();
-                                MainActivity.replaceScreen(MainActivity.Screens.CURRENT_STATION, false);
+                                MainActivity.replaceScreen(MainActivity.Screens.CURRENT_STATION, "CURRENT_STATION");
                             }
 
                             @Override
@@ -116,14 +116,6 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
                 );
             }
         });
-    }
-
-    protected static void longInfo(String str) {
-        if(str.length() > 4000) {
-            Log.d(TAG, str.substring(0, 4000));
-            longInfo(str.substring(4000));
-        } else
-            Log.i(TAG, str);
     }
 
     private void updateSpinner(View rootView){
