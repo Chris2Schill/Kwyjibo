@@ -31,7 +31,6 @@ public class RestAPI{
         final Call<SoundClipInfo> call = api.uploadSoundClip(stationName, clipInfo.Name, clipInfo.CreatedBy,
                 clipInfo.Location, clipInfo.Category, userId, authToken);
         call.enqueue(callback);
-
     }
 
     public static void authenticateSession(String userId, String authToken, Callback<Boolean> callback){

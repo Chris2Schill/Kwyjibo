@@ -1,8 +1,5 @@
 package com.seniordesign.kwyjibo.beans;
 
-/**
- * Created by Chris on 6/6/16.
- */
 public class RadioStation {
     public int Id;
     public String Name;

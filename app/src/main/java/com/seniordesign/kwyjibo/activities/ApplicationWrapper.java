@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -34,11 +35,12 @@ public class ApplicationWrapper extends AppCompatActivity{
         for (int i = 0; i < v.getChildCount(); i++) {
             View child = v.getChildAt(i);
             if (child instanceof TextView) {
-                ((TextView) child).setTypeface(font);
-                ((TextView) child).setTextColor(Color.WHITE);
+                ((TextView)child).setTypeface(font);
+                ((TextView)child).setTextColor(Color.WHITE);
             }
             if (child instanceof EditText) {
-                ((EditText) child).setTypeface(font);
+                EditText editText = (EditText)child;
+                editText.setTypeface(font);
                 child.setBackgroundColor(context.getResources().getColor(R.color.darkGray));
             }
             if (child instanceof Button) {
@@ -84,5 +86,10 @@ public class ApplicationWrapper extends AppCompatActivity{
             }
         }
         return false;
+    }
+
+    // TODO: Make this compatible with API level 14.
+    public static Drawable getDrawableFromId(int id){
+        return context.getResources().getDrawable(id, null);
     }
 }
