@@ -83,6 +83,37 @@ public class LoginFragment extends Fragment implements HasSessionInfo{
             }
         });
 
+        Button loginAsAdminButton = (Button)rootView.findViewById(R.id.login_as_admin_button);
+        loginAsAdminButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                RestAPI.requestLogin("admin", "admin", new Callback<SessionInfo>() {
+                    @Override
+                    public void onResponse(Call<SessionInfo> call, Response<SessionInfo> response) {
+//                        getActivity().findViewById(R.id.login_fragment_login_button).setEnabled(false);
+                        if (response.body().IS_AUTHENTICATED) {
+                            ApplicationWrapper.storePreference(USER_ID, response.body().USER_ID);
+                            ApplicationWrapper.storePreference(USER_NAME, response.body().USER_NAME);
+                            ApplicationWrapper.storePreference(USER_EMAIL, response.body().USER_EMAIL);
+                            ApplicationWrapper.storePreference(AUTH_TOKEN, response.body().AUTH_TOKEN);
+                            ApplicationWrapper.storePreference(IS_AUTHENTICATED, true);
+
+                            MainActivity.replaceScreen(MainActivity.Screens.MODE_SELECTION, "MODE_SELECTION");
+                        } else {
+                            MainActivity.destroyUserSession();
+                            Toast.makeText(getActivity(), "Account Credentials Invalid.", Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<SessionInfo> call, Throwable t) {
+                        MainActivity.destroyUserSession();
+                        Toast.makeText(getActivity(), "Login failed to complete", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
+
         MainActivity.applyLayoutDesign(rootView);
 
         return rootView;
