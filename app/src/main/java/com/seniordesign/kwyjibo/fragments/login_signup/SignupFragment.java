@@ -6,20 +6,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.SignInButton;
+import com.seniordesign.kwyjibo.validation.ValidatableEditText;
 import com.seniordesign.kwyjibo.restapi.RestAPI;
 import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.seniordesign.kwyjibo.beans.SessionInfo;
 import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 
-import java.io.IOException;
-
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -28,30 +25,41 @@ public class SignupFragment extends Fragment implements HasSessionInfo{
 
     private static final String TAG = "SignupFragment";
 
-    private EditText usernameEditText;
-    private EditText emailEditText;
-    private EditText passwordEditText;
+    private ValidatableEditText usernameEditText;
+    private ValidatableEditText emailEditText;
+    private ValidatableEditText passwordEditText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.signup_fragment, container, false);
 
-        usernameEditText = (EditText)rootView.findViewById(R.id.signup_fragment_username_edittext);
-        emailEditText = (EditText)rootView.findViewById(R.id.signup_fragment_email_edittext);
-        passwordEditText = (EditText)rootView.findViewById(R.id.signup_fragment_password_edittext);
+        usernameEditText = (ValidatableEditText)rootView.findViewById(R.id.signup_fragment_username_edittext);
+        emailEditText = (ValidatableEditText)rootView.findViewById(R.id.signup_fragment_email_edittext);
+        passwordEditText = (ValidatableEditText)rootView.findViewById(R.id.signup_fragment_password_edittext);
 
         rootView.findViewById(R.id.signup_fragment_signup_button).setOnClickListener(
                 new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
+                        usernameEditText.validate();
+                        emailEditText.validate();
+                        passwordEditText.validate();
+                        if (usernameEditText.getError() != null || emailEditText.getError() != null
+                                || passwordEditText.getError() != null){
+                            Toast.makeText(getActivity(), "Disabled until form is complete.",
+                                    Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
                         String username = usernameEditText.getText().toString();
                         String email = emailEditText.getText().toString();
                         String password = passwordEditText.getText().toString();
 
+
                         RestAPI.requestSignup(username, email, password, new Callback<SessionInfo>() {
                             @Override
                             public void onResponse(Call<SessionInfo> call, Response<SessionInfo> response) {
-                                Log.e(TAG,response.body().toString());
+                                Log.e(TAG, response.body().toString());
                                 boolean creationSuccessful = response.body().IS_AUTHENTICATED;
                                 if (creationSuccessful) {
                                     MainActivity.storePreference(USER_ID, response.body().USER_ID);
@@ -85,7 +93,7 @@ public class SignupFragment extends Fragment implements HasSessionInfo{
     }
 
     private void initGoogleSignInButton(View v) {
-        // This finds and centers the 'Sign in with Google' textview on the button.
+        // This finds and horizontally centers the 'Sign in with Google' textview on the button.
         SignInButton signInButton = (SignInButton)v.findViewById(R.id.signup_fragment_google_signin_button);
         for (int i = 0; i < signInButton.getChildCount(); i++) {
             View child = signInButton.getChildAt(i);

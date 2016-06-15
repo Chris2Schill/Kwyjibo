@@ -34,7 +34,7 @@
         android:layout_below="@+id/signup_fragment_google_signin_button"
         android:layout_centerHorizontal="true" />
 
-    <EditText
+    <com.seniordesign.kwyjibo.validation.ValidatableEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
@@ -57,7 +57,7 @@
         android:layout_alignParentLeft="false"
         android:layout_alignParentStart="false" />
 
-    <EditText
+    <com.seniordesign.kwyjibo.validation.ValidatableEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/signup_fragment_password_edittext"
@@ -68,7 +68,8 @@
         android:layout_below="@+id/signup_fragment_line_separator_1"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:drawableLeft="@drawable/ic_action_lock_closed"/>
+        android:drawableLeft="@drawable/ic_action_lock_closed"
+        android:inputType="textPassword" />
 
     <View
         android:layout_width="match_parent"
@@ -77,7 +78,7 @@
         android:layout_below="@+id/signup_fragment_password_edittext"
         android:id="@+id/signup_fragment_line_separator_2" />
 
-    <EditText
+    <com.seniordesign.kwyjibo.validation.ValidatableEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/signup_fragment_username_edittext"
@@ -87,7 +88,8 @@
         android:layout_centerHorizontal="true"
         android:textColor="@color/lightestGray"
         android:textColorHint="@color/lightestGray"
-        android:drawableLeft="@drawable/ic_action_user" />
+        android:drawableLeft="@drawable/ic_action_user"
+        android:inputType="text" />
 
     <Button
         style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"

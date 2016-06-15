@@ -2,15 +2,17 @@ package com.seniordesign.kwyjibo.fragments.login_signup;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.SignInButton;
+import com.seniordesign.kwyjibo.validation.ValidatableEditText;
+import com.seniordesign.kwyjibo.activities.ApplicationWrapper;
 import com.seniordesign.kwyjibo.restapi.RestAPI;
 import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.seniordesign.kwyjibo.beans.SessionInfo;
@@ -23,16 +25,23 @@ import retrofit2.Response;
 
 public class LoginFragment extends Fragment implements HasSessionInfo{
 
-    private EditText usernameEditText;
-    private EditText passwordEditText;
+    private ValidatableEditText usernameEditText;
+    private ValidatableEditText passwordEditText;
+
+    private static final String TAG = "LoginFragment";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.login_fragment, container, false);
+
         initGoogleLoginButton(rootView);
 
-        usernameEditText = ((EditText) rootView.findViewById(R.id.login_fragment_username_edittext));
-        passwordEditText = ((EditText) rootView.findViewById(R.id.login_fragment_password_edittext));
+        usernameEditText = ((ValidatableEditText) rootView.findViewById(R.id.login_fragment_username_edittext));
+        passwordEditText = ((ValidatableEditText) rootView.findViewById(R.id.login_fragment_password_edittext));
+
+        if (usernameEditText == null || passwordEditText == null){
+            Log.e(TAG, "EDIT TEXT NULL");
+        }
 
         Button submitLoginButton = (Button)rootView.findViewById(R.id.login_fragment_login_button);
         submitLoginButton.setOnClickListener(new View.OnClickListener() {
@@ -40,16 +49,54 @@ public class LoginFragment extends Fragment implements HasSessionInfo{
             public void onClick(View v) {
                 String username = usernameEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
+                usernameEditText.validate();
+                passwordEditText.validate();
+                if (usernameEditText.getError() != null || passwordEditText.getError() != null){
+                    Toast.makeText(getActivity(), "Disabled until form complete.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 RestAPI.requestLogin(username, password, new Callback<SessionInfo>() {
                     @Override
                     public void onResponse(Call<SessionInfo> call, Response<SessionInfo> response) {
+//                        getActivity().findViewById(R.id.login_fragment_login_button).setEnabled(false);
                         if (response.body().IS_AUTHENTICATED) {
-                            MainActivity.storePreference(USER_ID, response.body().USER_ID);
-                            MainActivity.storePreference(USER_NAME, response.body().USER_NAME);
-                            MainActivity.storePreference(USER_EMAIL, response.body().USER_EMAIL);
-                            MainActivity.storePreference(AUTH_TOKEN, response.body().AUTH_TOKEN);
-                            MainActivity.storePreference(IS_AUTHENTICATED, true);
+                            ApplicationWrapper.storePreference(USER_ID, response.body().USER_ID);
+                            ApplicationWrapper.storePreference(USER_NAME, response.body().USER_NAME);
+                            ApplicationWrapper.storePreference(USER_EMAIL, response.body().USER_EMAIL);
+                            ApplicationWrapper.storePreference(AUTH_TOKEN, response.body().AUTH_TOKEN);
+                            ApplicationWrapper.storePreference(IS_AUTHENTICATED, true);
+
+                            MainActivity.replaceScreen(MainActivity.Screens.MODE_SELECTION, "MODE_SELECTION");
+                        } else {
+                            MainActivity.destroyUserSession();
+                            Toast.makeText(getActivity(), "Account Credentials Invalid.", Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<SessionInfo> call, Throwable t) {
+                        MainActivity.destroyUserSession();
+                        Toast.makeText(getActivity(), "Login failed to complete", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
+
+        Button loginAsAdminButton = (Button)rootView.findViewById(R.id.login_as_admin_button);
+        loginAsAdminButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                RestAPI.requestLogin("admin", "admin", new Callback<SessionInfo>() {
+                    @Override
+                    public void onResponse(Call<SessionInfo> call, Response<SessionInfo> response) {
+//                        getActivity().findViewById(R.id.login_fragment_login_button).setEnabled(false);
+                        if (response.body().IS_AUTHENTICATED) {
+                            ApplicationWrapper.storePreference(USER_ID, response.body().USER_ID);
+                            ApplicationWrapper.storePreference(USER_NAME, response.body().USER_NAME);
+                            ApplicationWrapper.storePreference(USER_EMAIL, response.body().USER_EMAIL);
+                            ApplicationWrapper.storePreference(AUTH_TOKEN, response.body().AUTH_TOKEN);
+                            ApplicationWrapper.storePreference(IS_AUTHENTICATED, true);
 
                             MainActivity.replaceScreen(MainActivity.Screens.MODE_SELECTION, "MODE_SELECTION");
                         } else {
