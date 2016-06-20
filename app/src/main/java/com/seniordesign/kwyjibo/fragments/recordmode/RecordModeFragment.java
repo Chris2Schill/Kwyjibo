@@ -26,7 +26,6 @@ public class RecordModeFragment extends Fragment {
     private View rootView;
     private ViewPager viewPager;
     private RecordModePagerAdapter pagerAdapter;
-    private String outputFile;
     private static final int MY_PERMISSIONS_REQUEST_AUDIO_STORAGE = 1;
     private static final String TAG = "RecordModeFragment";
 
@@ -39,8 +38,6 @@ public class RecordModeFragment extends Fragment {
             viewPager.setAdapter(pagerAdapter);
         }
 
-        outputFile = Environment.getExternalStorageDirectory().toString();
-        Log.e(TAG, outputFile);
         requestRecordAndStoragePermissions();
         return rootView;
     }

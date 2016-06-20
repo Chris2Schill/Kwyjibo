@@ -9,6 +9,7 @@ public class SoundClipInfo{
     public String Category;
     public String Filepath;
     public String UploadDate;
+    public String Error;
 
     public SoundClipInfo() {
     }
@@ -31,6 +32,7 @@ public class SoundClipInfo{
              + " \"Location\":\"" + Location + "\","
              + " \"Category\":\"" + Category + "\","
              + " \"Filepath\":\"" + Filepath + "\","
-             + " \"UploadDate\":\"" + UploadDate + "\"}";
+             + " \"UploadDate\":\"" + UploadDate + "\","
+                + " \"Error\":\"" + Error + "\"}";
     }
 }

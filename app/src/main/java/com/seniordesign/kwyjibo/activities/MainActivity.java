@@ -88,7 +88,6 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
                     public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                         boolean authenticated = Boolean.parseBoolean(response.body().toString());
                         if (authenticated) {
-                            //replaceScreen(Screens.MODE_SELECTION, null);
                             Log.d(TAG, "AUTHENTICATION SUCCESSFUL.");
                         } else {
                             destroyUserSession();
@@ -116,7 +115,6 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
     }
 
     public static void destroyBackStack(){
-//        context.getSupportFragmentManager().popBackStack("LOGIN", FragmentManager.POP_BACK_STACK_INCLUSIVE);
         FragmentManager fm = context.getSupportFragmentManager();
         for (int i = 0; i < fm.getBackStackEntryCount(); i++){
             fm.popBackStack();

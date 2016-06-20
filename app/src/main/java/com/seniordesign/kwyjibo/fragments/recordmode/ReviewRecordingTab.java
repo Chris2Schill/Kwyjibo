@@ -2,6 +2,7 @@ package com.seniordesign.kwyjibo.fragments.recordmode;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,7 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,8 +34,8 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
     private Spinner spinner;
     private ArrayAdapter<String> spinnerAdapter;
     private EditText clipNameEditText;
+    private String outputFile;
     private static final String TAG = "ReviewRecordingTab";
-    private static final String outputFile = "/storage/emulated/0/recording.3gp";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -44,8 +44,8 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
         enableButtons(rootView);
         updateSpinner(rootView);
 
-
         clipNameEditText = (EditText)rootView.findViewById(R.id.review_recording_soundclip_name_edittext);
+        outputFile = Environment.getExternalStorageDirectory().toString() + "/recording.3gp";
 
         MainActivity.applyLayoutDesign(rootView);
         return rootView;
@@ -88,48 +88,40 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
 
             @Override
             public void onClick(View v) {
-                String clipName = clipNameEditText.getText().toString();
-                String category = (spinner.getSelectedItemPosition() + 1) + "";
+                SoundClipInfo clipInfo = gatherSoundClipInfo();
+                String station = MainActivity.getStringPreference(CURRENT_STATION);
+                String userId = MainActivity.getStringPreference(USER_ID);
+                String authToken = MainActivity.getStringPreference(AUTH_TOKEN);
 
-                SoundClipInfo newClip = new SoundClipInfo();
-                newClip.Name = clipNameEditText.getText().toString();
-                newClip.CreatedBy = MainActivity.getStringPreference(USER_NAME);
-                newClip.Location = "NO LOCATION SERVICE YET";
-                newClip.Category = (spinner.getSelectedItemPosition() + 1) + "";
-                
-                RestAPI.uploadFile(outputFile, new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        Log.d(TAG,"File upload successful.");
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Log.e(TAG,"File upload failed.");
-                    }
-                });
-
-                /*
-                RestAPI.uploadSoundClipInfo(MainActivity.getStringPreference(CURRENT_STATION),
-                        newClip, MainActivity.getStringPreference(USER_ID),
-                        MainActivity.getStringPreference(AUTH_TOKEN),
+                RestAPI.uploadSoundClip(outputFile, clipInfo, station, userId, authToken,
                         new Callback<SoundClipInfo>() {
                             @Override
                             public void onResponse(Call<SoundClipInfo> call, Response<SoundClipInfo> response) {
-                                Log.d(TAG, response.body().toString());
-                                getActivity().getSupportFragmentManager().popBackStack();
-                                MainActivity.replaceScreen(MainActivity.Screens.CURRENT_STATION, "CURRENT_STATION");
+                                if (response.body() != null){
+                                    Log.d(TAG, "" + response.body().toString());
+                                    getActivity().getSupportFragmentManager().popBackStack();
+                                    MainActivity.replaceScreen(MainActivity.Screens.CURRENT_STATION, "CURRENT_STATION");
+                                }else if (response.errorBody() != null){
+                                    Log.e(TAG, response.code() + "");
+                                }
                             }
 
                             @Override
                             public void onFailure(Call<SoundClipInfo> call, Throwable t) {
                                 Log.e(TAG, t.getMessage());
                             }
-                        }
-                );
-                */
+                        });
             }
         });
+    }
+
+    private SoundClipInfo gatherSoundClipInfo(){
+        SoundClipInfo clip = new SoundClipInfo();
+        clip.Name = clipNameEditText.getText().toString();
+        clip.CreatedBy = MainActivity.getStringPreference(USER_NAME);
+        clip.Location = "NO LOCATION SERVICE YET";
+        clip.Category = (spinner.getSelectedItemPosition() + 1) + "";
+        return clip;
     }
 
     private void updateSpinner(View rootView){
@@ -141,9 +133,11 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
         RestAPI.getCategories(new Callback<List<String>>() {
             @Override
             public void onResponse(Call<List<String>> call, Response<List<String>> response) {
-                spinnerAdapter.clear();
-                for (String category : response.body()) {
-                    spinnerAdapter.add(category);
+                if (response.body() != null){
+                    spinnerAdapter.clear();
+                    for (String category : response.body()) {
+                        spinnerAdapter.add(category);
+                    }
                 }
             }
 

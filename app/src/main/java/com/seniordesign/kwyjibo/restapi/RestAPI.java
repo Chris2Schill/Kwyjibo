@@ -3,6 +3,7 @@ package com.seniordesign.kwyjibo.restapi;
 import android.net.Uri;
 import android.util.Log;
 
+import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.seniordesign.kwyjibo.beans.RadioStation;
 import com.seniordesign.kwyjibo.beans.SessionInfo;
 import com.seniordesign.kwyjibo.beans.SoundClipInfo;
@@ -41,14 +42,6 @@ public class RestAPI{
         call.enqueue(callback);
     }
 
-    public static void uploadSoundClipInfo(String stationName, SoundClipInfo clipInfo, String userId, String authToken,
-                                       Callback<SoundClipInfo> callback){
-        POSTRequest api = retrofit.create(POSTRequest.class);
-        final Call<SoundClipInfo> call = api.uploadSoundClipInfo(stationName, clipInfo.Name, clipInfo.CreatedBy,
-                clipInfo.Location, clipInfo.Category, userId, authToken);
-        call.enqueue(callback);
-    }
-
     public static void authenticateSession(String userId, String authToken, Callback<Boolean> callback){
         GETRequest api = retrofit.create(GETRequest.class);
         final Call<Boolean> call = api.requestAuthentication(userId, authToken);
@@ -82,18 +75,24 @@ public class RestAPI{
         call.enqueue(callback);
     }
 
-    public static void uploadFile(String filepath, Callback<ResponseBody> callback) {
+    public static void uploadSoundClip(String clipFilepath, SoundClipInfo clipInfo, String stationName,
+                                       String userId, String authToken, Callback<SoundClipInfo> callback) {
         POSTRequest api = retrofit.create(POSTRequest.class);
 
-        File file = new File(filepath);
-
+        File file = new File(clipFilepath);
         RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        MultipartBody.Part body = MultipartBody.Part.createFormData(file.getName(), file.getName(), requestFile);
+        MultipartBody.Part soundClipFile = MultipartBody.Part.createFormData(file.getName(), file.getName(), requestFile);
 
-        String descriptionString = "hello, this is description speaking";
-        RequestBody description = RequestBody.create(MediaType.parse("multipart/form-data"), descriptionString);
+        RequestBody station= RequestBody.create(MediaType.parse("multipart/form-data"), stationName);
+        RequestBody clipName = RequestBody.create(MediaType.parse("multipart/form-data"), clipInfo.Name);
+        RequestBody username = RequestBody.create(MediaType.parse("multipart/form-data"), clipInfo.CreatedBy);
+        RequestBody location = RequestBody.create(MediaType.parse("multipart/form-data"), clipInfo.Location);
+        RequestBody category = RequestBody.create(MediaType.parse("multipart/form-data"), clipInfo.Category);
+        RequestBody id = RequestBody.create(MediaType.parse("multipart/form-data"), userId);
+        RequestBody token = RequestBody.create(MediaType.parse("multipart/form-data"), authToken);
 
-        Call<ResponseBody> call = api.uploadSoundClip(description, body);
+        Call<SoundClipInfo> call = api.uploadSoundClip(soundClipFile, station, clipName, username, location,
+                category, id, token);
         call.enqueue(callback);
     }
 

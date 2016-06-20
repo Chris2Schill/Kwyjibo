@@ -32,20 +32,15 @@ public interface POSTRequest {
             @Field("password") String password
     );
 
-    @FormUrlEncoded
-    @POST("api/AddSoundToStation.aspx")
-    Call<SoundClipInfo> uploadSoundClipInfo(
-            @Field("stationName") String stationName,
-            @Field("clipName") String clipName,
-            @Field("username") String username,
-            @Field("location") String location,
-            @Field("category") String category,
-            @Field("userId") String userId,
-            @Field("authToken") String authToken);
-
     @Multipart
-    @POST("api/UploadSoundClip.aspx")
-    Call<ResponseBody> uploadSoundClip(
-            @Part("description") RequestBody description,
-            @Part MultipartBody.Part file);
+    @POST("api/UploadSoundClipToStation.aspx")
+    Call<SoundClipInfo> uploadSoundClip(
+            @Part MultipartBody.Part soundClipFile,
+            @Part("stationName") RequestBody stationName,
+            @Part("clipName") RequestBody clipName,
+            @Part("username") RequestBody username,
+            @Part("location") RequestBody location,
+            @Part("category") RequestBody category,
+            @Part("userId") RequestBody userId,
+            @Part("authToken") RequestBody authToken);
 }
