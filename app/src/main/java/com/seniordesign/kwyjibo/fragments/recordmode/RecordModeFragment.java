@@ -2,29 +2,20 @@ package com.seniordesign.kwyjibo.fragments.recordmode;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.media.MediaPlayer;
-import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.seniordesign.kwyjibo.adapters.RecordModePagerAdapter;
 import com.seniordesign.kwyjibo.kwyjibo.R;
-import com.seniordesign.kwyjibo.drawables.Triangle;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +26,7 @@ public class RecordModeFragment extends Fragment {
     private View rootView;
     private ViewPager viewPager;
     private RecordModePagerAdapter pagerAdapter;
-    private static final String outputFile = "/storage/emulated/0/recording.3gp";
+    private String outputFile;
     private static final int MY_PERMISSIONS_REQUEST_AUDIO_STORAGE = 1;
     private static final String TAG = "RecordModeFragment";
 
@@ -47,6 +38,9 @@ public class RecordModeFragment extends Fragment {
             pagerAdapter = new RecordModePagerAdapter(getActivity().getSupportFragmentManager());
             viewPager.setAdapter(pagerAdapter);
         }
+
+        outputFile = Environment.getExternalStorageDirectory().toString();
+        Log.e(TAG, outputFile);
         requestRecordAndStoragePermissions();
         return rootView;
     }

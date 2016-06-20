@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -95,9 +96,21 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
                 newClip.CreatedBy = MainActivity.getStringPreference(USER_NAME);
                 newClip.Location = "NO LOCATION SERVICE YET";
                 newClip.Category = (spinner.getSelectedItemPosition() + 1) + "";
+                
+                RestAPI.uploadFile(outputFile, new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        Log.d(TAG,"File upload successful.");
+                    }
 
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Log.e(TAG,"File upload failed.");
+                    }
+                });
 
-                RestAPI.uploadSoundClip(MainActivity.getStringPreference(CURRENT_STATION),
+                /*
+                RestAPI.uploadSoundClipInfo(MainActivity.getStringPreference(CURRENT_STATION),
                         newClip, MainActivity.getStringPreference(USER_ID),
                         MainActivity.getStringPreference(AUTH_TOKEN),
                         new Callback<SoundClipInfo>() {
@@ -114,6 +127,7 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
                             }
                         }
                 );
+                */
             }
         });
     }
