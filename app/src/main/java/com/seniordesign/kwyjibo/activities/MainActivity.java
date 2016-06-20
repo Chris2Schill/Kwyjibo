@@ -147,7 +147,7 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
         storePreference(IS_AUTHENTICATED, false);
     }
 
-    public void setCurrentStation(Fragment fragment){
+    public static void setCurrentStation(Fragment fragment){
         fragments.put(Screens.CURRENT_STATION, fragment);
     }
 }
