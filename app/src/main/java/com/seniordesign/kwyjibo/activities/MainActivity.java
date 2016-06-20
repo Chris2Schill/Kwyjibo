@@ -86,9 +86,9 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
                 new Callback<Boolean>() {
                     @Override
                     public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                        boolean authenticated = response.body();
+                        boolean authenticated = Boolean.parseBoolean(response.body().toString());
                         if (authenticated) {
-                            replaceScreen(Screens.MODE_SELECTION, null);
+                            //replaceScreen(Screens.MODE_SELECTION, null);
                             Log.d(TAG, "AUTHENTICATION SUCCESSFUL.");
                         } else {
                             destroyUserSession();
