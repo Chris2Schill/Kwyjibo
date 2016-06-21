@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
+import com.seniordesign.kwyjibo.events.UnpauseObserverService;
 import com.seniordesign.kwyjibo.restapi.RestAPI;
 import com.seniordesign.kwyjibo.fragments.CreateStationFragment;
 import com.seniordesign.kwyjibo.fragments.ModeSelectionFragment;
@@ -69,7 +70,6 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
             if (savedInstanceState != null){
                 return;
             }
-
             replaceScreen(Screens.INTRO_TITLE, null);
         }
 
@@ -107,19 +107,11 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
                 });
     }
 
-    @Override
-    protected void onDestroy() {
-        prefsEditor.putBoolean("fromOrientation", false);
-        prefsEditor.commit();
-        super.onDestroy();
-    }
-
     public static void destroyBackStack(){
         FragmentManager fm = context.getSupportFragmentManager();
         for (int i = 0; i < fm.getBackStackEntryCount(); i++){
             fm.popBackStack();
         }
-
     }
 
     public static void replaceScreen(Screens screen, String tag){
