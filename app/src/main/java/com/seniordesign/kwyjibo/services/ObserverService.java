@@ -29,11 +29,10 @@ import retrofit2.Response;
 public class ObserverService extends Service implements HasSessionInfo {
 
     private static final String TAG = "ObserverService";
-    private boolean paused = true; // temporarily pause
-    private boolean stopped = false; // exit loop to call stopStop()
+    private static boolean paused = true; // temporarily pause
+    private static boolean stopped = false; // exit loop to call stopStop()
 
     public static SoundClipInfo[] currentStationSoundClips = new SoundClipInfo[0];
-    public static String[] stationsList;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -58,7 +57,7 @@ public class ObserverService extends Service implements HasSessionInfo {
 
                                         @Override
                                         public void onFailure(Call<List<SoundClipInfo>> call, Throwable t) {
-
+                                            Log.e(TAG, t.getMessage());
                                         }
                                     });
                         }
@@ -77,13 +76,13 @@ public class ObserverService extends Service implements HasSessionInfo {
     @Subscribe
     public void onEvent(Object event){
         if (event instanceof PauseObserverService){
-            this.paused = true;
+            ObserverService.paused = true;
         }
         if (event instanceof UnpauseObserverService){
-            this.paused = false;
+            ObserverService.paused = false;
         }
         if (event instanceof StopObserverService){
-            this.stopped = true;
+            ObserverService.stopped = true;
         }
     }
 
@@ -108,6 +107,14 @@ public class ObserverService extends Service implements HasSessionInfo {
             }
         }
         return true;
+    }
+
+    public static boolean isStopped(){
+        return stopped;
+    }
+
+    public static boolean isPaused(){
+        return paused;
     }
 
 }

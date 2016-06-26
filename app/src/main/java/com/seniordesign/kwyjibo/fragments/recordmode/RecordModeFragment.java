@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -51,22 +52,19 @@ public class RecordModeFragment extends Fragment {
             permissionsList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
         if (permissionsList.size() > 0) {
-            Toast.makeText(getContext(),
-                    "This application requires the use of the microphone and device storage "
-                            + "to function properly.",
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "This application requires the use of the microphone and " +
+                            "device storage to function properly.", Toast.LENGTH_LONG).show();
             requestPermissions(permissionsList.toArray(new String[permissionsList.size()]),
                     MY_PERMISSIONS_REQUEST_AUDIO_STORAGE);
         }
     }
 
     private boolean haveDevicePermission(String permission) {
-        return ContextCompat.checkSelfPermission(getActivity(), permission)
-                == PackageManager.PERMISSION_GRANTED;
+        return ContextCompat.checkSelfPermission(getActivity(), permission) == PackageManager.PERMISSION_GRANTED;
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == MY_PERMISSIONS_REQUEST_AUDIO_STORAGE) {
             int numGranted = 0;
             for (int permission = 0; permission < permissions.length; permission++) {

@@ -12,8 +12,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.seniordesign.kwyjibo.activities.ApplicationWrapper;
 import com.seniordesign.kwyjibo.restapi.RestAPI;
 import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.seniordesign.kwyjibo.adapters.SoundClipInfoAdapter;
@@ -63,6 +65,12 @@ public class StationFragment extends Fragment implements HasSessionInfo{
         EventBus.getDefault().post(new PauseObserverService());
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        EventBus.getDefault().post(new UnpauseObserverService());
+    }
+
     // This function is called when an event is posted to the EventBus. It is configured to run
     // on the main thread to allow UI updates.
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -93,6 +101,7 @@ public class StationFragment extends Fragment implements HasSessionInfo{
 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                ApplicationWrapper.storePreference("fromStation", true);
                                 MainActivity.replaceScreen(MainActivity.Screens.RECORD_MODE, "RECORD_MODE");
                             }
                         })
@@ -118,8 +127,10 @@ public class StationFragment extends Fragment implements HasSessionInfo{
 
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                String clipName = ((TextView)view.findViewById(R.id.studio_mode_list_item_soundname_textview)).getText().toString();
                 new AlertDialog.Builder(getActivity())
-                        .setMessage("Sound Clip")
+                        .setTitle(clipName)
+                        .setMessage("SoundClipInfo goes here.")
                         .setPositiveButton("Ok!", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
 

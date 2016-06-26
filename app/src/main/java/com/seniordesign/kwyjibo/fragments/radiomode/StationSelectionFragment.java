@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.seniordesign.kwyjibo.activities.ApplicationWrapper;
 import com.seniordesign.kwyjibo.restapi.RestAPI;
 import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.seniordesign.kwyjibo.adapters.StationSelectListAdapter;
@@ -44,19 +45,21 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
         RestAPI.getStations(new Callback<List<RadioStation>>() {
             @Override
             public void onResponse(Call<List<RadioStation>> call, Response<List<RadioStation>> response) {
-                listAdapter.clear();
-                for (RadioStation station : response.body()) {
-                    listAdapter.add(station.Name);
+                if (response.body() != null){
+                    listAdapter.clear();
+                    for (RadioStation station : response.body()) {
+                        listAdapter.add(station.Name);
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<List<RadioStation>> call, Throwable t) {
-
+                Log.e(TAG, t.getMessage());
             }
         });
 
-        MainActivity.applyLayoutDesign(rootView);
+        ApplicationWrapper.applyLayoutDesign(rootView);
         return rootView;
     }
 
