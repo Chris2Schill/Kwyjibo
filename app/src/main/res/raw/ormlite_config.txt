@@ -1,0 +1,27 @@
+# --table-start--
+dataClass=com.seniordesign.kwyjibo.beans.RadioStation
+tableName=stations
+# --table-fields-start--
+# --field-start--
+fieldName=Id
+columnName=Id
+# --field-end--
+# --field-start--
+fieldName=Name
+columnName=Name
+# --field-end--
+# --field-start--
+fieldName=CreatedBy
+columnName=CreatedBy
+# --field-end--
+# --field-start--
+fieldName=Genre
+columnName=Genre
+# --field-end--
+# --field-start--
+fieldName=NumCurrentClips
+columnName=NumCurrentClips
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
