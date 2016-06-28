@@ -138,7 +138,7 @@ public class StationFragment extends Fragment implements HasSessionInfo{
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                // User cancelled the dialog
+                                // Do Nothing
                             }
                         }).create().show();
                 return true;

@@ -28,7 +28,7 @@ import com.seniordesign.kwyjibo.kwyjibo.R;
 public class ApplicationWrapper extends AppCompatActivity{
     protected static MainActivity context;
     protected static SharedPreferences.Editor prefsEditor;
-    protected static LocalDBManager localDB;
+    protected static LocalDBManager localDBManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,18 +38,18 @@ public class ApplicationWrapper extends AppCompatActivity{
 
     @Override
     protected void onDestroy() {
-        if (localDB != null){
+        if (localDBManager != null){
             OpenHelperManager.releaseHelper();
-            localDB = null;
+            localDBManager = null;
         }
         super.onDestroy();
     }
 
-    protected static LocalDBManager getDBManager(Context context){
-        if (localDB == null){
-            localDB = OpenHelperManager.getHelper(context, LocalDBManager.class);
+    public static LocalDBManager getDBManager(Context context){
+        if (localDBManager == null){
+            localDBManager = OpenHelperManager.getHelper(context, LocalDBManager.class);
         }
-        return localDB;
+        return localDBManager;
     }
 
     /*

@@ -31,7 +31,7 @@ public class LocalDBManager extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, RadioStation.class);
 
         } catch (SQLException e) {
-            Log.e(LocalDBManager.class.getName(), "Unable to create datbases", e);
+            Log.e(LocalDBManager.class.getName(), "Unable to create databases", e);
         }
     }
 
