@@ -41,23 +41,8 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
         View rootView = inflater.inflate(R.layout.station_selection_fragment, container, false);
         enableStationListView(rootView);
         enableCreateStationButton(rootView);
+        enableRefreshButton(rootView);
 
-        RestAPI.getStations(new Callback<List<RadioStation>>() {
-            @Override
-            public void onResponse(Call<List<RadioStation>> call, Response<List<RadioStation>> response) {
-                if (response.body() != null){
-                    listAdapter.clear();
-                    for (RadioStation station : response.body()) {
-                        listAdapter.add(station.Name);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<RadioStation>> call, Throwable t) {
-                Log.e(TAG, t.getMessage());
-            }
-        });
 
         ApplicationWrapper.applyLayoutDesign(rootView);
         return rootView;
@@ -107,6 +92,31 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
                 MainActivity.replaceScreen(MainActivity.Screens.CREATE_STATION, "CREATE_STATION");
             }
         });
+    }
+
+    private void enableRefreshButton(View rootView){
+        rootView.findViewById(R.id.station_select_refresh_button).setOnClickListener(
+                new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v){
+                        RestAPI.getStations(new Callback<List<RadioStation>>() {
+                            @Override
+                            public void onResponse(Call<List<RadioStation>> call, Response<List<RadioStation>> response) {
+                                if (response.body() != null){
+                                    listAdapter.clear();
+                                    for (RadioStation station : response.body()) {
+                                        listAdapter.add(station.Name);
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<List<RadioStation>> call, Throwable t) {
+                                Log.e(TAG, t.getMessage());
+                            }
+                        });
+                    }
+                });
     }
 }
 

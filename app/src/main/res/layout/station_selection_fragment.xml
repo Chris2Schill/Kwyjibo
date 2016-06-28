@@ -18,7 +18,7 @@
 
     <Button
         style="@style/Widget.AppCompat.Button.Borderless.Colored"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="?android:attr/actionBarSize"
         android:text="Create Station"
         android:textColor="@color/white"
@@ -27,5 +27,18 @@
         android:id="@+id/create_station_button"
         android:layout_gravity="bottom"
         android:layout_alignParentBottom="true"/>
+
+    <Button
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="?android:attr/actionBarSize"
+        android:text="Refresh List"
+        android:id="@+id/station_select_refresh_button"
+        android:background="@drawable/signup_button"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
