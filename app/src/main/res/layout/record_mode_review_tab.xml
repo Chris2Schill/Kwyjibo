@@ -36,10 +36,11 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"/>
 
-    <EditText
+    <com.seniordesign.kwyjibo.validation.ValidatableEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/review_recording_soundclip_name_edittext"
+        android:inputType="textShortMessage"
         android:layout_below="@+id/review_recording_soundclip_name_textview"
         android:layout_centerHorizontal="true" />
 

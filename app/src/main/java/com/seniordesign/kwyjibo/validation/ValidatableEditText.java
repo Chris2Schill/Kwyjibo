@@ -60,6 +60,9 @@ public class ValidatableEditText extends EditText{
                 case InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD:
                     formValidationLogic = new PasswordLogic();
                     break;
+                case InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE:
+                    formValidationLogic = new ClipNameLogic();
+                    break;
                 default:
                     throw new IllegalStateException(exceptionString);
             }
