@@ -15,7 +15,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.seniordesign.kwyjibo.LocalDBManager;
 import com.seniordesign.kwyjibo.activities.ApplicationWrapper;
+import com.seniordesign.kwyjibo.beans.RadioStation;
 import com.seniordesign.kwyjibo.restapi.RestAPI;
 import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.seniordesign.kwyjibo.adapters.SoundClipInfoAdapter;
@@ -30,6 +33,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +59,6 @@ public class StationFragment extends Fragment implements HasSessionInfo{
 
         EventBus.getDefault().post(new UnpauseObserverService());
         MainActivity.applyLayoutDesign(rootView);
-
         return rootView;
     }
 
@@ -124,13 +127,23 @@ public class StationFragment extends Fragment implements HasSessionInfo{
         clipListView = (ListView)rootView.findViewById(R.id.station_fragment_current_sounds_listview);
         clipListView.setAdapter(listAdapter);
         clipListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
-
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 String clipName = ((TextView)view.findViewById(R.id.studio_mode_list_item_soundname_textview)).getText().toString();
+//                LocalDBManager db = ApplicationWrapper.getDBManager(getActivity());
+//                SoundClipInfo station = null;
+//                try {
+//                    QueryBuilder<RadioStation, Integer> queryBuilder = db.getStationDao().queryBuilder();
+//                    queryBuilder.where().eq(RadioStation.NAME, clipName);
+//                    station = queryBuilder.query().get(0);
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//                }
+//                if (station == null){
+//                    return true;
+//                }
+
                 new AlertDialog.Builder(getActivity())
-                        .setTitle(clipName)
-                        .setMessage("SoundClipInfo goes here.")
                         .setPositiveButton("Ok!", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
 
