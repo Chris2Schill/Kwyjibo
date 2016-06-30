@@ -100,7 +100,6 @@ public class LoginFragment extends Fragment implements HasSessionInfo{
 
                             MainActivity.destroyBackStack();
                             MainActivity.replaceScreen(MainActivity.Screens.MODE_SELECTION, "MODE_SELECTION");
-
                         } else {
                             MainActivity.destroyUserSession();
                             Toast.makeText(getActivity(), "Account Credentials Invalid.", Toast.LENGTH_LONG).show();
