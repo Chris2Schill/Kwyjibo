@@ -3,12 +3,12 @@ package com.seniordesign.kwyjibo.activities;
 
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.transition.Scene;
 import android.util.Log;
 
-import com.seniordesign.kwyjibo.events.UnpauseObserverService;
 import com.seniordesign.kwyjibo.restapi.RestAPI;
 import com.seniordesign.kwyjibo.fragments.CreateStationFragment;
 import com.seniordesign.kwyjibo.fragments.ModeSelectionFragment;
@@ -31,17 +31,16 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
- /*
-  * This is the central activity class for the entire application. It contains a HashMap of all the
-  * 'Screen' fragments. The screen fragments are different than regular fragments because they
-  * have been designed to take up the entire screen and act as pseudo-activities for the different
-  * screens the user will see when using the app. This class provides static methods which
-  * allow you to switch screens anytime using a single line of code.
-  */
+/*
+ * This is the central activity class for the entire application. It contains a HashMap of all the
+ * 'Screen' fragments. The screen fragments are different than regular fragments because they
+ * have been designed to take up the entire screen and act as pseudo-activities for the different
+ * screens the user will see when using the app. This class provides static methods which
+ * allow you to switch screens anytime using a single line of code.
+ */
 public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
 
     private static Map<Screens,Fragment> fragments = new HashMap<>();
-
     private static final String TAG = "MainActivity";
 
     public enum Screens{
@@ -64,13 +63,14 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
         fragments.put(Screens.CREATE_STATION, new CreateStationFragment());
         fragments.put(Screens.CURRENT_STATION, new StationFragment());
 
+
         EventBus.getDefault().register(getFragment(Screens.CURRENT_STATION));
 
         if (findViewById(R.id.main_activity_fragment_container) != null){
             if (savedInstanceState != null){
                 return;
             }
-            replaceScreen(Screens.INTRO_TITLE, null);
+            replaceScreen(Screens.INTRO_TITLE, null, FragmentTransaction.TRANSIT_NONE, android.R.anim.fade_out);
         }
 
         if (!isMyServiceRunning(ObserverService.class)){
@@ -81,7 +81,6 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
     @Override
     protected void onResume() {
         super.onResume();
-
         RestAPI.authenticateSession(getStringPreference(USER_ID), getStringPreference(AUTH_TOKEN),
                 new Callback<Boolean>() {
                     @Override
@@ -92,7 +91,8 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
                         } else {
                             destroyUserSession();
                             destroyBackStack();
-                            replaceScreen(Screens.INTRO_TITLE, "INTRO_TITLE");
+                            replaceScreen(Screens.INTRO_TITLE, "INTRO_TITLE",
+                                    FragmentTransaction.TRANSIT_NONE, android.R.anim.fade_out);
                             Log.d(TAG, "AUTHENTICATION DENIED.");
                         }
                     }
@@ -101,7 +101,8 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
                     public void onFailure(Call<Boolean> call, Throwable t) {
                         destroyUserSession();
                         destroyBackStack();
-                        replaceScreen(Screens.INTRO_TITLE, "INTRO_TITLE");
+                        replaceScreen(Screens.INTRO_TITLE, "INTRO_TITLE",
+                                FragmentTransaction.TRANSIT_NONE, android.R.anim.fade_out);
                         Log.d(TAG, "Authentication Request Failed.");
                     }
                 });
@@ -114,9 +115,12 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
         }
     }
 
-    public static void replaceScreen(Screens screen, String tag){
+    public static void replaceScreen(Screens screen, String tag,
+                                     int animInResourceId, int animOutResourceId){
         FragmentTransaction transaction = context.getSupportFragmentManager()
                 .beginTransaction();
+        transaction.setCustomAnimations(animInResourceId, animOutResourceId,
+                                        animInResourceId, animOutResourceId);
         transaction.replace(R.id.main_activity_fragment_container, getFragment(screen));
         if (tag != null){
             transaction.addToBackStack(tag);

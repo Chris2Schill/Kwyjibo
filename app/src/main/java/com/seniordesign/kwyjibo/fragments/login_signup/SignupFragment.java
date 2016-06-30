@@ -6,10 +6,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.SignInButton;
+import com.seniordesign.kwyjibo.adapters.SwipeDetector;
 import com.seniordesign.kwyjibo.validation.ValidatableEditText;
 import com.seniordesign.kwyjibo.restapi.RestAPI;
 import com.seniordesign.kwyjibo.activities.MainActivity;
@@ -37,7 +39,8 @@ public class SignupFragment extends Fragment implements HasSessionInfo{
         emailEditText = (ValidatableEditText)rootView.findViewById(R.id.signup_fragment_email_edittext);
         passwordEditText = (ValidatableEditText)rootView.findViewById(R.id.signup_fragment_password_edittext);
 
-        rootView.findViewById(R.id.signup_fragment_signup_button).setOnClickListener(
+        Button signupButton = (Button)rootView.findViewById(R.id.signup_fragment_signup_button);
+        signupButton.setOnClickListener(
                 new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
@@ -68,7 +71,8 @@ public class SignupFragment extends Fragment implements HasSessionInfo{
                                     MainActivity.storePreference(AUTH_TOKEN, response.body().AUTH_TOKEN);
                                     MainActivity.storePreference(IS_AUTHENTICATED, true);
 
-                                    MainActivity.replaceScreen(MainActivity.Screens.MODE_SELECTION, "MODE_SELECTION");
+                                    MainActivity.replaceScreen(MainActivity.Screens.MODE_SELECTION, "MODE_SELECTION",
+                                            android.R.anim.fade_in, android.R.anim.fade_out);
                                     Toast.makeText(getActivity(), "Success", Toast.LENGTH_LONG).show();
                                 } else {
                                     MainActivity.destroyUserSession();
@@ -85,6 +89,16 @@ public class SignupFragment extends Fragment implements HasSessionInfo{
                     }
                 }
         );
+
+        ViewGroup signupContainer = (ViewGroup)rootView.findViewById(R.id.signup_fragment_container);
+        new SwipeDetector(signupContainer).setOnSwipeListener(new SwipeDetector.onSwipeEvent() {
+            @Override
+            public void SwipeEventDetected(View v, SwipeDetector.SwipeType swipeType) {
+                if (swipeType == SwipeDetector.SwipeType.BOTTOM_TO_TOP){
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
+            }
+        });
 
         initGoogleSignInButton(rootView);
         MainActivity.applyLayoutDesign(rootView);

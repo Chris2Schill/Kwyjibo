@@ -94,7 +94,8 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 MainActivity.storePreference(CURRENT_STATION, listAdapter.getItem(position));
-                MainActivity.replaceScreen(MainActivity.Screens.CURRENT_STATION, "CURRENT_STATION");
+                MainActivity.replaceScreen(MainActivity.Screens.CURRENT_STATION, "CURRENT_STATION",
+                        android.R.anim.fade_in, android.R.anim.fade_out );
             }
         });
     }
@@ -104,7 +105,8 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
         createStationButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.replaceScreen(MainActivity.Screens.CREATE_STATION, "CREATE_STATION");
+                MainActivity.replaceScreen(MainActivity.Screens.CREATE_STATION, "CREATE_STATION",
+                        android.R.anim.fade_in, android.R.anim.fade_out);
             }
         });
     }

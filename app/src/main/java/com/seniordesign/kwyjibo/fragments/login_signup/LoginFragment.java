@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.SignInButton;
+import com.seniordesign.kwyjibo.adapters.SwipeDetector;
 import com.seniordesign.kwyjibo.validation.ValidatableEditText;
 import com.seniordesign.kwyjibo.activities.ApplicationWrapper;
 import com.seniordesign.kwyjibo.restapi.RestAPI;
@@ -33,6 +34,7 @@ public class LoginFragment extends Fragment implements HasSessionInfo{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.login_fragment, container, false);
+        MainActivity.applyLayoutDesign(rootView);
 
         initGoogleLoginButton(rootView);
 
@@ -59,7 +61,6 @@ public class LoginFragment extends Fragment implements HasSessionInfo{
                 RestAPI.requestLogin(username, password, new Callback<SessionInfo>() {
                     @Override
                     public void onResponse(Call<SessionInfo> call, Response<SessionInfo> response) {
-//                        getActivity().findViewById(R.id.login_fragment_login_button).setEnabled(false);
                         if (response.body().IS_AUTHENTICATED) {
                             ApplicationWrapper.storePreference(USER_ID, response.body().USER_ID);
                             ApplicationWrapper.storePreference(USER_NAME, response.body().USER_NAME);
@@ -67,7 +68,8 @@ public class LoginFragment extends Fragment implements HasSessionInfo{
                             ApplicationWrapper.storePreference(AUTH_TOKEN, response.body().AUTH_TOKEN);
                             ApplicationWrapper.storePreference(IS_AUTHENTICATED, true);
 
-                            MainActivity.replaceScreen(MainActivity.Screens.MODE_SELECTION, "MODE_SELECTION");
+                            MainActivity.replaceScreen(MainActivity.Screens.MODE_SELECTION, "MODE_SELECTION",
+                                    android.R.anim.fade_in, android.R.anim.fade_out);
                         } else {
                             MainActivity.destroyUserSession();
                             Toast.makeText(getActivity(), "Account Credentials Invalid.", Toast.LENGTH_LONG).show();
@@ -84,13 +86,12 @@ public class LoginFragment extends Fragment implements HasSessionInfo{
         });
 
         Button loginAsAdminButton = (Button)rootView.findViewById(R.id.login_as_admin_button);
-        loginAsAdminButton.setOnClickListener(new View.OnClickListener(){
+        loginAsAdminButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 RestAPI.requestLogin("admin", "admin", new Callback<SessionInfo>() {
                     @Override
                     public void onResponse(Call<SessionInfo> call, Response<SessionInfo> response) {
-//                        getActivity().findViewById(R.id.login_fragment_login_button).setEnabled(false);
                         if (response.body().IS_AUTHENTICATED) {
                             ApplicationWrapper.storePreference(USER_ID, response.body().USER_ID);
                             ApplicationWrapper.storePreference(USER_NAME, response.body().USER_NAME);
@@ -99,7 +100,8 @@ public class LoginFragment extends Fragment implements HasSessionInfo{
                             ApplicationWrapper.storePreference(IS_AUTHENTICATED, true);
 
                             MainActivity.destroyBackStack();
-                            MainActivity.replaceScreen(MainActivity.Screens.MODE_SELECTION, "MODE_SELECTION");
+                            MainActivity.replaceScreen(MainActivity.Screens.MODE_SELECTION, "MODE_SELECTION",
+                                    android.R.anim.fade_in, android.R.anim.fade_out);
 
                         } else {
                             MainActivity.destroyUserSession();
@@ -116,7 +118,15 @@ public class LoginFragment extends Fragment implements HasSessionInfo{
             }
         });
 
-        MainActivity.applyLayoutDesign(rootView);
+        ViewGroup loginContainer = (ViewGroup)rootView.findViewById(R.id.login_fragment_container);
+        new SwipeDetector(loginContainer).setOnSwipeListener(new SwipeDetector.onSwipeEvent() {
+            @Override
+            public void SwipeEventDetected(View v, SwipeDetector.SwipeType swipeType) {
+                if (swipeType == SwipeDetector.SwipeType.BOTTOM_TO_TOP){
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
+            }
+        });
 
         return rootView;
     }

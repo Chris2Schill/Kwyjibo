@@ -2,6 +2,7 @@ package com.seniordesign.kwyjibo.fragments.recordmode;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -108,11 +109,12 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
                             public void onResponse(Call<SoundClipInfo> call, Response<SoundClipInfo> response) {
                                 if (response.body() != null) {
                                     Log.d(TAG, "" + response.body().toString());
-                                    moveSoundClipBasedOn(response.body());
-                                    deleteFile(tempOutputFile);
+//                                    moveSoundClipBasedOn(response.body());
+//                                    deleteFile(tempOutputFile);
                                     getActivity().getSupportFragmentManager().popBackStack();
-                                    MainActivity.replaceScreen(MainActivity.Screens.CURRENT_STATION, "CURRENT_STATION");
-                                } else if (response.errorBody() != null) {
+                                    MainActivity.replaceScreen(MainActivity.Screens.CURRENT_STATION, "CURRENT_STATION",
+                                            android.R.anim.fade_in, android.R.anim.fade_out);
+                                } else{
                                     Log.e(TAG, response.code() + "");
                                 }
                             }
@@ -122,7 +124,6 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
                                 Log.e(TAG, t.getMessage());
                             }
                         });
-                moveSoundClipBasedOn(clipInfo);
             }
         });
     }
