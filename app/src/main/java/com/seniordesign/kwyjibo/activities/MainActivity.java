@@ -8,9 +8,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import com.seniordesign.kwyjibo.beans.RadioStation;
-import com.seniordesign.kwyjibo.events.SoundClipsDataSetChanged;
-import com.seniordesign.kwyjibo.events.UnpauseObserverService;
 import com.seniordesign.kwyjibo.restapi.RestAPI;
 import com.seniordesign.kwyjibo.fragments.CreateStationFragment;
 import com.seniordesign.kwyjibo.fragments.ModeSelectionFragment;
@@ -26,9 +23,7 @@ import com.seniordesign.kwyjibo.services.ObserverService;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
