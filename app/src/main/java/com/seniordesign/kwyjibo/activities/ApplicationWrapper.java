@@ -17,6 +17,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.seniordesign.kwyjibo.LocalDBManager;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 
 /*
@@ -26,11 +28,28 @@ import com.seniordesign.kwyjibo.kwyjibo.R;
 public class ApplicationWrapper extends AppCompatActivity{
     protected static MainActivity context;
     protected static SharedPreferences.Editor prefsEditor;
+    protected static LocalDBManager localDBManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         prefsEditor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (localDBManager != null){
+            OpenHelperManager.releaseHelper();
+            localDBManager = null;
+        }
+        super.onDestroy();
+    }
+
+    public static LocalDBManager getDBManager(Context context){
+        if (localDBManager == null){
+            localDBManager = OpenHelperManager.getHelper(context, LocalDBManager.class);
+        }
+        return localDBManager;
     }
 
     /*
