@@ -10,20 +10,25 @@ import java.io.Serializable;
 public class RadioStation implements Serializable{
 
     private static final long serialVersionUID = -222864131214757024L;
+    public static final String ID = "Id";
+    public static final String NAME = "Name";
+    public static final String CREATED_BY = "CreatedBy";
+    public static final String GENRE = "Genre";
+    public static final String NUM_CURRENT_CLIPS = "NumCurrentClips";
 
-    @DatabaseField(columnName = "Id", id = true)
+    @DatabaseField(columnName = ID, id = true)
     public int Id;
 
-    @DatabaseField(columnName = "Name", canBeNull = false)
+    @DatabaseField(columnName = NAME, canBeNull = false)
     public String Name;
 
-    @DatabaseField(columnName = "CreatedBy", canBeNull = false)
+    @DatabaseField(columnName = CREATED_BY, canBeNull = false)
     public String CreatedBy;
 
-    @DatabaseField(columnName = "Genre", canBeNull = false)
+    @DatabaseField(columnName = GENRE, canBeNull = false)
     public String Genre;
 
-    @DatabaseField(columnName = "NumCurrentClips", canBeNull = false)
+    @DatabaseField(columnName = NUM_CURRENT_CLIPS, canBeNull = false)
     public int NumCurrentClips;
 
     public String toString(){
@@ -32,7 +37,6 @@ public class RadioStation implements Serializable{
              + ",\"CreatedBy\":"+CreatedBy
              + ",\"Genre\":"+Genre
              + ",\"NumCurrentClips\":"+NumCurrentClips+"}";
-
     }
 
 
