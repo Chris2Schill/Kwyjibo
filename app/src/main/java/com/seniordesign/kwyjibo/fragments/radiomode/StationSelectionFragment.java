@@ -1,6 +1,7 @@
 package com.seniordesign.kwyjibo.fragments.radiomode;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -41,6 +42,8 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
     private StationSelectListAdapter<String> listAdapter;
 
     private Parcelable state;
+
+    private View createStationDialog;
 
     private static final String TAG = "StationSelectionFrag";
 
@@ -121,12 +124,28 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
     }
 
     private void enableCreateStationButton(View v){
-        FloatingActionButton createStationButton = (FloatingActionButton) v.findViewById(R.id.create_station_button);
+        // We inflate the view this way to stay compatible with API-14.
+        final ViewGroup container = (ViewGroup)v.findViewById(R.id.create_station_activity_container);
+        createStationDialog = getActivity().getLayoutInflater()
+                .inflate(R.layout.create_station_fragment, container, false );
+
+        final FloatingActionButton createStationButton = (FloatingActionButton) v.findViewById(R.id.create_station_button);
         createStationButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.replaceScreen(MainActivity.Screens.CREATE_STATION, "CREATE_STATION",
-                        android.R.anim.fade_in, android.R.anim.fade_out);
+                AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                if (createStationDialog.getParent() == null){
+                    alertDialog.setView(createStationDialog);
+                }else{
+                    createStationDialog = null;
+                    createStationDialog = getActivity().getLayoutInflater()
+                            .inflate(R.layout.create_station_fragment, container, false);
+                    alertDialog.setView(createStationDialog);
+                }
+                alertDialog.show();
+
+//                new AlertDialog.Builder(getActivity())
+//                        .setView(createStationDialog).show();
             }
         });
     }

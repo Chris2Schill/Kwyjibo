@@ -44,8 +44,7 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
     private static final String TAG = "MainActivity";
 
     public enum Screens{
-        INTRO_TITLE, LOGIN, SIGNUP, MODE_SELECTION, RECORD_MODE, STATION_SELECTION, CREATE_STATION,
-        CURRENT_STATION
+        INTRO_TITLE, LOGIN, SIGNUP, MODE_SELECTION, RECORD_MODE, STATION_SELECTION, CURRENT_STATION
     }
 
     @Override
@@ -60,7 +59,6 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
         fragments.put(Screens.MODE_SELECTION, new ModeSelectionFragment());
         fragments.put(Screens.RECORD_MODE, new RecordModeFragment());
         fragments.put(Screens.STATION_SELECTION, new StationSelectionFragment());
-        fragments.put(Screens.CREATE_STATION, new CreateStationFragment());
         fragments.put(Screens.CURRENT_STATION, new StationFragment());
 
 
