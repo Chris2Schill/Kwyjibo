@@ -1,44 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ListView
+    <com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout
+        android:id="@+id/station_selection_swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/radio_mode_list_view"
-        android:divider="@color/lightGray"
-        android:dividerHeight="1dp"
-        android:scrollingCache="true"
-        android:smoothScrollbar="true"
-        android:layout_gravity="center_horizontal"
-        android:layout_above="@+id/create_station_button"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        app:srl_direction="both">
 
-    <Button
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="?android:attr/actionBarSize"
-        android:text="Create Station"
-        android:textColor="@color/white"
-        android:textSize="20dp"
-        android:background="@drawable/signup_button"
-        android:id="@+id/create_station_button"
-        android:layout_gravity="bottom"
-        android:layout_alignParentBottom="true"/>
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/radio_mode_list_view"
+            android:divider="@color/lightGray"
+            android:dividerHeight="1dp"
+            android:scrollingCache="true"
+            android:smoothScrollbar="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_above="@+id/create_station_button"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+    </com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout>
 
-    <Button
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+    <android.support.design.widget.FloatingActionButton
+        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:layout_height="?android:attr/actionBarSize"
-        android:text="Refresh List"
-        android:id="@+id/station_select_refresh_button"
-        android:background="@drawable/signup_button"
-        android:textColor="@color/white"
-        android:textSize="20sp"
+        app:layout_anchorGravity="bottom|right|end"
+        app:fabSize="normal"
+        android:src="@drawable/ic_plus"
+        android:clickable="true"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_margin="10dp"
+        android:id="@+id/create_station_button" />
 
 </RelativeLayout>

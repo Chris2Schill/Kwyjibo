@@ -1,9 +1,12 @@
 package com.seniordesign.kwyjibo.fragments.radiomode;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +15,9 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.j256.ormlite.table.TableUtils;
+import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 import com.seniordesign.kwyjibo.LocalDBManager;
 import com.seniordesign.kwyjibo.activities.ApplicationWrapper;
 import com.seniordesign.kwyjibo.restapi.RestAPI;
@@ -42,9 +47,9 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.station_selection_fragment, container, false);
+        ApplicationWrapper.applyLayoutDesign(rootView);
         enableStationListView(rootView);
         enableCreateStationButton(rootView);
-        enableRefreshButton(rootView);
 
         try {
             LocalDBManager dbManager = ApplicationWrapper.getDBManager(getActivity());
@@ -54,7 +59,27 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
             e.printStackTrace();
         }
 
-        ApplicationWrapper.applyLayoutDesign(rootView);
+        final SwipyRefreshLayout swipeLayout = (SwipyRefreshLayout)rootView.findViewById(R.id.station_selection_swipe_refresh_layout);
+        swipeLayout.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh(SwipyRefreshLayoutDirection direction) {
+                RestAPI.getStations(new Callback<List<RadioStation>>() {
+                    @Override
+                    public void onResponse(Call<List<RadioStation>> call, Response<List<RadioStation>> response) {
+                        if (response.body() != null) {
+                            updateStationsListView(response.body());
+                            swipeLayout.setRefreshing(false);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<RadioStation>> call, Throwable t) {
+                        Log.e(TAG, t.getMessage());
+                    }
+                });
+            }
+        });
+
         return rootView;
     }
 
@@ -90,13 +115,13 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 MainActivity.storePreference(CURRENT_STATION, listAdapter.getItem(position));
                 MainActivity.replaceScreen(MainActivity.Screens.CURRENT_STATION, "CURRENT_STATION",
-                        android.R.anim.fade_in, android.R.anim.fade_out );
+                        android.R.anim.fade_in, android.R.anim.fade_out);
             }
         });
     }
 
     private void enableCreateStationButton(View v){
-        Button createStationButton = (Button) v.findViewById(R.id.create_station_button);
+        FloatingActionButton createStationButton = (FloatingActionButton) v.findViewById(R.id.create_station_button);
         createStationButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,28 +129,6 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
                         android.R.anim.fade_in, android.R.anim.fade_out);
             }
         });
-    }
-
-    private void enableRefreshButton(View rootView){
-        rootView.findViewById(R.id.station_select_refresh_button).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        RestAPI.getStations(new Callback<List<RadioStation>>() {
-                            @Override
-                            public void onResponse(Call<List<RadioStation>> call, Response<List<RadioStation>> response) {
-                                if (response.body() != null) {
-                                    updateStationsListView(response.body());
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<List<RadioStation>> call, Throwable t) {
-                                Log.e(TAG, t.getMessage());
-                            }
-                        });
-                    }
-                });
     }
 
     private void updateStationsListView(List<RadioStation> stations){
@@ -144,7 +147,6 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
                 Log.e(TAG,e.getMessage());
             }
         }
-
     }
 }
 
