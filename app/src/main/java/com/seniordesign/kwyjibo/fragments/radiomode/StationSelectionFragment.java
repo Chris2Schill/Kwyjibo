@@ -106,7 +106,6 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
         }
     }
 
-
     private void enableStationListView(View v){
         listAdapter = new StationSelectListAdapter<>(getActivity(), R.layout.station_selection_list_item,
                 new ArrayList<String>());
