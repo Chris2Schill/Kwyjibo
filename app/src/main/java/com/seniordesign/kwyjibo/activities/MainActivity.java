@@ -6,11 +6,9 @@ import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.transition.Scene;
 import android.util.Log;
 
 import com.seniordesign.kwyjibo.restapi.RestAPI;
-import com.seniordesign.kwyjibo.fragments.CreateStationFragment;
 import com.seniordesign.kwyjibo.fragments.ModeSelectionFragment;
 import com.seniordesign.kwyjibo.fragments.login_signup.IntroTitleFragment;
 import com.seniordesign.kwyjibo.fragments.login_signup.LoginFragment;

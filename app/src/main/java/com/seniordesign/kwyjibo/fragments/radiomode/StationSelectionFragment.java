@@ -1,24 +1,27 @@
 package com.seniordesign.kwyjibo.fragments.radiomode;
 
-
-import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.j256.ormlite.table.TableUtils;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
+import com.seniordesign.kwyjibo.DialogDecorator;
 import com.seniordesign.kwyjibo.LocalDBManager;
 import com.seniordesign.kwyjibo.activities.ApplicationWrapper;
 import com.seniordesign.kwyjibo.restapi.RestAPI;
@@ -40,14 +43,9 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
 
     private ListView stationsListView;
     private StationSelectListAdapter<String> listAdapter;
-
     private Parcelable state;
-
-    private View createStationDialog;
-
     private static final String TAG = "StationSelectionFrag";
 
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.station_selection_fragment, container, false);
         ApplicationWrapper.applyLayoutDesign(rootView);
@@ -123,24 +121,61 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
     }
 
     private void enableCreateStationButton(View v){
-        // We inflate the view this way to stay compatible with API-14.
         final ViewGroup container = (ViewGroup)v.findViewById(R.id.create_station_activity_container);
-        createStationDialog = getActivity().getLayoutInflater()
-                .inflate(R.layout.create_station_fragment, container, false );
 
         final FloatingActionButton createStationButton = (FloatingActionButton) v.findViewById(R.id.create_station_button);
         createStationButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-                if (createStationDialog.getParent() == null){
-                    alertDialog.setView(createStationDialog);
-                }else{
-                    createStationDialog = null;
-                    createStationDialog = getActivity().getLayoutInflater()
-                            .inflate(R.layout.create_station_fragment, container, false);
-                    alertDialog.setView(createStationDialog);
-                }
+                final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                final DialogDecorator decorator = new DialogDecorator(R.layout.create_station_fragment, alertDialog, container);
+                decorator.setOnClickListener(R.id.create_station_confirm_button, new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        EditText stationNameEditText = (EditText)decorator.getView().findViewById(R.id.create_station_name_edittext);
+                        RadioGroup radioGroup = (RadioGroup) decorator.getView().findViewById(R.id.create_station_radio_group);
+                        List<String> genres = new ArrayList<>();
+                        genres.add("EDM");
+                        genres.add("Dubstep");
+                        genres.add("Jazz");
+
+                        if (radioGroup != null) {
+                            int genreIndex = radioGroup.indexOfChild(decorator.getView().findViewById(radioGroup.getCheckedRadioButtonId()));
+
+                            final RadioStation newStation = new RadioStation();
+                            newStation.Name = stationNameEditText.getText().toString();
+                            newStation.CreatedBy = MainActivity.getStringPreference(USER_NAME);
+                            newStation.Genre = genres.get(genreIndex);
+                            String userId = MainActivity.getStringPreference(USER_ID);
+                            String authToken = MainActivity.getStringPreference(AUTH_TOKEN);
+
+                            RestAPI.createStation(newStation, userId, authToken, new Callback<Boolean>() {
+                                @Override
+                                public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                                    if (response.body() != null){
+                                        if (response.body()){
+                                            Toast.makeText(getActivity(), "Station Added", Toast.LENGTH_LONG).show();
+                                            listAdapter.add(newStation.Name);
+                                            listAdapter.notifyDataSetChanged();
+                                            alertDialog.dismiss();
+                                        }
+                                    }else{
+                                        Log.e(TAG, "Response body is null.");
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<Boolean> call, Throwable t) {
+                                    Toast.makeText(getActivity(), "Station Not Added", Toast.LENGTH_LONG).show();
+                                    Log.e(TAG,t.getMessage());
+
+                                }
+                            });
+                        } else {
+                            Log.e(TAG, "Reference to RadioGroup create_station_radio_group is null.");
+                        }
+                    }
+                });
                 alertDialog.show();
             }
         });
