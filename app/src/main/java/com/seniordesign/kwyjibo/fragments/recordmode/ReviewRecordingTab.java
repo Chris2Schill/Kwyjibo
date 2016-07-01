@@ -48,7 +48,8 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
         updateSpinner(rootView);
 
         clipNameEditText = (ValidatableEditText)rootView.findViewById(R.id.review_recording_soundclip_name_edittext);
-        tempOutputFile = getActivity().getFilesDir().toString() + "/recording.3gp";
+//        tempOutputFile = getActivity().getFilesDir().toString() + "/recording.3gp";
+        tempOutputFile = Environment.getExternalStorageDirectory().toString() + "/recording.3gp";
 
         ApplicationWrapper.applyLayoutDesign(rootView);
         return rootView;
@@ -115,7 +116,7 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
                                     MainActivity.replaceScreen(MainActivity.Screens.CURRENT_STATION, "CURRENT_STATION",
                                             android.R.anim.fade_in, android.R.anim.fade_out);
                                 } else{
-                                    Log.e(TAG, response.code() + "");
+                                        Log.e(TAG, "Http status:" + response.code());
                                 }
                             }
 
