@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion "24.0.0"
 
     defaultConfig {
         applicationId "com.seniordesign.kwyjibo.kwyjibo"
@@ -21,23 +21,28 @@ android {
         }
     }
     dataBinding{
-        enabled = true
+        //enabled = true
     }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.3.0'
-    compile 'com.android.support:design:23.3.0'
-    //compile 'com.google.android.gms:play-services-auth:8.4.0'
-    compile 'com.google.android.gms:play-services:8.4.0'
+    compile 'com.android.support:appcompat-v7:24.0.0'
+    compile 'com.android.support:design:24.0.0'
+    compile 'com.google.android.gms:play-services-auth:8.4.0'
+//    compile 'com.google.android.gms:play-services:8.4.0'
     compile 'org.greenrobot:eventbus:3.0.0'
 //    compile 'com.jakewharton:butterknife:8.0.1'
     compile 'com.squareup.retrofit2:retrofit:2.0.2'
     compile 'com.squareup.retrofit2:converter-gson:2.0.2'
+
+    // sqlite wrapper
     compile 'com.j256.ormlite:ormlite-android:4.48'
     compile 'com.j256.ormlite:ormlite-core:4.48'
+
+    //SwipyRefreshLayout
+    compile 'com.github.orangegangsters:swipy:1.2.3@aar'
 }
 
 //apply plugin: 'com.google.gms.google-services'
