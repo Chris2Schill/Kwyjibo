@@ -2,3 +2,6 @@
 
 --Test SoundClip upload to server-- *Remember to comment out the authentication guard*
 curl -F stationName=Jamtown -F clipName=Gurly -F category=5 -F location=Orlando -F username=admin -F boof3=@README.md motw.tech/api/UploadSoundClipToStation.aspx --trace-ascii /dev/stdout
+
+--Test Adding a Station to the database-- *Remember to comment out the authentication guard*
+curl -F stationName=Curl2 -F createdBy=Curl -F genre=WOAH motw.tech/api/AddStation.aspx
