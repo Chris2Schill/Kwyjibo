@@ -143,9 +143,6 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
                     alertDialog.setView(createStationDialog);
                 }
                 alertDialog.show();
-
-//                new AlertDialog.Builder(getActivity())
-//                        .setView(createStationDialog).show();
             }
         });
     }
