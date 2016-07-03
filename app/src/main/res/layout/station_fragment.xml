@@ -4,8 +4,6 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:paddingBottom="3dp"
-    android:clipToPadding="false"
     android:weightSum="2"
     android:orientation="vertical">
 
@@ -22,6 +20,8 @@
             android:layout_height="wrap_content"
             android:divider="@color/lightGray"
             android:dividerHeight="4px"
+            android:elevation="3dp"
+            android:outlineProvider="bounds"
             android:id="@+id/station_fragment_current_sounds_listview"/>
 
     </FrameLayout>
