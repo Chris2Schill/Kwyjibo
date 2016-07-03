@@ -17,8 +17,12 @@
     <color name="lightestGray">#8f8f8f</color>
     <color name="lightYellow">#FFFDE7</color>
     <color name="yellow">#FFF176</color>
+
     <color name="blueGray_50">#ECEFF1</color>
     <color name="blueGray_600">#546E7A</color>
+    <color name="blueGray_700">#455A64</color>
+    <color name="blueGray_800">#37474F</color>
+    <color name="blueGray_900">#263238</color>
 
 
 </resources>
