@@ -55,21 +55,21 @@ public class ApplicationWrapper extends AppCompatActivity{
     /*
      *  Applies various layout settings to all views within the rootView.
      *  This sort of acts as a global settings manager for different types of view objects.
-     *  TODO: Support nested ViewGroups
      */
     public static void applyLayoutDesign(View rootView) {
         Typeface font = Typeface.createFromAsset(context.getAssets(), "fonts/ProximaNova-Semibold.otf");
         ViewGroup v = (ViewGroup) rootView;
         for (int i = 0; i < v.getChildCount(); i++) {
             View child = v.getChildAt(i);
+            if (child instanceof ViewGroup){
+                applyLayoutDesign(child);
+            }
             if (child instanceof TextView) {
                 ((TextView)child).setTypeface(font);
-                ((TextView)child).setTextColor(Color.WHITE);
             }
             if (child instanceof EditText) {
                 EditText editText = (EditText)child;
                 editText.setTypeface(font);
-                child.setBackgroundColor(context.getResources().getColor(R.color.darkGray));
             }
             if (child instanceof Button) {
                 ((Button) child).setTypeface(font);
