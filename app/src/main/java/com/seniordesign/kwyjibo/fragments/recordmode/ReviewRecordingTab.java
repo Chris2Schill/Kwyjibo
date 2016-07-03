@@ -187,7 +187,7 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
     private void updateSpinner(View rootView){
         spinner = (Spinner)rootView.findViewById(R.id.review_recording_category_spinner);
         spinnerAdapter = new ArrayAdapter<>(getActivity(),
-                R.layout.station_selection_list_item, new ArrayList<String>());
+                android.R.layout.simple_spinner_dropdown_item, new ArrayList<String>());
         spinner.setAdapter(spinnerAdapter);
 
         RestAPI.getCategories(new Callback<List<String>>() {

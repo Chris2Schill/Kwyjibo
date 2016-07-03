@@ -102,9 +102,9 @@
         android:layout_height="?android:actionBarSize"
         android:text="Create Station"
         android:textSize="20dp"
-        android:background="@drawable/signup_button"
+        android:background="@drawable/light_yellow_button"
         android:id="@+id/create_station_confirm_button"
-        android:textColor="@color/white"
+        android:textColor="@color/lightestGray"
         android:layout_below="@+id/create_station_line_separator_3"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />

@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/signup_fragment_container"
-    android:background="@color/black"
+    android:background="@color/lightYellow"
+    android:elevation="3dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical">
 
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="?attr/actionBarSize"
         android:text="SIGN UP"
-        android:textColor="@color/white"
+        android:textColor="@color/darkGray"
         android:id="@+id/signup_fragment_signup_textview"
         android:layout_gravity="center_horizontal"
         android:gravity="center_vertical|center_horizontal"
@@ -46,8 +48,8 @@
         android:layout_below="@+id/signup_fragment_withemail_textview"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:textColor="@color/lightestGray"
-        android:textColorHint="@color/lightestGray"
+        android:textColor="@color/darkGray"
+        android:textColorHint="@color/darkGray"
         android:drawableLeft="@drawable/ic_action_mail"/>
 
     <View
@@ -65,8 +67,8 @@
         android:id="@+id/signup_fragment_password_edittext"
         android:layout_gravity="center_horizontal"
         android:hint="Choose password"
-        android:textColor="@color/lightestGray"
-        android:textColorHint="@color/lightestGray"
+        android:textColor="@color/darkGray"
+        android:textColorHint="@color/darkGray"
         android:layout_below="@+id/signup_fragment_line_separator_1"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -88,8 +90,8 @@
         android:hint="Choose username"
         android:layout_below="@+id/signup_fragment_line_separator_2"
         android:layout_centerHorizontal="true"
-        android:textColor="@color/lightestGray"
-        android:textColorHint="@color/lightestGray"
+        android:textColor="@color/darkGray"
+        android:textColorHint="@color/darkGray"
         android:drawableLeft="@drawable/ic_action_user"
         android:inputType="text" />
 
@@ -110,14 +112,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="By proceeding you also agree to Kwyjibo's Terms of Service and Privacy Policy"
-        android:textColor="@color/white"
-        android:background="@color/darkGray"
+        android:textColor="@color/darkGray"
         android:id="@+id/signup_fragment_disclaimer_textview"
-        android:paddingTop="7dp"
-        android:paddingBottom="7dp"
         android:gravity="center_vertical|center_horizontal"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/signup_fragment_signup_button"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:paddingTop="7dp" />
+
+
 
 </RelativeLayout>

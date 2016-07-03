@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/lightYellow"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,68 +12,62 @@
         android:layout_height="wrap_content"
         android:textSize="40sp"
         android:text="@string/app_name"
-        android:textColor="@color/white"
+        android:textColor="@color/lightGray"
         android:id="@+id/mode_selection_title_textview"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="50dp"
-        android:typeface="monospace" />
+        android:layout_marginBottom="50dp" />
 
-    <Button
-        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
+
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:elevation="10dp"
-        android:text="Record"
-        android:textSize="16sp"
         android:id="@+id/record_mode_button"
-        android:background="@drawable/signup_button"
-        android:textColor="@color/white"
+        android:background="@null"
         android:layout_below="@+id/mode_selection_title_textview"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
-        android:layout_marginBottom="15dp" />
+        android:layout_marginBottom="15dp"
+        app:srcCompat="@drawable/ic_microphone"
+        tools:ignore="MissingPrefix" />
 
-    <Button
-        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Radio"
-        android:textSize="16sp"
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:elevation="10dp"
         android:id="@+id/radio_mode_button"
-        android:background="@drawable/signup_button"
-        android:textColor="@color/white"
+        android:background="@null"
         android:layout_below="@+id/record_mode_button"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp" />
+        android:layout_marginBottom="15dp"
+        app:srcCompat="@drawable/ic_radio"
+        tools:ignore="MissingPrefix" />
 
-    <Button
-        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="Studio"
-        android:textSize="16sp"
+    <ImageView
+        android:layout_height="60dp"
+        android:layout_width="60dp"
+        android:elevation="10dp"
         android:id="@+id/studio_mode_button"
-        android:background="@drawable/signup_button"
-        android:textColor="@color/white"
         android:layout_below="@+id/radio_mode_button"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp" />
+        android:layout_marginBottom="15dp"
+        app:srcCompat="@drawable/ic_music_note"
+        tools:ignore="MissingPrefix"/>
 
-    <Button
-        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Signout"
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:id="@+id/signout_button"
-        android:background="@drawable/signup_button"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:textColor="@color/white" />
+        android:layout_margin="16dp"
+        app:srcCompat="@drawable/ic_logout"
+        tools:ignore="MissingPrefix" />
 
 
 </RelativeLayout>

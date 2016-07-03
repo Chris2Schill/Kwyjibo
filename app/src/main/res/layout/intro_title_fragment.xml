@@ -1,9 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/intro_title_rootviewgroup"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/mic_on_black"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.seniordesign.kwyjibo.activities.MainActivity">
 
@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:textSize="40sp"
         android:text="Kwyjibo"
-        android:textColor="@color/white"
+        android:textColor="@color/lightGray"
         android:id="@+id/intro_fragment_appname_text_view"
         android:layout_marginTop="20dp"
         android:layout_alignParentTop="true"
@@ -20,17 +20,29 @@
         android:layout_marginBottom="50dp"
         android:typeface="monospace" />
 
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:elevation="10dp"
+        android:id="@+id/intro_title_logo"
+        android:background="@null"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        app:srcCompat="@drawable/ic_radio"
+        tools:ignore="MissingPrefix" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:elevation="3dp"
         android:weightSum="2"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:id="@+id/linearLayout">
 
         <Button
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="?attr/actionBarSize"
             android:layout_weight="1"
@@ -41,14 +53,13 @@
             android:id="@+id/login_button" />
 
         <Button
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="?attr/actionBarSize"
             android:layout_weight="1"
             android:text="SIGN UP"
             android:textSize="20sp"
-            android:textColor="@color/white"
-            android:background="@drawable/signup_button"
+            android:textColor="@color/lightestGray"
+            android:background="@drawable/light_yellow_button"
             android:id="@+id/intro_fragment_signup_button"/>
 
     </LinearLayout>
@@ -60,7 +71,7 @@
         android:id="@+id/intro_fragment_description_textview"
         android:layout_above="@+id/linearLayout"
         android:layout_centerHorizontal="true"
-        android:textColor="@color/white" />
+        android:textColor="@color/lightGray" />
 
 
 </RelativeLayout>

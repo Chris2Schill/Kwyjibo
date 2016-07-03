@@ -2,27 +2,60 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/lightYellow"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/station_selection_header"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="3dp"
+        android:background="@color/lightYellow"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/station_selection_radio_icon"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            app:srcCompat="@drawable/ic_radio"
+            tools:ignore="MissingPrefix"/>
+
+        <View
+            android:id="@+id/station_selection_divider_1"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_below="@id/station_selection_radio_icon"
+            android:background="@color/lightestGray"/>
+
+    </LinearLayout>
 
     <com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout
         android:id="@+id/station_selection_swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/station_selection_header"
         app:srl_direction="both">
 
         <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/radio_mode_list_view"
-            android:divider="@color/lightGray"
-            android:dividerHeight="1dp"
+            android:divider="@color/white"
+            android:dividerHeight="0dp"
             android:scrollingCache="true"
             android:smoothScrollbar="true"
             android:layout_gravity="center_horizontal"
             android:layout_above="@+id/create_station_button"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:contextClickable="false" />
     </com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout>
+
 
     <android.support.design.widget.FloatingActionButton
         android:layout_height="wrap_content"
