@@ -2,6 +2,7 @@ package com.seniordesign.kwyjibo.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,13 +34,14 @@ public class StationSelectListAdapter<T> extends ArrayAdapter<T> {
             mView = inflater.inflate(id, parent, false);
         }
 
-        TextView text = (TextView)mView.findViewById(R.id.radio_mode_list_item_textview);
+        TextView text = (TextView)mView.findViewById(R.id.station_selection_cardview_textview);
 
         if(items.get(position) != null ) {
             Typeface proximaNova = Typeface.createFromAsset(context.getAssets(),"fonts/ProximaNova-Semibold.otf");
             if (items.get(position) instanceof String){
                 text.setTypeface(proximaNova);
                 text.setText((String)items.get(position));
+
             }
         }
 
