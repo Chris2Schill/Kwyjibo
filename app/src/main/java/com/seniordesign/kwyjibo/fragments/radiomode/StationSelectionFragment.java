@@ -129,7 +129,7 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
             public void onClick(View v) {
                 final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
                 final DialogDecorator decorator = new DialogDecorator(R.layout.create_station_fragment, alertDialog, container);
-                decorator.setOnClickListener(R.id.create_station_confirm_button, new View.OnClickListener(){
+                decorator.setOnClickListenerFor(R.id.create_station_confirm_button, new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
                         EditText stationNameEditText = (EditText)decorator.getView().findViewById(R.id.create_station_name_edittext);
