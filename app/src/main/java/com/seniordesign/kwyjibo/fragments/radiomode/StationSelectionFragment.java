@@ -114,7 +114,7 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
         stationsListView.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                MainActivity.storePreference(CURRENT_STATION, listAdapter.getItem(position));
+                MainActivity.storePreference(CURRENT_STATION, listAdapter.getItem(position).Name);
                 MainActivity.replaceScreen(MainActivity.Screens.CURRENT_STATION, "CURRENT_STATION",
                         android.R.anim.fade_in, android.R.anim.fade_out);
             }

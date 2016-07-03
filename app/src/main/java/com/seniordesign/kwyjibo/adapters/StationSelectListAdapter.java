@@ -36,15 +36,18 @@ public class StationSelectListAdapter<T> extends ArrayAdapter<T> {
         }
 
         TextView stationName = (TextView)mView.findViewById(R.id.station_selection_cardview_textview);
-        TextView  numClips = (TextView)mView.findViewById(R.id.station_selection_cardview_numclips_textview);
+        TextView numClips = (TextView)mView.findViewById(R.id.station_selection_cardview_numclips_textview);
+        T item = items.get(position);
 
-        if(items.get(position) != null && items.get(position) instanceof RadioStation ) {
+        if(item != null && item instanceof RadioStation) {
+            RadioStation station = (RadioStation)item;
             Typeface proximaNova = Typeface.createFromAsset(context.getAssets(),"fonts/ProximaNova-Semibold.otf");
+
             stationName.setTypeface(proximaNova);
-            stationName.setText(((RadioStation)items.get(position)).Name);
+            stationName.setText(station.Name);
 
             numClips.setTypeface(proximaNova);
-            numClips.setText(((RadioStation)items.get(position)).NumCurrentClips + "");
+            numClips.setText(station.NumCurrentClips + "");
         }
 
         return mView;
