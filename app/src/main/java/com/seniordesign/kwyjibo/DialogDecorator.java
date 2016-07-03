@@ -36,7 +36,7 @@ public class DialogDecorator {
                 .inflate(layoutId, container, false);
     }
 
-    public void setOnClickListener(int resourceId, View.OnClickListener listener){
+    public void setOnClickListenerFor(int resourceId, View.OnClickListener listener){
         view.findViewById(resourceId).setOnClickListener(listener);
     }
 
