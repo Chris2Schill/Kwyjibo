@@ -33,6 +33,7 @@ import com.seniordesign.kwyjibo.kwyjibo.R;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
@@ -42,7 +43,7 @@ import retrofit2.Response;
 public class StationSelectionFragment extends Fragment implements HasSessionInfo {
 
     private ListView stationsListView;
-    private StationSelectListAdapter<String> listAdapter;
+    private StationSelectListAdapter<RadioStation> listAdapter;
     private Parcelable state;
     private static final String TAG = "StationSelectionFrag";
 
@@ -106,7 +107,7 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
 
     private void enableStationListView(View v){
         listAdapter = new StationSelectListAdapter<>(getActivity(), R.layout.station_selection_list_item,
-                new ArrayList<String>());
+                new ArrayList<RadioStation>());
 
         stationsListView = (ListView) v.findViewById(R.id.radio_mode_list_view);
         stationsListView.setAdapter(listAdapter);
@@ -155,7 +156,7 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
                                     if (response.body() != null){
                                         if (response.body()){
                                             Toast.makeText(getActivity(), "Station Added", Toast.LENGTH_LONG).show();
-                                            listAdapter.add(newStation.Name);
+                                            listAdapter.add(newStation);
                                             listAdapter.notifyDataSetChanged();
                                             alertDialog.dismiss();
                                         }
@@ -183,6 +184,7 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
 
     private void updateStationsListView(List<RadioStation> stations){
         listAdapter.clear();
+        Collections.sort(stations);
         LocalDBManager db = ApplicationWrapper.getDBManager(getActivity());
         try {
             TableUtils.clearTable(db.getConnectionSource(), RadioStation.class);
@@ -190,7 +192,7 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
             Log.e(TAG, e.getMessage());
         }
         for (RadioStation station : stations) {
-            listAdapter.add(station.Name);
+            listAdapter.add(station);
             try {
                 db.getStationDao().create(station);
             } catch (SQLException e) {

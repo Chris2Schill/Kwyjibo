@@ -1,13 +1,15 @@
 package com.seniordesign.kwyjibo.beans;
 
 
+import android.support.annotation.NonNull;
+
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import java.io.Serializable;
 
 @DatabaseTable(tableName = "stations")
-public class RadioStation implements Serializable{
+public class RadioStation implements Serializable, Comparable<RadioStation>{
 
     private static final long serialVersionUID = -222864131214757024L;
     public static final String ID = "Id";
@@ -39,5 +41,15 @@ public class RadioStation implements Serializable{
              + ",\"NumCurrentClips\":"+NumCurrentClips+"}";
     }
 
-
+    @Override
+    public int compareTo(@NonNull RadioStation another) {
+        // Highest to lowest / Descending
+        if (NumCurrentClips < another.NumCurrentClips){
+            return 1;
+        }else if (NumCurrentClips > another.NumCurrentClips){
+            return -1;
+        }else{
+            return 0;
+        }
+    }
 }

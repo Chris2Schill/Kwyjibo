@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.seniordesign.kwyjibo.beans.RadioStation;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 
 import java.util.List;
@@ -34,15 +35,16 @@ public class StationSelectListAdapter<T> extends ArrayAdapter<T> {
             mView = inflater.inflate(id, parent, false);
         }
 
-        TextView text = (TextView)mView.findViewById(R.id.station_selection_cardview_textview);
+        TextView stationName = (TextView)mView.findViewById(R.id.station_selection_cardview_textview);
+        TextView  numClips = (TextView)mView.findViewById(R.id.station_selection_cardview_numclips_textview);
 
-        if(items.get(position) != null ) {
+        if(items.get(position) != null && items.get(position) instanceof RadioStation ) {
             Typeface proximaNova = Typeface.createFromAsset(context.getAssets(),"fonts/ProximaNova-Semibold.otf");
-            if (items.get(position) instanceof String){
-                text.setTypeface(proximaNova);
-                text.setText((String)items.get(position));
+            stationName.setTypeface(proximaNova);
+            stationName.setText(((RadioStation)items.get(position)).Name);
 
-            }
+            numClips.setTypeface(proximaNova);
+            numClips.setText(((RadioStation)items.get(position)).NumCurrentClips + "");
         }
 
         return mView;
