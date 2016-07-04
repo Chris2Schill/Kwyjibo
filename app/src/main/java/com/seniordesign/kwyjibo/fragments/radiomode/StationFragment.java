@@ -15,10 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.j256.ormlite.stmt.QueryBuilder;
-import com.seniordesign.kwyjibo.LocalDBManager;
 import com.seniordesign.kwyjibo.activities.ApplicationWrapper;
-import com.seniordesign.kwyjibo.beans.RadioStation;
 import com.seniordesign.kwyjibo.restapi.RestAPI;
 import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.seniordesign.kwyjibo.adapters.SoundClipInfoAdapter;
@@ -33,7 +30,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -130,7 +126,7 @@ public class StationFragment extends Fragment implements HasSessionInfo{
         clipListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                String clipName = ((TextView)view.findViewById(R.id.studio_mode_list_item_soundname_textview)).getText().toString();
+                String clipName = ((TextView)view.findViewById(R.id.soundclip_listitem_soundname_textview)).getText().toString();
 //                LocalDBManager db = ApplicationWrapper.getDBManager(getActivity());
 //                SoundClipInfo station = null;
 //                try {
