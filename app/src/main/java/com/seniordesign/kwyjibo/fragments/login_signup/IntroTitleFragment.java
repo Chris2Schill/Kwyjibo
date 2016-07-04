@@ -1,23 +1,11 @@
 package com.seniordesign.kwyjibo.fragments.login_signup;
 
-import android.animation.AnimatorInflater;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.os.Bundle;
-import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.LayoutInflaterCompat;
-import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
-import com.seniordesign.kwyjibo.FlipListener;
 import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 
