@@ -27,6 +27,9 @@ public interface GETRequest {
     @GET("api/GetCategories.aspx")
     Call<List<String>> requestCategories();
 
+    @GET("api/GetAllSoundClipInfo.aspx")
+    Call<List<SoundClipInfo>> getAllSoundClipInfo();
+
 
 
 }

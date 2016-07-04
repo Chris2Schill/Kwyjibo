@@ -96,6 +96,12 @@ public class RestAPI{
         call.enqueue(callback);
     }
 
+    public static void getAllSoundClipInfo(Callback<List<SoundClipInfo>> callback){
+        GETRequest api = retrofit.create(GETRequest.class);
+        final Call<List<SoundClipInfo>> call = api.getAllSoundClipInfo();
+        call.enqueue(callback);
+    }
+
     private static final Retrofit retrofit = new Retrofit.Builder().baseUrl(API_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build();
