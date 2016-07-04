@@ -5,9 +5,7 @@ import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.QuickContactBadge;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,11 +41,11 @@ public class SoundClipInfoAdapter extends ArrayAdapter<SoundClipInfo> {
         SoundClipInfo clip = soundClipInfoList.get(position);
         if (clip != null){
             TextView soundName = (TextView) convertView
-                    .findViewById(R.id.studio_mode_list_item_soundname_textview);
+                    .findViewById(R.id.soundclip_listitem_soundname_textview);
             TextView contributor = (TextView) convertView
-                    .findViewById(R.id.studio_mode_list_item_contributors_name_textview);
+                    .findViewById(R.id.soundclip_listitem_contributorsname_textview);
             TextView location = (TextView) convertView
-                    .findViewById(R.id.studio_mode_list_item_location_textview);
+                    .findViewById(R.id.soundclip_listitem_location_textview);
             if (soundName != null){
                 if (font != null){
                     soundName.setTypeface(font);
@@ -68,7 +66,7 @@ public class SoundClipInfoAdapter extends ArrayAdapter<SoundClipInfo> {
             }
         }
 
-        convertView.findViewById(R.id.sound_clip_list_item_playsoundclip_button)
+        convertView.findViewById(R.id.soundclip_listitem_playsoundclip_button)
                 .setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
