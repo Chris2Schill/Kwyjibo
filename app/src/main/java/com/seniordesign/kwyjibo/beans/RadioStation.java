@@ -9,7 +9,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import java.io.Serializable;
 
 @DatabaseTable(tableName = "stations")
-public class RadioStation implements Serializable, Comparable<RadioStation>{
+public class RadioStation implements Serializable{
 
     private static final long serialVersionUID = -222864131214757024L;
     public static final String ID = "Id";
@@ -39,17 +39,5 @@ public class RadioStation implements Serializable, Comparable<RadioStation>{
              + ",\"CreatedBy\":"+CreatedBy
              + ",\"Genre\":"+Genre
              + ",\"NumCurrentClips\":"+NumCurrentClips+"}";
-    }
-
-    @Override
-    public int compareTo(@NonNull RadioStation another) {
-        // Highest to lowest / Descending
-        if (NumCurrentClips < another.NumCurrentClips){
-            return 1;
-        }else if (NumCurrentClips > another.NumCurrentClips){
-            return -1;
-        }else{
-            return 0;
-        }
     }
 }
