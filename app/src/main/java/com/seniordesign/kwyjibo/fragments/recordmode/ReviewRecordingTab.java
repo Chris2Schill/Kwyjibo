@@ -133,7 +133,7 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
         SoundClipInfo clip = new SoundClipInfo();
         clip.Name = clipNameEditText.getText().toString();
         clip.CreatedBy = ApplicationWrapper.getStringPreference(USER_NAME);
-        clip.Location = "NO LOCATION SERVICE YET";
+        clip.Location = "None";
         clip.Category = (spinner.getSelectedItemPosition() + 1) + "";
         return clip;
     }
