@@ -1,5 +1,6 @@
 package com.seniordesign.kwyjibo.restapi;
 
+import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
@@ -9,6 +10,10 @@ import com.seniordesign.kwyjibo.beans.SessionInfo;
 import com.seniordesign.kwyjibo.beans.SoundClipInfo;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -91,8 +96,8 @@ public class RestAPI{
         RequestBody id = RequestBody.create(MediaType.parse("multipart/form-data"), userId);
         RequestBody token = RequestBody.create(MediaType.parse("multipart/form-data"), authToken);
 
-        Call<SoundClipInfo> call = api.uploadSoundClip(soundClipFile, station, clipName, username, location,
-                category, id, token);
+        final Call<SoundClipInfo> call = api.uploadSoundClip(soundClipFile, station, clipName,
+                username, location, category, id, token);
         call.enqueue(callback);
     }
 
@@ -102,8 +107,17 @@ public class RestAPI{
         call.enqueue(callback);
     }
 
+    public static void getSoundClip(String clipName, Callback<ResponseBody> callback){
+        GETRequest api = retrofit.create(GETRequest.class);
+        final Call<ResponseBody> call = api.getSoundClip(clipName);
+
+        call.enqueue(callback);
+    }
+
     private static final Retrofit retrofit = new Retrofit.Builder().baseUrl(API_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build();
+
+
 
 }

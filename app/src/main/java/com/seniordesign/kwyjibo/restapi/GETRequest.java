@@ -6,6 +6,7 @@ import com.seniordesign.kwyjibo.beans.SoundClipInfo;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -29,6 +30,9 @@ public interface GETRequest {
 
     @GET("api/GetAllSoundClipInfo.aspx")
     Call<List<SoundClipInfo>> getAllSoundClipInfo();
+
+    @GET("api/GetSoundClip.aspx")
+    Call<ResponseBody> getSoundClip(@Query("clipName") String clipName);
 
 
 
