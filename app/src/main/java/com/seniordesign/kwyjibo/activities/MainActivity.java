@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
+import com.seniordesign.kwyjibo.fragments.studiomode.StudioModeFragment;
 import com.seniordesign.kwyjibo.restapi.RestAPI;
 import com.seniordesign.kwyjibo.fragments.ModeSelectionFragment;
 import com.seniordesign.kwyjibo.fragments.login_signup.IntroTitleFragment;
@@ -42,7 +43,8 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
     private static final String TAG = "MainActivity";
 
     public enum Screens{
-        INTRO_TITLE, LOGIN, SIGNUP, MODE_SELECTION, RECORD_MODE, STATION_SELECTION, CURRENT_STATION
+        INTRO_TITLE, LOGIN, SIGNUP, MODE_SELECTION, RECORD_MODE, STATION_SELECTION, STUDIO_MODE,
+        CURRENT_STATION
     }
 
     @Override
@@ -58,7 +60,7 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
         fragments.put(Screens.RECORD_MODE, new RecordModeFragment());
         fragments.put(Screens.STATION_SELECTION, new StationSelectionFragment());
         fragments.put(Screens.CURRENT_STATION, new StationFragment());
-
+        fragments.put(Screens.STUDIO_MODE, new StudioModeFragment());
 
         EventBus.getDefault().register(getFragment(Screens.CURRENT_STATION));
 

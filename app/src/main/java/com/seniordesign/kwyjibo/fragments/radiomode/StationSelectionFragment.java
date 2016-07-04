@@ -24,12 +24,15 @@ import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutD
 import com.seniordesign.kwyjibo.DialogDecorator;
 import com.seniordesign.kwyjibo.LocalDBManager;
 import com.seniordesign.kwyjibo.activities.ApplicationWrapper;
+import com.seniordesign.kwyjibo.adapters.SwipeDetector;
 import com.seniordesign.kwyjibo.restapi.RestAPI;
 import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.seniordesign.kwyjibo.adapters.StationSelectListAdapter;
 import com.seniordesign.kwyjibo.beans.RadioStation;
 import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
 import com.seniordesign.kwyjibo.kwyjibo.R;
+import com.seniordesign.kwyjibo.sorting.AscendingClipName;
+import com.seniordesign.kwyjibo.sorting.DescendingNumClips;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -119,6 +122,15 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
                         android.R.anim.fade_in, android.R.anim.fade_out);
             }
         });
+
+        new SwipeDetector(stationsListView).setOnSwipeListener(new SwipeDetector.onSwipeEvent() {
+            @Override
+            public void SwipeEventDetected(View v, SwipeDetector.SwipeType swipeType) {
+                if (swipeType == SwipeDetector.SwipeType.LEFT_TO_RIGHT){
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
+            }
+        });
     }
 
     private void enableCreateStationButton(View v){
@@ -184,7 +196,7 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
 
     private void updateStationsListView(List<RadioStation> stations){
         listAdapter.clear();
-        Collections.sort(stations);
+        Collections.sort(stations, new DescendingNumClips());
         LocalDBManager db = ApplicationWrapper.getDBManager(getActivity());
         try {
             TableUtils.clearTable(db.getConnectionSource(), RadioStation.class);
