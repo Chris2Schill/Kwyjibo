@@ -14,11 +14,11 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="3"
-        android:id="@+id/sound_clip_listitem_name_relativelayout"
+        android:id="@+id/soundclip_listitem_name_relativelayout"
         android:gravity="center_horizontal">
 
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/studio_mode_list_item_soundname_textview"
+            android:id="@+id/soundclip_listitem_soundname_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -40,7 +40,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/studio_mode_list_item_contributors_name_textview"
+            android:id="@+id/soundclip_listitem_contributorsname_textview"
             android:textSize="12sp"
             android:text="name"
             android:textColor="@color/lightestGray"
@@ -53,7 +53,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/studio_mode_list_item_location_textview"
+            android:id="@+id/soundclip_listitem_location_textview"
             android:textSize="12sp"
             android:text="location"
             android:textColor="@color/lightestGray"
@@ -72,7 +72,7 @@
         android:gravity="center_horizontal">
 
         <ImageView
-            android:id="@+id/sound_clip_list_item_playsoundclip_button"
+            android:id="@+id/soundclip_listitem_playsoundclip_button"
             android:layout_width="36dp"
             android:layout_height="36dp"
             app:srcCompat="@drawable/ic_play_circle_outline"
