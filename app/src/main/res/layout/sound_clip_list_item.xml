@@ -14,8 +14,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="3"
-        android:id="@+id/soundclip_listitem_name_relativelayout"
-        android:gravity="center_horizontal">
+        android:id="@+id/soundclip_listitem_name_relativelayout">
 
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/soundclip_listitem_soundname_textview"
