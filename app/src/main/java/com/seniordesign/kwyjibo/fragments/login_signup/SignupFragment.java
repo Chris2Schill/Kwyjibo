@@ -58,7 +58,6 @@ public class SignupFragment extends Fragment implements HasSessionInfo{
                         String email = emailEditText.getText().toString();
                         String password = passwordEditText.getText().toString();
 
-
                         RestAPI.requestSignup(username, email, password, new Callback<SessionInfo>() {
                             @Override
                             public void onResponse(Call<SessionInfo> call, Response<SessionInfo> response) {

@@ -49,7 +49,7 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
 
         clipNameEditText = (ValidatableEditText)rootView.findViewById(R.id.review_recording_soundclip_name_edittext);
 //        tempOutputFile = getActivity().getFilesDir().toString() + "/recording.3gp";
-        tempOutputFile = Environment.getExternalStorageDirectory().toString() + "/recording.3gp";
+        tempOutputFile = Environment.getExternalStorageDirectory().toString() + "/recording.mp3";
 
         ApplicationWrapper.applyLayoutDesign(rootView);
         return rootView;
@@ -145,7 +145,7 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
         }
         String clipName = clipInfo.Name.replace(" ", "_").trim();
 
-        File to = new File(dir.toString() + "/" + clipName + ".3gp");
+        File to = new File(dir.toString() + "/" + clipName + ".mp3");
         File from = new File(tempOutputFile);
         Log.e(TAG, to.toString());
         return from.renameTo(to);

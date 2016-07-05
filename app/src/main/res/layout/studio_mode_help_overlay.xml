@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:toosl="http://schemas.android.com/tools"
+    android:background="@color/black"
+    android:alpha=".85">
+
+    <ImageView
+        android:id="@+id/studio_mode_overlay_icon"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:srcCompat="@drawable/ic_music_note"
+        toosl:ignore="MissingPrefix"
+        android:layout_centerHorizontal="true" />
+
+    <View
+        android:id="@+id/studio_mode_overlay_header_divider"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_below="@id/studio_mode_overlay_icon"
+        android:background="@color/blueGray_50"/>
+
+    <TextView
+        android:id="@+id/studio_mode_help_overlay_pulldown_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="Pull down!"
+        android:layout_below="@+id/studio_mode_overlay_header_divider"
+        android:textSize="20sp"
+        android:textColor="@color/blueGray_50" />
+
+    <TextView
+        android:id="@+id/studio_mode_help_overlay_taptostart_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:alpha="0.1"
+        android:text="Tap to start making music!"
+        android:textColor="@color/blueGray_50"
+        android:textSize="40sp"
+        android:gravity="center_horizontal" />
+
+</RelativeLayout>

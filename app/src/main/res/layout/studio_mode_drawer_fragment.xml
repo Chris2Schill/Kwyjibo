@@ -15,32 +15,16 @@
         android:elevation="3dp"
         android:outlineProvider="bounds"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:weightSum="2">
+        android:layout_height="?attr/actionBarSize">
 
-        <ImageView
-            android:id="@+id/studio_mode_search_icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_weight=".5"
-            android:layout_centerVertical="true"
-            app:srcCompat="@drawable/ic_search"
-            tools:ignore="MissingPrefix"
-            android:layout_marginLeft="5dp"
-            android:layout_gravity="center_vertical"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-        <EditText
+        <SearchView
             android:id="@+id/studio_mode_search_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1.5"
             android:layout_gravity="center_vertical"
             android:layout_centerVertical="true"
             android:textColor="@color/lightestGray"
-            android:inputType="text"
-            android:layout_toRightOf="@id/studio_mode_search_icon"/>
+            android:inputType="text"/>
 
     </RelativeLayout>
 
@@ -61,6 +45,12 @@
         android:elevation="3dp"
         android:background="@color/lightYellow"
         android:layout_alignParentBottom="true">
+        <View
+            android:id="@+id/studio_mode_divider_2"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_above="@+id/studio_mode_header_icon"
+            android:background="@color/lightestGray"/>
 
         <ImageView
             android:id="@+id/studio_mode_header_icon"
@@ -76,7 +66,7 @@
             android:id="@+id/studio_mode_divider_1"
             android:layout_width="match_parent"
             android:layout_height="3dp"
-            android:layout_below="@id/studio_mode_header_icon"
+            android:layout_below="@+id/studio_mode_header_icon"
             android:background="@color/lightestGray"/>
 
     </LinearLayout>

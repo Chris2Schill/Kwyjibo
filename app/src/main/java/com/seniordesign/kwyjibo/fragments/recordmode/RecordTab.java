@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.seniordesign.kwyjibo.kwyjibo.R;
 
+import java.io.File;
 import java.io.IOException;
 
 public class RecordTab extends android.support.v4.app.Fragment{
@@ -21,7 +22,7 @@ public class RecordTab extends android.support.v4.app.Fragment{
     private TextView recordingTextView;
 
     private static final String TAG = "RecordTab";
-    private static final String outputFile = "/storage/emulated/0/recording.3gp";
+    private static final String outputFile = "/storage/emulated/0/recording.mp3";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,6 +65,13 @@ public class RecordTab extends android.support.v4.app.Fragment{
                             mRecorder.stop();
                             recordButton.setBackgroundResource(R.drawable.record_button_unpressed);
                             ((ViewPager) getActivity().findViewById(R.id.record_mode_view_pager)).setCurrentItem(1);
+//                            File audioData = new File(outputFile);
+//                            float gain = 1.5f;
+//                            int numRead = read(audioData, 0, SIZE);
+//                            if (numRead > 0) {
+//                                for (int i = 0; i < numRead; ++i)
+//                                    audioData[i] = (short)Math.min((int)(audioData[i] * gain), (int)Short.MAX_VALUE);
+//                            }
                         } catch (Exception e) {
                             Log.e(TAG, e.getMessage());
                         } finally {
@@ -79,9 +87,9 @@ public class RecordTab extends android.support.v4.app.Fragment{
     private void initMediaRecorder(){
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         mRecorder.setAudioEncodingBitRate(16);
-        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         mRecorder.setOutputFile(outputFile);
     }
 

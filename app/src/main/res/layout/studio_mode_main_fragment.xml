@@ -1,50 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/studio_mode_main_viewgroup"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:weightSum="2">
+    android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/studio_mode_current_sounds_framelayout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="-3dp"
-        android:elevation="3dp"
-        android:outlineProvider="bounds"
-        android:layout_weight="1.3">
-
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="@color/lightGray"
-            android:dividerHeight="4px"
-            android:elevation="3dp"
-            android:outlineProvider="bounds"
-            android:id="@+id/studio_mode_current_sounds_listview"/>
-
-    </FrameLayout>
-
+    <!--This layout is not useless like the warning may say. It is here so that the floating action
+    button does not float above the overlay that is programmatically added in StudioModeFragment's onCreateView()-->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.7"
-        android:id="@+id/studio_mode_buttons_viewgroup">
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/studio_mode_play_stream_button"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="16dp"
-            android:layout_alignParentBottom="true"
-            app:srcCompat="@drawable/ic_play_circle_outline"
-            tools:ignore="MissingPrefix"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
+            <FrameLayout
+                android:id="@+id/studio_mode_current_sounds_framelayout"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_marginTop="-3dp"
+                android:elevation="3dp"
+                android:outlineProvider="bounds"
+                android:layout_weight="1.3">
+
+                <ListView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@color/lightGray"
+                    android:dividerHeight="4px"
+                    android:elevation="3dp"
+                    android:outlineProvider="bounds"
+                    android:id="@+id/studio_mode_current_sounds_listview"/>
+
+            </FrameLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.7"
+                android:id="@+id/studio_mode_buttons_viewgroup"
+                android:layout_below="@+id/studio_mode_current_sounds_framelayout"
+                android:layout_alignParentBottom="true">
+
+                <ImageView
+                    android:id="@+id/studio_mode_play_stream_button"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginBottom="16dp"
+                    android:layout_alignParentBottom="false"
+                    app:srcCompat="@drawable/ic_play_circle_outline"
+                    tools:ignore="MissingPrefix"/>
+
+            </RelativeLayout>
+
+
+        </RelativeLayout>
 
         <android.support.design.widget.FloatingActionButton
             android:layout_height="wrap_content"
@@ -53,11 +68,14 @@
             app:fabSize="normal"
             android:src="@drawable/ic_plus"
             android:clickable="true"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_margin="16dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="368dp"
             android:id="@+id/studio_mode_add_sound_button" />
+
     </RelativeLayout>
-</LinearLayout>
+
+</RelativeLayout>
 
