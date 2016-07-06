@@ -41,7 +41,7 @@
         android:layout_below="@id/station_selection_header"
         app:srl_direction="both">
 
-        <ListView
+        <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/radio_mode_list_view"
@@ -54,6 +54,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:contextClickable="false" />
+
     </com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout>
 
 

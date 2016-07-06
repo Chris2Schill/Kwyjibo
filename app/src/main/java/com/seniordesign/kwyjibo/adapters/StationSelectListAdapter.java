@@ -2,68 +2,107 @@ package com.seniordesign.kwyjibo.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.support.v7.widget.CardView;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.seniordesign.kwyjibo.activities.MainActivity;
 import com.seniordesign.kwyjibo.beans.RadioStation;
+import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
 import com.seniordesign.kwyjibo.kwyjibo.R;
+import com.seniordesign.kwyjibo.sorting.DescendingNumClips;
 
+import java.util.Collections;
 import java.util.List;
 
-public class StationSelectListAdapter<T> extends ArrayAdapter<T> {
+public class StationSelectListAdapter extends RecyclerView.Adapter<StationSelectListAdapter.ViewHolder>
+    implements HasSessionInfo{
 
     private Context context;
-    private int id;
-    private List<T> items;
+    private List<RadioStation> stations;
 
-    public StationSelectListAdapter(Context context, int id, List<T> items) {
-        super(context, id, items);
+    public StationSelectListAdapter(Context context, List<RadioStation> stations) {
         this.context = context;
-        this.id = id;
-        this.items = items;
+        this.stations = stations;
     }
 
-    // our ViewHolder.
-    // caches our TextView
-    static class ViewHolder {
-        public TextView stationName;
-        public TextView numClips;
-        public ImageView icon;
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Context context = parent.getContext();
+        View listItem = LayoutInflater.from(context).inflate(R.layout.station_selection_list_item, parent, false);
+        return new ViewHolder(listItem, new ViewHolder.IOnClick() {
+            @Override
+            public void onItemClick(View view) {
+                String stationName = ((TextView)view.findViewById(R.id.station_selection_cardview_name_textview))
+                        .getText().toString();
+                MainActivity.storePreference(CURRENT_STATION, stationName);
+                MainActivity.replaceScreen(MainActivity.Screens.CURRENT_STATION, "CURRENT_STATION",
+                        android.R.anim.fade_in, android.R.anim.fade_out);
+                Log.e("StationSelectAdapter", "onItemClick");
+            }
+        });
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder;
-        if(convertView == null){
-            LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(id, parent, false);
-            viewHolder = new ViewHolder();
-            viewHolder.stationName = (TextView)convertView.findViewById(R.id.station_selection_cardview_textview);
-            viewHolder.numClips = (TextView)convertView.findViewById(R.id.station_selection_cardview_numclips_textview);
-            viewHolder.icon = (ImageView)convertView.findViewById(R.id.station_selection_cardview_sounds_icon);
-            convertView.setTag(viewHolder);
-        }else{
-            viewHolder = (ViewHolder)convertView.getTag();
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        Typeface proximaNova = Typeface.createFromAsset(context.getAssets(),"fonts/ProximaNova-Semibold.otf");
+        RadioStation station = stations.get(position);
+        holder.name.setText(station.Name);
+        holder.name.setTypeface(proximaNova);
+        holder.numClips.setText(String.valueOf(station.NumCurrentClips));
+        holder.numClips.setTypeface(proximaNova);
+    }
+
+    @Override
+    public int getItemCount() {
+        return stations.size();
+    }
+
+    public void updateData(List<RadioStation> list){
+        if (list != null){
+            stations.clear();
+            Collections.sort(list, new DescendingNumClips());
+            stations.addAll(list);
+            notifyDataSetChanged();
+        }
+    }
+
+    public void add(RadioStation station){
+        stations.add(station);
+        notifyItemInserted(stations.size()-1);
+    }
+
+    public Context getContext(){
+        return context;
+    }
+
+    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public TextView name;
+        public TextView numClips;
+        public ImageView icon;
+        public IOnClick listener;
+
+        public ViewHolder(View itemView, IOnClick listener) {
+            super(itemView);
+            this.listener = listener;
+            name = (TextView)itemView.findViewById(R.id.station_selection_cardview_name_textview);
+            numClips = (TextView)itemView.findViewById(R.id.station_selection_cardview_numclips_textview);
+            icon = (ImageView)itemView.findViewById(R.id.station_selection_cardview_sounds_icon);
+            itemView.setOnClickListener(this);
         }
 
-        T item = items.get(position);
-
-        if(item != null && item instanceof RadioStation) {
-            RadioStation station = (RadioStation)item;
-            Typeface proximaNova = Typeface.createFromAsset(context.getAssets(),"fonts/ProximaNova-Semibold.otf");
-
-            viewHolder.stationName.setTypeface(proximaNova);
-            viewHolder.stationName.setText(station.Name);
-
-            viewHolder.numClips.setTypeface(proximaNova);
-            viewHolder.numClips.setText(station.NumCurrentClips + "");
+        @Override
+        public void onClick(View v) {
+            listener.onItemClick(v);
         }
 
-        return convertView;
+        interface IOnClick{
+            void onItemClick(View view);
+        }
     }
 }

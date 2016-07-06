@@ -22,7 +22,7 @@
         android:weightSum="1">
 
         <TextView
-            android:id="@+id/station_selection_cardview_textview"
+            android:id="@+id/station_selection_cardview_name_textview"
             android:layout_weight=".825"
             android:layout_gravity="center_vertical"
             android:layout_height="wrap_content"

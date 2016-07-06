@@ -1,20 +1,18 @@
 package com.seniordesign.kwyjibo.fragments.radiomode;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -31,23 +29,23 @@ import com.seniordesign.kwyjibo.adapters.StationSelectListAdapter;
 import com.seniordesign.kwyjibo.beans.RadioStation;
 import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
 import com.seniordesign.kwyjibo.kwyjibo.R;
-import com.seniordesign.kwyjibo.sorting.AscendingClipName;
-import com.seniordesign.kwyjibo.sorting.DescendingNumClips;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+// TODO: Set TRIGGER_DISTANCE to a proportion of the height of the list viewport.
 public class StationSelectionFragment extends Fragment implements HasSessionInfo {
 
-    private ListView stationsListView;
-    private StationSelectListAdapter<RadioStation> listAdapter;
+    private RecyclerView recyclerView;
+    private StationSelectListAdapter listAdapter;
     private Parcelable state;
+    private SwipyRefreshLayout swipeRefreshLayout;
+    private static int TRIGGER_DISTANCE = 150;
     private static final String TAG = "StationSelectionFrag";
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,8 +62,10 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
             e.printStackTrace();
         }
 
-        final SwipyRefreshLayout swipeLayout = (SwipyRefreshLayout)rootView.findViewById(R.id.station_selection_swipe_refresh_layout);
-        swipeLayout.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
+        swipeRefreshLayout = (SwipyRefreshLayout)rootView.findViewById(R.id.station_selection_swipe_refresh_layout);
+        swipeRefreshLayout.setDistanceToTriggerSync(TRIGGER_DISTANCE);
+        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.blueGray_700, null));
+        swipeRefreshLayout.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh(SwipyRefreshLayoutDirection direction) {
                 RestAPI.getStations(new Callback<List<RadioStation>>() {
@@ -73,7 +73,7 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
                     public void onResponse(Call<List<RadioStation>> call, Response<List<RadioStation>> response) {
                         if (response.body() != null) {
                             updateStationsListView(response.body());
-                            swipeLayout.setRefreshing(false);
+                            swipeRefreshLayout.setRefreshing(false);
                         }
                     }
 
@@ -92,7 +92,7 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
     public void onPause() {
         // Save ListView state @ onPause
         Log.d(TAG, "saving listview state @ onPause");
-        state = stationsListView.onSaveInstanceState();
+//        state = recyclerView.onSaveInstanceState();
         super.onPause();
     }
 
@@ -100,30 +100,23 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Set new items
-//        stationsListView.setAdapter(adapter);
+//        recyclerView.setAdapter(adapter);
         // Restore previous state (including selected item index and scroll position)
         if(state != null) {
             Log.d(TAG, "trying to restore listview state..");
-            stationsListView.onRestoreInstanceState(state);
+//            recyclerView.onRestoreInstanceState(state);
         }
     }
 
     private void enableStationListView(View v){
-        listAdapter = new StationSelectListAdapter<>(getActivity(), R.layout.station_selection_list_item,
-                new ArrayList<RadioStation>());
+        listAdapter = new StationSelectListAdapter(getActivity(), new ArrayList<RadioStation>());
 
-        stationsListView = (ListView) v.findViewById(R.id.radio_mode_list_view);
-        stationsListView.setAdapter(listAdapter);
-        stationsListView.setOnItemClickListener(new ListView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                MainActivity.storePreference(CURRENT_STATION, listAdapter.getItem(position).Name);
-                MainActivity.replaceScreen(MainActivity.Screens.CURRENT_STATION, "CURRENT_STATION",
-                        android.R.anim.fade_in, android.R.anim.fade_out);
-            }
-        });
+        recyclerView = (RecyclerView) v.findViewById(R.id.radio_mode_list_view);
+        recyclerView.setAdapter(listAdapter); // This adapter sets an implicit onItemClick listener.
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setHasFixedSize(true);
 
-        new SwipeDetector(stationsListView).setOnSwipeListener(new SwipeDetector.onSwipeEvent() {
+        new SwipeDetector(recyclerView).setOnSwipeListener(new SwipeDetector.onSwipeEvent() {
             @Override
             public void SwipeEventDetected(View v, SwipeDetector.SwipeType swipeType) {
                 if (swipeType == SwipeDetector.SwipeType.LEFT_TO_RIGHT){
@@ -195,21 +188,16 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
     }
 
     private void updateStationsListView(List<RadioStation> stations){
-        listAdapter.clear();
-        Collections.sort(stations, new DescendingNumClips());
+        listAdapter.updateData(stations);
+        // Save a local copy to sqlite database
         LocalDBManager db = ApplicationWrapper.getDBManager(getActivity());
         try {
             TableUtils.clearTable(db.getConnectionSource(), RadioStation.class);
+            for (RadioStation station : stations) {
+                db.getStationDao().create(station);
+            }
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
-        }
-        for (RadioStation station : stations) {
-            listAdapter.add(station);
-            try {
-                db.getStationDao().create(station);
-            } catch (SQLException e) {
-                Log.e(TAG,e.getMessage());
-            }
         }
     }
 }
