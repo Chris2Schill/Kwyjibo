@@ -37,10 +37,8 @@ public class StationSelectListAdapter extends RecyclerView.Adapter<StationSelect
         View listItem = LayoutInflater.from(context).inflate(R.layout.station_selection_list_item, parent, false);
         return new ViewHolder(listItem, new ViewHolder.IOnClick() {
             @Override
-            public void onItemClick(View view) {
-                String stationName = ((TextView)view.findViewById(R.id.station_selection_cardview_name_textview))
-                        .getText().toString();
-                MainActivity.storePreference(CURRENT_STATION, stationName);
+            public void onItemClick(View view, int position) {
+                MainActivity.storePreference(CURRENT_STATION, stations.get(position).Name);
                 MainActivity.replaceScreen(MainActivity.Screens.CURRENT_STATION, "CURRENT_STATION",
                         android.R.anim.fade_in, android.R.anim.fade_out);
                 Log.e("StationSelectAdapter", "onItemClick");
@@ -98,11 +96,11 @@ public class StationSelectListAdapter extends RecyclerView.Adapter<StationSelect
 
         @Override
         public void onClick(View v) {
-            listener.onItemClick(v);
+            listener.onItemClick(v, getLayoutPosition());
         }
 
         interface IOnClick{
-            void onItemClick(View view);
+            void onItemClick(View view, int position);
         }
     }
 }
