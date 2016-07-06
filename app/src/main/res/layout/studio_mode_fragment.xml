@@ -10,6 +10,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     sothree:umanoPanelHeight="83dp"
+    sothree:umanoScrollableView="@+id/studio_mode_allclips_listview"
     android:gravity="top">
 
     <include layout="@layout/studio_mode_main_fragment"/>
