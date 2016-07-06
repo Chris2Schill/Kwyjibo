@@ -110,8 +110,7 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
                             public void onResponse(Call<SoundClipInfo> call, Response<SoundClipInfo> response) {
                                 if (response.body() != null) {
                                     Log.d(TAG, "" + response.body().toString());
-//                                    moveSoundClipBasedOn(response.body());
-//                                    deleteFile(tempOutputFile);
+                                    deleteFile(tempOutputFile);
                                     getActivity().getSupportFragmentManager().popBackStack();
                                     MainActivity.replaceScreen(MainActivity.Screens.CURRENT_STATION, "CURRENT_STATION",
                                             android.R.anim.fade_in, android.R.anim.fade_out);
@@ -119,6 +118,7 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
                                         Log.e(TAG, "Http status:" + response.code());
                                 }
                             }
+
 
                             @Override
                             public void onFailure(Call<SoundClipInfo> call, Throwable t) {
@@ -136,47 +136,6 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
         clip.Location = "None";
         clip.Category = (spinner.getSelectedItemPosition() + 1) + "";
         return clip;
-    }
-
-    private boolean moveSoundClipBasedOn(SoundClipInfo clipInfo){
-        File dir = new File(getFileDestinationPath(clipInfo.Category));
-        if (!dir.exists()){
-            dir.mkdirs();
-        }
-        String clipName = clipInfo.Name.replace(" ", "_").trim();
-
-        File to = new File(dir.toString() + "/" + clipName + ".mp3");
-        File from = new File(tempOutputFile);
-        Log.e(TAG, to.toString());
-        return from.renameTo(to);
-    }
-
-    private String getFileDestinationPath(String category){
-        StringBuilder path = new StringBuilder();
-        path.append(getActivity().getFilesDir());
-        switch(category){
-            case "1":{
-                path.append("/Percussive");
-                break;
-            }
-            case "2":{
-                path.append("/Drone");
-                break;
-            }
-            case "3":{
-                path.append("/Ambient");
-                break;
-            }
-            case "4":{
-                path.append("/Melodic");
-                break;
-            }
-            case "5":{
-                path.append("/Other");
-                break;
-            }
-        }
-        return path.toString();
     }
 
     private boolean deleteFile(String filePath){
