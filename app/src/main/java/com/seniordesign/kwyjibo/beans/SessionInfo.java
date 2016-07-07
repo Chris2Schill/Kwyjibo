@@ -15,7 +15,7 @@ public class SessionInfo {
                 + " \"USER_EMAIL\":\"" + USER_EMAIL + "\","
                 + " \"AUTH_TOKEN\":\"" + AUTH_TOKEN + "\","
                 + " \"IS_AUTHENTICATED\":\"" + IS_AUTHENTICATED + "\","
-                + " \"CURRENT_STATION\":\"" + CURRENT_STATION + "\"}"
+                + " \"RADIO_STATION\":\"" + CURRENT_STATION + "\"}"
                 + " \"ERROR\":\"" + ERROR + "\"}";
     }
 }

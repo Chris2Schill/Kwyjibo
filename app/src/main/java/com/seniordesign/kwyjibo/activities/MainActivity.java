@@ -6,8 +6,10 @@ import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.transition.Transition;
 import android.util.Log;
 
+import com.seniordesign.kwyjibo.beans.SessionInfo;
 import com.seniordesign.kwyjibo.fragments.studiomode.StudioModeFragment;
 import com.seniordesign.kwyjibo.restapi.RestAPI;
 import com.seniordesign.kwyjibo.fragments.ModeSelectionFragment;
@@ -41,10 +43,11 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
 
     private static Map<Screens,Fragment> fragments = new HashMap<>();
     private static final String TAG = "MainActivity";
+    private static boolean firstRun = true;
 
     public enum Screens{
         INTRO_TITLE, LOGIN, SIGNUP, MODE_SELECTION, RECORD_MODE, STATION_SELECTION, STUDIO_MODE,
-        CURRENT_STATION
+        RADIO_STATION
     }
 
     @Override
@@ -59,16 +62,16 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
         fragments.put(Screens.MODE_SELECTION, new ModeSelectionFragment());
         fragments.put(Screens.RECORD_MODE, new RecordModeFragment());
         fragments.put(Screens.STATION_SELECTION, new StationSelectionFragment());
-        fragments.put(Screens.CURRENT_STATION, new StationFragment());
+        fragments.put(Screens.RADIO_STATION, new StationFragment());
         fragments.put(Screens.STUDIO_MODE, new StudioModeFragment());
 
-        EventBus.getDefault().register(getFragment(Screens.CURRENT_STATION));
+        EventBus.getDefault().register(getFragment(Screens.RADIO_STATION));
 
         if (findViewById(R.id.main_activity_fragment_container) != null){
             if (savedInstanceState != null){
                 return;
             }
-            replaceScreen(Screens.INTRO_TITLE, null, FragmentTransaction.TRANSIT_NONE, android.R.anim.fade_out);
+            replaceScreen(Screens.INTRO_TITLE, null, android.R.anim.fade_in, android.R.anim.fade_out);
         }
 
         if (!isMyServiceRunning(ObserverService.class)){
@@ -85,12 +88,17 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
                     public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                         boolean authenticated = Boolean.parseBoolean(response.body().toString());
                         if (authenticated) {
+                            if (firstRun || getSupportFragmentManager().getBackStackEntryCount() == 0) {
+                                replaceScreen(Screens.MODE_SELECTION, null,
+                                        android.R.anim.fade_in, android.R.anim.fade_out);
+                            }
+                            firstRun = false;
                             Log.d(TAG, "AUTHENTICATION SUCCESSFUL.");
                         } else {
                             destroyUserSession();
                             destroyBackStack();
-                            replaceScreen(Screens.INTRO_TITLE, "INTRO_TITLE",
-                                    FragmentTransaction.TRANSIT_NONE, android.R.anim.fade_out);
+                            replaceScreen(Screens.INTRO_TITLE, null,
+                                    android.R.anim.fade_in, android.R.anim.fade_out);
                             Log.d(TAG, "AUTHENTICATION DENIED.");
                         }
                     }
@@ -99,8 +107,8 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
                     public void onFailure(Call<Boolean> call, Throwable t) {
                         destroyUserSession();
                         destroyBackStack();
-                        replaceScreen(Screens.INTRO_TITLE, "INTRO_TITLE",
-                                FragmentTransaction.TRANSIT_NONE, android.R.anim.fade_out);
+                        replaceScreen(Screens.INTRO_TITLE, null,
+                                android.R.anim.fade_in, android.R.anim.fade_out);
                         Log.d(TAG, "Authentication Request Failed.");
                     }
                 });
@@ -113,12 +121,9 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
         }
     }
 
-    public static void replaceScreen(Screens screen, String tag,
-                                     int animInResourceId, int animOutResourceId){
-        FragmentTransaction transaction = context.getSupportFragmentManager()
-                .beginTransaction();
-        transaction.setCustomAnimations(animInResourceId, animOutResourceId,
-                                        animInResourceId, animOutResourceId);
+    public static void replaceScreen(Screens screen, String tag, int animInResourceId, int animOutResourceId){
+        FragmentTransaction transaction = context.getSupportFragmentManager() .beginTransaction();
+        transaction.setCustomAnimations(animInResourceId, animOutResourceId, animInResourceId, animOutResourceId);
         transaction.replace(R.id.main_activity_fragment_container, getFragment(screen));
         if (tag != null){
             transaction.addToBackStack(tag);
@@ -137,9 +142,5 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
         storePreference(USER_EMAIL, "");
         storePreference(CURRENT_STATION, "");
         storePreference(IS_AUTHENTICATED, false);
-    }
-
-    public static void setCurrentStation(Fragment fragment){
-        fragments.put(Screens.CURRENT_STATION, fragment);
     }
 }

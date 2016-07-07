@@ -112,7 +112,7 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
                                     Log.d(TAG, "" + response.body().toString());
                                     deleteFile(tempOutputFile);
                                     getActivity().getSupportFragmentManager().popBackStack();
-                                    MainActivity.replaceScreen(MainActivity.Screens.CURRENT_STATION, "CURRENT_STATION",
+                                    MainActivity.replaceScreen(MainActivity.Screens.RADIO_STATION, "RADIO_STATION",
                                             android.R.anim.fade_in, android.R.anim.fade_out);
                                 } else{
                                         Log.e(TAG, "Http status:" + response.code());

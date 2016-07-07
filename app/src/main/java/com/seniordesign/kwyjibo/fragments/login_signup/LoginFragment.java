@@ -68,7 +68,8 @@ public class LoginFragment extends Fragment implements HasSessionInfo{
                             ApplicationWrapper.storePreference(AUTH_TOKEN, response.body().AUTH_TOKEN);
                             ApplicationWrapper.storePreference(IS_AUTHENTICATED, true);
 
-                            MainActivity.replaceScreen(MainActivity.Screens.MODE_SELECTION, "MODE_SELECTION",
+                            MainActivity.destroyBackStack();
+                            MainActivity.replaceScreen(MainActivity.Screens.MODE_SELECTION, null,
                                     android.R.anim.fade_in, android.R.anim.fade_out);
                         } else {
                             MainActivity.destroyUserSession();
@@ -100,7 +101,7 @@ public class LoginFragment extends Fragment implements HasSessionInfo{
                             ApplicationWrapper.storePreference(IS_AUTHENTICATED, true);
 
                             MainActivity.destroyBackStack();
-                            MainActivity.replaceScreen(MainActivity.Screens.MODE_SELECTION, "MODE_SELECTION",
+                            MainActivity.replaceScreen(MainActivity.Screens.MODE_SELECTION, null,
                                     android.R.anim.fade_in, android.R.anim.fade_out);
                         } else {
                             MainActivity.destroyUserSession();

@@ -39,7 +39,7 @@ public class StationSelectListAdapter extends RecyclerView.Adapter<StationSelect
             @Override
             public void onItemClick(View view, int position) {
                 MainActivity.storePreference(CURRENT_STATION, stations.get(position).Name);
-                MainActivity.replaceScreen(MainActivity.Screens.CURRENT_STATION, "CURRENT_STATION",
+                MainActivity.replaceScreen(MainActivity.Screens.RADIO_STATION, "RADIO_STATION",
                         android.R.anim.fade_in, android.R.anim.fade_out);
                 Log.e("StationSelectAdapter", "onItemClick");
             }

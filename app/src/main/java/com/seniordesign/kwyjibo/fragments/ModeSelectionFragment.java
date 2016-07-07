@@ -27,6 +27,7 @@ public class ModeSelectionFragment extends Fragment {
         rootView.findViewById(R.id.radio_mode_button).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
+                // Not using MainActivity.replaceScreen() because of the custom animation order.
                 Fragment radioModeFragment = MainActivity.getFragment(MainActivity.Screens.STATION_SELECTION);
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left,
@@ -40,6 +41,7 @@ public class ModeSelectionFragment extends Fragment {
         rootView.findViewById(R.id.studio_mode_button).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+                // Not using MainActivity.replaceScreen() because of the custom animation order.
                 Fragment studioModeFragment = MainActivity.getFragment(MainActivity.Screens.STUDIO_MODE);
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left,
