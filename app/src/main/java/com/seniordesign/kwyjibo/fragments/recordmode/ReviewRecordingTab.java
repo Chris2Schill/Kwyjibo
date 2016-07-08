@@ -10,17 +10,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.seniordesign.kwyjibo.activities.ApplicationWrapper;
-import com.seniordesign.kwyjibo.activities.MainActivity;
-import com.seniordesign.kwyjibo.restapi.RestAPI;
-import com.seniordesign.kwyjibo.beans.SoundClipInfo;
-import com.seniordesign.kwyjibo.drawables.Triangle;
-import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
+import com.seniordesign.kwyjibo.core.ApplicationWrapper;
+import com.seniordesign.kwyjibo.core.MainActivity;
+import com.seniordesign.kwyjibo.core.Screens;
+import com.seniordesign.kwyjibo.database.restapi.RestAPI;
+import com.seniordesign.kwyjibo.database.models.SoundClipInfo;
+import com.seniordesign.kwyjibo.core.HasSessionInfo;
 import com.seniordesign.kwyjibo.kwyjibo.R;
-import com.seniordesign.kwyjibo.validation.ValidatableEditText;
+import com.seniordesign.kwyjibo.custom.validation.ValidatableEditText;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +33,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
-    private Triangle playbackButton;
+    private ImageView playbackButton;
     private Button uploadSoundButton;
     private Spinner spinner;
     private ArrayAdapter<String> spinnerAdapter;
@@ -66,7 +67,7 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
     }
 
     private void enablePlaybackButton(View v){
-        playbackButton = (Triangle) v.findViewById(R.id.playback_button);
+        playbackButton = (ImageView) v.findViewById(R.id.playback_button);
         playbackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,7 +113,7 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
                                     Log.d(TAG, "" + response.body().toString());
                                     deleteFile(tempOutputFile);
                                     getActivity().getSupportFragmentManager().popBackStack();
-                                    MainActivity.replaceScreen(MainActivity.Screens.RADIO_STATION, "RADIO_STATION",
+                                    MainActivity.replaceScreen(Screens.RADIO_STATION, "RADIO_STATION",
                                             android.R.anim.fade_in, android.R.anim.fade_out);
                                 } else{
                                         Log.e(TAG, "Http status:" + response.code());

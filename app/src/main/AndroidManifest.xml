@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.seniordesign.kwyjibo.activities.MainActivity"
+            android:name="com.seniordesign.kwyjibo.core.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,11 +23,11 @@
                 android:resource="@xml/searchable"/>
         </activity>
         <activity
-            android:name="com.seniordesign.kwyjibo.activities.SettingsActivity"
+            android:name="com.seniordesign.kwyjibo.core.SettingsActivity"
             android:label="@string/action_settings">
         </activity>
         <service
-            android:name="com.seniordesign.kwyjibo.services.ObserverService">
+            android:name="com.seniordesign.kwyjibo.database.services.ObserverService">
         </service>
     </application>
 

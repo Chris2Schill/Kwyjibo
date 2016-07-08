@@ -11,12 +11,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.SignInButton;
-import com.seniordesign.kwyjibo.adapters.SwipeDetector;
-import com.seniordesign.kwyjibo.validation.ValidatableEditText;
-import com.seniordesign.kwyjibo.restapi.RestAPI;
-import com.seniordesign.kwyjibo.activities.MainActivity;
-import com.seniordesign.kwyjibo.beans.SessionInfo;
-import com.seniordesign.kwyjibo.interfaces.HasSessionInfo;
+import com.seniordesign.kwyjibo.core.Screens;
+import com.seniordesign.kwyjibo.custom.decorators.SwipeDetector;
+import com.seniordesign.kwyjibo.custom.validation.ValidatableEditText;
+import com.seniordesign.kwyjibo.database.restapi.RestAPI;
+import com.seniordesign.kwyjibo.core.MainActivity;
+import com.seniordesign.kwyjibo.database.models.SessionInfo;
+import com.seniordesign.kwyjibo.core.HasSessionInfo;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 
 import retrofit2.Call;
@@ -70,7 +71,7 @@ public class SignupFragment extends Fragment implements HasSessionInfo{
                                     MainActivity.storePreference(AUTH_TOKEN, response.body().AUTH_TOKEN);
                                     MainActivity.storePreference(IS_AUTHENTICATED, true);
 
-                                    MainActivity.replaceScreen(MainActivity.Screens.MODE_SELECTION, "MODE_SELECTION",
+                                    MainActivity.replaceScreen(Screens.MODE_SELECTION, "MODE_SELECTION",
                                             android.R.anim.fade_in, android.R.anim.fade_out);
                                     Toast.makeText(getActivity(), "Success", Toast.LENGTH_LONG).show();
                                 } else {
