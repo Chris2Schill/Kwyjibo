@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -29,6 +30,9 @@
         <service
             android:name="com.seniordesign.kwyjibo.database.services.ObserverService">
         </service>
+        <meta-data
+            android:name='com.google.android.geo.API_KEY'
+            android:value='AIzaSyAMqxjpwTI2M6R3ne-tQ_OLwk_aArKU_LI'/>
     </application>
 
 </manifest>

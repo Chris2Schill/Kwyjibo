@@ -134,10 +134,12 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
         SoundClipInfo clip = new SoundClipInfo();
         clip.Name = clipNameEditText.getText().toString();
         clip.CreatedBy = ApplicationWrapper.getStringPreference(USER_NAME);
-        clip.Location = "None";
+        clip.Location = MainActivity.getLocation();
         clip.Category = (spinner.getSelectedItemPosition() + 1) + "";
         return clip;
     }
+
+
 
     private boolean deleteFile(String filePath){
         String dirPath = getActivity().getFilesDir().toString();

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,8 @@ public class StudioModeFragment extends Fragment {
 
     private boolean firstTimeRunning = true;
 
+    private static final String TAG = "StudioModeFragment";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.studio_mode_fragment, container, false);
@@ -77,6 +80,8 @@ public class StudioModeFragment extends Fragment {
             public void onResponse(Call<List<SoundClipInfo>> call, Response<List<SoundClipInfo>> response) {
                 if (response.body() != null) {
                     updateAllClipsListView(response.body());
+                }else{
+                    Log.d(TAG, response.body().toString());
                 }
             }
 

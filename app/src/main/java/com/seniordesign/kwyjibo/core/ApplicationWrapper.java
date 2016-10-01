@@ -3,10 +3,12 @@ package com.seniordesign.kwyjibo.core;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -118,5 +120,9 @@ public class ApplicationWrapper extends AppCompatActivity{
     // TODO: Make this compatible with API level 14.
     public static Drawable getDrawableFromId(int id){
         return context.getResources().getDrawable(id, null);
+    }
+
+    public static boolean haveDevicePermission(String permission) {
+        return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
     }
 }

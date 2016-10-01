@@ -1,8 +1,21 @@
 <!-- drawable/play.xml -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:andriod="http://schemas.android.com/apk/res-auto"
     android:height="24dp"
     android:width="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
     <path android:fillColor="@color/lightGray" android:pathData="M8,5.14V19.14L19,12.14L8,5.14Z" />
+
+    <!-- color change test
+    <item
+        andriod:state_focused = "true"
+        android:state_pressed = "true"
+        android:drawable="@color/lightGray" />
+
+    <item
+        android:state_focused = "false"
+        android:state_pressed = "false"
+        android:drawable = "@color/red" />
+        -->
 </vector>

@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 
 import java.io.IOException;
@@ -20,14 +22,18 @@ public class RecordTab extends android.support.v4.app.Fragment{
     private MediaRecorder mRecorder;
     private TextView recordingTextView;
 
+
     private static final String TAG = "RecordTab";
     private static final String outputFile = "/storage/emulated/0/recording.mp3";
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.record_mode_record_tab, container, false);
         recordingTextView = (TextView) rootView.findViewById(R.id.record_mode_recording_textview);
         enableButtons(rootView);
+
+
         return rootView;
     }
 

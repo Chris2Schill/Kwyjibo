@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.seniordesign.kwyjibo.core.ApplicationWrapper;
 import com.seniordesign.kwyjibo.custom.adapters.RecordModePagerAdapter;
 import com.seniordesign.kwyjibo.fragments.recordmode.RecordTab;
 import com.seniordesign.kwyjibo.fragments.recordmode.ReviewRecordingTab;
@@ -45,11 +46,14 @@ public class RecordModeFragment extends Fragment {
 
     private void requestRecordAndStoragePermissions() {
         List<String> permissionsList = new ArrayList<>();
-        if (!haveDevicePermission(Manifest.permission.RECORD_AUDIO)) {
+        if (!ApplicationWrapper.haveDevicePermission(Manifest.permission.RECORD_AUDIO)) {
             permissionsList.add(Manifest.permission.RECORD_AUDIO);
         }
-        if (!haveDevicePermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        if (!ApplicationWrapper.haveDevicePermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             permissionsList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (!ApplicationWrapper.haveDevicePermission(Manifest.permission.ACCESS_COARSE_LOCATION)){
+            permissionsList.add(Manifest.permission.ACCESS_COARSE_LOCATION);
         }
         if (permissionsList.size() > 0) {
             Toast.makeText(getContext(), "This application requires the use of the microphone and " +
@@ -57,11 +61,10 @@ public class RecordModeFragment extends Fragment {
             requestPermissions(permissionsList.toArray(new String[permissionsList.size()]),
                     MY_PERMISSIONS_REQUEST_AUDIO_STORAGE);
         }
+
     }
 
-    private boolean haveDevicePermission(String permission) {
-        return ContextCompat.checkSelfPermission(getActivity(), permission) == PackageManager.PERMISSION_GRANTED;
-    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

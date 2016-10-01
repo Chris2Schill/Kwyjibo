@@ -54,13 +54,36 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
         enableStationListView(rootView);
         enableCreateStationButton(rootView);
 
-        try {
+
+        try {//try to connect to database
             SQLiteHelper dbManager = ApplicationWrapper.getDBManager(getActivity());
             List<RadioStation> stations = dbManager.getStationDao().queryForAll();
+
             updateStationsListView(stations);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        //call get stations from RestAPI
+        RestAPI.getStations(new Callback<List<RadioStation>>() {
+
+            @Override //if it gets a response
+            public void onResponse(Call<List<RadioStation>> call, Response<List<RadioStation>> response) {
+                //check that the response is not null
+                if(response.body() != null)
+                {
+                    updateStationsListView(response.body());
+                }
+            }
+
+            @Override //if it gets a failure
+            public void onFailure(Call<List<RadioStation>> call, Throwable t) {
+                //do a TAG toString
+            }
+        });
+
+
+
 
         swipeRefreshLayout = (SwipyRefreshLayout)rootView.findViewById(R.id.station_selection_swipe_refresh_layout);
         swipeRefreshLayout.setDistanceToTriggerSync(TRIGGER_DISTANCE);

@@ -1,13 +1,23 @@
 package com.seniordesign.kwyjibo.core;
 
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import com.google.android.gms.common.ConnectionResult;
+
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.seniordesign.kwyjibo.fragments.screens.StudioModeFragment;
 import com.seniordesign.kwyjibo.database.restapi.RestAPI;
 import com.seniordesign.kwyjibo.fragments.screens.ModeSelectionFragment;
@@ -22,12 +32,17 @@ import com.seniordesign.kwyjibo.database.services.ObserverService;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 
 /*
  * This is the central activity class for the entire application. It contains a HashMap of all the
@@ -36,11 +51,14 @@ import retrofit2.Response;
  * screens the user will see when using the app. This class provides static methods which
  * allow you to switch screens anytime using a single line of code.
  */
-public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
+public class MainActivity extends ApplicationWrapper implements HasSessionInfo, ConnectionCallbacks, OnConnectionFailedListener
+{
 
     private static Map<Screens,Fragment> fragments = new HashMap<>();
     private static final String TAG = "MainActivity";
     private static boolean firstRun = true;
+    private static GoogleApiClient mGoogleApiClient;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +87,31 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
         if (!isMyServiceRunning(ObserverService.class)){
             startService(new Intent(getBaseContext(), ObserverService.class));
         }
+
+        //create an instance of the GoogleAPIClient
+        if(mGoogleApiClient == null)
+        {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
     }
+
+    @Override
+    protected void onStart() {
+        mGoogleApiClient.connect();
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        mGoogleApiClient.disconnect();
+        super.onStop();
+    }
+
+
 
     @Override
     protected void onResume() {
@@ -104,6 +146,8 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
                         Log.d(TAG, "Authentication Request Failed.");
                     }
                 });
+
+        mGoogleApiClient.connect();
     }
 
     public static void destroyBackStack(){
@@ -134,5 +178,44 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo {
         storePreference(USER_EMAIL, "");
         storePreference(CURRENT_STATION, "");
         storePreference(IS_AUTHENTICATED, false);
+    }
+
+
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        }
+    }
+
+    public static String getLocation()
+    {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            Geocoder geocoder = new Geocoder(ApplicationWrapper.context);
+            if(mLastLocation != null){
+
+                try{
+                    List<Address> addresses = geocoder.getFromLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude(),1);
+                    String city = addresses.get(0).getLocality();
+                    return city;
+                }
+                catch(IOException e){
+
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+
     }
 }
