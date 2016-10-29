@@ -1,5 +1,6 @@
 package com.seniordesign.kwyjibo.fragments.login_signup;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -10,6 +11,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.SignInButton;
 import com.seniordesign.kwyjibo.core.Screens;
 import com.seniordesign.kwyjibo.custom.decorators.SwipeDetector;
@@ -29,6 +33,9 @@ public class LoginFragment extends Fragment implements HasSessionInfo{
 
     private ValidatableEditText usernameEditText;
     private ValidatableEditText passwordEditText;
+    private String googleUsername = "";
+    private String googlePassword = "";
+    private String googleToken = "";
 
     private static final String TAG = "LoginFragment";
 
@@ -123,7 +130,7 @@ public class LoginFragment extends Fragment implements HasSessionInfo{
         new SwipeDetector(loginContainer).setOnSwipeListener(new SwipeDetector.onSwipeEvent() {
             @Override
             public void SwipeEventDetected(View v, SwipeDetector.SwipeType swipeType) {
-                if (swipeType == SwipeDetector.SwipeType.BOTTOM_TO_TOP){
+                if (swipeType == SwipeDetector.SwipeType.BOTTOM_TO_TOP) {
                     getActivity().getSupportFragmentManager().popBackStack();
                 }
             }
@@ -141,8 +148,50 @@ public class LoginFragment extends Fragment implements HasSessionInfo{
                 TextView tv = (TextView)child;    // The default without the padding centers between
                 tv.setPadding(0, 0, 20, 0);       // the right of icon to end of button rather than
                 tv.setText("Log in with Google");// between start of button to end of button.
-                return;
+            }
+        }
+        signInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG,"test");
+                googleSignIn();
+                //use google login info for app database credentials
+                //RestAPI.requestLogin(googleUsername, googlePassword,  new Callback<SessionInfo>()){
+
+
+
+            }
+        });
+
+    }
+
+    private void googleSignIn(){
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(MainActivity.mGoogleApiClient);
+
+        startActivityForResult(signInIntent, 2);
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //results returned from launching intent in getSignInIntent
+        if(requestCode == 2) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            if(result.isSuccess()){
+                GoogleSignInAccount acct = result.getSignInAccount();
+                googleUsername = acct.getDisplayName();
+                googlePassword = acct.getEmail();
+                googleToken = acct.getIdToken();
+                //try passing token as account password so a new token is generated to be
+                //the same format as other tokens in DB
             }
         }
     }
+
+
+
+
+
 }

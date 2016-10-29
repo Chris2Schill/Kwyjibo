@@ -1,6 +1,9 @@
 package com.seniordesign.kwyjibo.fragments.recordmode;
 
 import android.media.MediaPlayer;
+import android.media.AudioManager;
+import android.os.AsyncTask;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -50,7 +53,7 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
 
         clipNameEditText = (ValidatableEditText)rootView.findViewById(R.id.review_recording_soundclip_name_edittext);
 //        tempOutputFile = getActivity().getFilesDir().toString() + "/recording.3gp";
-        tempOutputFile = Environment.getExternalStorageDirectory().toString() + "/recording.mp3";
+        tempOutputFile = Environment.getExternalStorageDirectory().toString() + "/recording.wav";
 
         ApplicationWrapper.applyLayoutDesign(rootView);
         return rootView;

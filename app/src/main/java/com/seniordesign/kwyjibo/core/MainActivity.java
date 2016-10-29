@@ -14,6 +14,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -57,7 +61,7 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo, 
     private static Map<Screens,Fragment> fragments = new HashMap<>();
     private static final String TAG = "MainActivity";
     private static boolean firstRun = true;
-    private static GoogleApiClient mGoogleApiClient;
+    public static GoogleApiClient mGoogleApiClient;
 
 
     @Override
@@ -88,6 +92,10 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo, 
             startService(new Intent(getBaseContext(), ObserverService.class));
         }
 
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
         //create an instance of the GoogleAPIClient
         if(mGoogleApiClient == null)
         {
@@ -95,6 +103,7 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo, 
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
+                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                     .build();
         }
     }
@@ -209,6 +218,9 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo, 
         return null;
     }
 
+
+
+
     @Override
     public void onConnectionSuspended(int i) {
 
@@ -218,4 +230,6 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo, 
     public void onConnectionFailed(ConnectionResult result) {
 
     }
+
+
 }
