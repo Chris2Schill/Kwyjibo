@@ -35,7 +35,7 @@ public class RecordTab extends android.support.v4.app.Fragment{
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
     private AudioRecord recorder = null;
-    private int bufferSize = 0;
+    private int bufferSize = 8000;
     private Thread recordingThread = null;
     private boolean isRecording = false;
 
@@ -140,6 +140,10 @@ public class RecordTab extends android.support.v4.app.Fragment{
         recorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
                 RECORDER_SAMPLERATE, RECORDER_CHANNELS,RECORDER_AUDIO_ENCODING, bufferSize);
 
+        bufferSize = AudioRecord.getMinBufferSize(8000,
+                AudioFormat.CHANNEL_IN_MONO,
+                AudioFormat.ENCODING_PCM_16BIT);
+
         int i = recorder.getState();
         if(i==1)
             recorder.startRecording();
@@ -222,7 +226,7 @@ public class RecordTab extends android.support.v4.app.Fragment{
         long totalAudioLen = 0;
         long totalDataLen = totalAudioLen + 36;
         long longSampleRate = RECORDER_SAMPLERATE;
-        int channels = 2;
+        int channels = 1;
         long byteRate = RECORDER_BPP * RECORDER_SAMPLERATE * channels/8;
 
         byte[] data = new byte[bufferSize];
@@ -290,7 +294,7 @@ public class RecordTab extends android.support.v4.app.Fragment{
         header[29] = (byte) ((byteRate >> 8) & 0xff);
         header[30] = (byte) ((byteRate >> 16) & 0xff);
         header[31] = (byte) ((byteRate >> 24) & 0xff);
-        header[32] = (byte) (2 * 16 / 8); // block align
+        header[32] = (byte) (/*2 * */16 / 8); // block align
         header[33] = 0;
         header[34] = RECORDER_BPP; // bits per sample
         header[35] = 0;

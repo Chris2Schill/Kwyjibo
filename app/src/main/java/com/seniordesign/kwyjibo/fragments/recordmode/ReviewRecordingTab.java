@@ -112,6 +112,8 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
                 String authToken = ApplicationWrapper.getStringPreference(AUTH_TOKEN);
                 Log.e(TAG, tempOutputFile);
 
+
+                /*
                 //check if there is a current station in use
                 if(station.equals("CurrentStation")){
                     //prompt user with station list
@@ -148,6 +150,7 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
                                 Log.e(TAG, t.getMessage());
                             }
                         });
+                        */
             }
         });
     }
