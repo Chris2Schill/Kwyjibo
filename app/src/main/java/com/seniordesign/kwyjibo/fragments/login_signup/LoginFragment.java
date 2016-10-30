@@ -156,7 +156,32 @@ public class LoginFragment extends Fragment implements HasSessionInfo{
                 Log.d(TAG,"test");
                 googleSignIn();
                 //use google login info for app database credentials
-                //RestAPI.requestLogin(googleUsername, googlePassword,  new Callback<SessionInfo>()){
+
+                RestAPI.requestLogin(googleUsername, googlePassword, new Callback<SessionInfo>() {
+                    @Override
+                    public void onResponse(Call<SessionInfo> call, Response<SessionInfo> response) {
+                        if (response.body().IS_AUTHENTICATED) {
+                            ApplicationWrapper.storePreference(USER_ID, response.body().USER_ID);
+                            ApplicationWrapper.storePreference(USER_NAME, response.body().USER_NAME);
+                            ApplicationWrapper.storePreference(USER_EMAIL, response.body().USER_EMAIL);
+                            ApplicationWrapper.storePreference(AUTH_TOKEN, response.body().AUTH_TOKEN);
+                            ApplicationWrapper.storePreference(IS_AUTHENTICATED, true);
+
+                            MainActivity.destroyBackStack();
+                            MainActivity.replaceScreen(Screens.MODE_SELECTION, null,
+                                    android.R.anim.fade_in, android.R.anim.fade_out);
+                        } else {
+                            MainActivity.destroyUserSession();
+                            Toast.makeText(getActivity(), "Account Credentials Invalid.", Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<SessionInfo> call, Throwable t) {
+                        MainActivity.destroyUserSession();
+                        Toast.makeText(getActivity(), "Login failed to complete", Toast.LENGTH_LONG).show();
+                    }
+                });
 
 
 

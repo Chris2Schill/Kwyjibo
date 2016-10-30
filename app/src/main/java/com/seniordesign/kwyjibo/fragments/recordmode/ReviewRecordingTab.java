@@ -20,14 +20,18 @@ import android.widget.Toast;
 import com.seniordesign.kwyjibo.core.ApplicationWrapper;
 import com.seniordesign.kwyjibo.core.MainActivity;
 import com.seniordesign.kwyjibo.core.Screens;
+import com.seniordesign.kwyjibo.database.SQLiteHelper;
+import com.seniordesign.kwyjibo.database.models.RadioStation;
 import com.seniordesign.kwyjibo.database.restapi.RestAPI;
 import com.seniordesign.kwyjibo.database.models.SoundClipInfo;
 import com.seniordesign.kwyjibo.core.HasSessionInfo;
+import com.seniordesign.kwyjibo.fragments.screens.StationSelectionFragment;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 import com.seniordesign.kwyjibo.custom.validation.ValidatableEditText;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,6 +111,21 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
                 String userId = ApplicationWrapper.getStringPreference(USER_ID);
                 String authToken = ApplicationWrapper.getStringPreference(AUTH_TOKEN);
                 Log.e(TAG, tempOutputFile);
+
+                //check if there is a current station in use
+                if(station.equals("CurrentStation")){
+                    //prompt user with station list
+                    try {//try to connect to database
+                        SQLiteHelper dbManager = ApplicationWrapper.getDBManager(getActivity());
+                        List<RadioStation> stations = dbManager.getStationDao().queryForAll();
+
+                        //updateStationsListView(stations);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+
+                    //
+                }
 
                 RestAPI.uploadSoundClip(tempOutputFile, clipInfo, station, userId, authToken,
                         new Callback<SoundClipInfo>() {
