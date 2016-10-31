@@ -101,19 +101,24 @@ public class LoginFragment extends Fragment implements HasSessionInfo{
                 RestAPI.requestLogin("admin", "admin", new Callback<SessionInfo>() {
                     @Override
                     public void onResponse(Call<SessionInfo> call, Response<SessionInfo> response) {
-                        if (response.body().IS_AUTHENTICATED) {
-                            ApplicationWrapper.storePreference(USER_ID, response.body().USER_ID);
-                            ApplicationWrapper.storePreference(USER_NAME, response.body().USER_NAME);
-                            ApplicationWrapper.storePreference(USER_EMAIL, response.body().USER_EMAIL);
-                            ApplicationWrapper.storePreference(AUTH_TOKEN, response.body().AUTH_TOKEN);
-                            ApplicationWrapper.storePreference(IS_AUTHENTICATED, true);
+                        try{
+                            if (response.body().IS_AUTHENTICATED) {
+                                ApplicationWrapper.storePreference(USER_ID, response.body().USER_ID);
+                                ApplicationWrapper.storePreference(USER_NAME, response.body().USER_NAME);
+                                ApplicationWrapper.storePreference(USER_EMAIL, response.body().USER_EMAIL);
+                                ApplicationWrapper.storePreference(AUTH_TOKEN, response.body().AUTH_TOKEN);
+                                ApplicationWrapper.storePreference(IS_AUTHENTICATED, true);
 
-                            MainActivity.destroyBackStack();
-                            MainActivity.replaceScreen(Screens.MODE_SELECTION, null,
-                                    android.R.anim.fade_in, android.R.anim.fade_out);
-                        } else {
-                            MainActivity.destroyUserSession();
-                            Toast.makeText(getActivity(), "Account Credentials Invalid.", Toast.LENGTH_LONG).show();
+                                MainActivity.destroyBackStack();
+                                MainActivity.replaceScreen(Screens.MODE_SELECTION, null,
+                                        android.R.anim.fade_in, android.R.anim.fade_out);
+                            } else {
+                                MainActivity.destroyUserSession();
+                                Toast.makeText(getActivity(), "Account Credentials Invalid.", Toast.LENGTH_LONG).show();
+                            }
+                        }catch(Exception e){
+                            Log.e(TAG, e.getMessage());
+                            Toast.makeText(getContext(), "There was an error logging in.", Toast.LENGTH_LONG).show();
                         }
                     }
 

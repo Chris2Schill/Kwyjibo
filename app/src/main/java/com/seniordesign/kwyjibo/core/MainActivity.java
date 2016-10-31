@@ -129,7 +129,12 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo, 
                 new Callback<Boolean>() {
                     @Override
                     public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                        boolean authenticated = Boolean.parseBoolean(response.body().toString());
+                        boolean authenticated = false;
+                        try{
+                            authenticated = Boolean.parseBoolean(response.body().toString());
+                        }catch(Exception e){
+                            Log.e(TAG, e.getMessage());
+                        }
                         if (authenticated) {
                             if (firstRun || getSupportFragmentManager().getBackStackEntryCount() == 0) {
                                 replaceScreen(Screens.MODE_SELECTION, null,
