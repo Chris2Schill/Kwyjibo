@@ -101,6 +101,7 @@ public class SoundClipInfoAdapter extends ArrayAdapter<SoundClipInfo> {
                                             Log.e("SoundClipAdapter", e.getMessage());
                                         }
                                         mPlayer.start();
+                                        mPlayer.release();
                                     }
                                 }
                                 @Override
