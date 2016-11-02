@@ -104,6 +104,13 @@ public class RestAPI{
         call.enqueue(callback);
     }
 
+    public static void getStationSong(String stationName, Callback<ResponseBody> callback){
+        GETRequest api = retrofit.create(GETRequest.class);
+        final Call<ResponseBody> call = api.getStationSong(stationName);
+
+        call.enqueue(callback);
+    }
+
     private static final Retrofit retrofit = new Retrofit.Builder().baseUrl(API_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build();

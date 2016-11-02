@@ -2,7 +2,9 @@ package com.seniordesign.kwyjibo.fragments.screens;
 
 import android.content.DialogInterface;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -31,9 +33,17 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Headers;
+import okhttp3.ResponseBody;
+import okhttp3.internal.framed.Header;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -114,6 +124,45 @@ public class StationFragment extends Fragment implements HasSessionInfo{
                         }).create().show();
             }
         });
+
+        rootView.findViewById(R.id.station_fragment_play_stream_imagebutton).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                String s = MainActivity.getStringPreference(CURRENT_STATION);
+                RestAPI.getStationSong(MainActivity.getStringPreference(CURRENT_STATION), new Callback<ResponseBody>(){
+
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                        if (response.body() != null){
+                            MediaPlayer mPlayer = new MediaPlayer();
+                            String songFilepath = getContext().getExternalFilesDir(null) + "/station-songs/" + getSongFilename(response.headers());
+                            saveStationSong(response.headers(), response.body());
+                            try {
+                                mPlayer.setDataSource(songFilepath);
+                            } catch (IOException e) {
+                                Log.e(TAG, e.getMessage());
+                            }
+                            try {
+                                mPlayer.prepare();
+                            } catch (IOException e) {
+                                Log.e(TAG, e.getMessage());
+                            }
+                            mPlayer.start();
+                            //mPlayer.release();
+                            Toast.makeText(getContext(), "Play button clicked.", Toast.LENGTH_LONG);
+                        }else{
+                            Log.d(TAG, "getStationSong() response body is null");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Log.e(TAG, "getStationSong() api call failed");
+                    }
+                });
+            }
+        });
     }
 
     private void initCurrentSoundsListView(View rootView){
@@ -174,6 +223,61 @@ public class StationFragment extends Fragment implements HasSessionInfo{
                 Log.e(TAG, t.getMessage());
             }
         });
+    }
+
+    private boolean saveStationSong(Headers headers, ResponseBody body){
+        InputStream inputStream = null;
+        OutputStream outputStream = null;
+        String songFilename = getSongFilename(headers);
+
+        // Save the file
+        File stationSong = new File(getContext().getExternalFilesDir(null) + "/station-songs/" + songFilename);
+        try{
+            try {
+                byte[] fileReader = new byte[4096];
+
+                long fileSize = body.contentLength();
+                long fileSizeDownloaded = 0;
+
+                // Create directory if it doesn't exist
+                File f = new File(getContext().getExternalFilesDir(null), "station-songs");
+                if (!f.exists()) {
+                    f.mkdirs();
+                }
+
+                inputStream = body.byteStream();
+                outputStream = new FileOutputStream(stationSong);
+                while (true) {
+                    int read = inputStream.read(fileReader);
+                    if (read == -1) {
+                        break;
+                    }
+                    outputStream.write(fileReader, 0, read);
+                    fileSizeDownloaded += read;
+                    Log.d("API", "file download: " + fileSizeDownloaded + " of " + fileSize);
+                }
+                outputStream.flush();
+                return true;
+            } catch (IOException e) {
+                return false;
+            } finally {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            }
+        }catch(IOException ex){
+            Log.e(TAG, ex.getMessage());
+            return false;
+        }
+    }
+
+    private String getSongFilename(Headers headers){
+        String songFilenameHeader = headers.get("Content-Disposition");
+        String songFilename = songFilenameHeader.substring(songFilenameHeader.indexOf("\"")+1, songFilenameHeader.lastIndexOf("\""));
+        return songFilename;
     }
 }
 

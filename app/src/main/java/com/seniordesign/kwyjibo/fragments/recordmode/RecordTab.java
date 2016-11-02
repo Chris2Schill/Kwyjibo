@@ -51,6 +51,9 @@ public class RecordTab extends android.support.v4.app.Fragment{
         recordingTextView = (TextView) rootView.findViewById(R.id.record_mode_recording_textview);
         enableButtons(rootView);
 
+        bufferSize = AudioRecord.getMinBufferSize(RECORDER_SAMPLERATE,
+                RECORDER_CHANNELS,
+                RECORDER_AUDIO_ENCODING);
 
         return rootView;
     }
@@ -101,8 +104,6 @@ public class RecordTab extends android.support.v4.app.Fragment{
         });
     }
 
-
-
     private void initAudioRecord(){
         bufferSize = AudioRecord.getMinBufferSize(8000,
                 AudioFormat.CHANNEL_IN_MONO,
@@ -130,8 +131,8 @@ public class RecordTab extends android.support.v4.app.Fragment{
 
         File tempFile = new File(filepath,AUDIO_RECORDER_TEMP_FILE);
 
-        if(tempFile.exists())
-            tempFile.delete();
+//        if(tempFile.exists())
+//            tempFile.delete();
 
         return (file.getAbsolutePath() + "/" + AUDIO_RECORDER_TEMP_FILE);
     }
@@ -211,7 +212,7 @@ public class RecordTab extends android.support.v4.app.Fragment{
 
 
         copyWaveFile(getTempFilename(),getFilename());
-        deleteTempFile();
+        //deleteTempFile();
     }
 
     private void deleteTempFile() {
@@ -237,7 +238,7 @@ public class RecordTab extends android.support.v4.app.Fragment{
             totalAudioLen = in.getChannel().size();
             totalDataLen = totalAudioLen + 36;
 
-            //AppLog.logString("File size: " + totalDataLen);
+            Log.d(TAG, "File size: " + totalDataLen);
 
             WriteWaveFileHeader(out, totalAudioLen, totalDataLen,
                     longSampleRate, channels, byteRate);

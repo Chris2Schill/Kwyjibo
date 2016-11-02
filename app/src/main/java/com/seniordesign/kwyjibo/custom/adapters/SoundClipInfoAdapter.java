@@ -91,7 +91,7 @@ public class SoundClipInfoAdapter extends ArrayAdapter<SoundClipInfo> {
                                         MediaPlayer mPlayer = new MediaPlayer();
                                         try {
                                             mPlayer.setDataSource(getContext().getExternalFilesDir(null) + File.separator + clip.Category +
-                                                    File.separator + clip.Name.replace(" ","_") + ".3gp");
+                                                    File.separator + clip.Name.replace(" ","_") + ".wav");
                                         } catch (IOException e) {
                                             Log.e("SoundClipAdapter", e.getMessage());
                                         }
@@ -101,6 +101,7 @@ public class SoundClipInfoAdapter extends ArrayAdapter<SoundClipInfo> {
                                             Log.e("SoundClipAdapter", e.getMessage());
                                         }
                                         mPlayer.start();
+                                        //mPlayer.release();
                                     }
                                 }
                                 @Override
@@ -118,7 +119,7 @@ public class SoundClipInfoAdapter extends ArrayAdapter<SoundClipInfo> {
     private boolean writeSoundClipToCategoryDir(String category, String filename, ResponseBody body) {
         try {
             String localFilepath = getContext().getExternalFilesDir(null) + File.separator + category +
-                    File.separator + filename + ".3gp";
+                    File.separator + filename + ".wav";
             File soundClip = new File(localFilepath);
 
             Log.d("RestAPI", localFilepath);

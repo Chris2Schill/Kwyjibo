@@ -34,6 +34,8 @@ public interface GETRequest {
     @GET("api/GetSoundClip.aspx")
     Call<ResponseBody> getSoundClip(@Query("clipName") String clipName);
 
+    @GET("api/GetStationSong.aspx")
+    Call<ResponseBody> getStationSong(@Query("stationName") String stationName);
 
 
 }
