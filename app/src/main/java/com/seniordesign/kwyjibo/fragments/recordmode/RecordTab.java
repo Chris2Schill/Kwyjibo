@@ -104,8 +104,6 @@ public class RecordTab extends android.support.v4.app.Fragment{
         });
     }
 
-
-
     private void initAudioRecord(){
         bufferSize = AudioRecord.getMinBufferSize(8000,
                 AudioFormat.CHANNEL_IN_MONO,
