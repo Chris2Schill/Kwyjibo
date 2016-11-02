@@ -9,12 +9,14 @@ import java.io.Serializable;
 @DatabaseTable(tableName = "stations")
 public class RadioStation implements Serializable{
 
-    private static final long serialVersionUID = -222864131214757024L;
+    private static final long serialVersionUID = -222864131214757025L;
     public static final String ID = "Id";
     public static final String NAME = "Name";
     public static final String CREATED_BY = "CreatedBy";
     public static final String GENRE = "Genre";
     public static final String NUM_CURRENT_CLIPS = "NumCurrentClips";
+    public static String BPM = "BeatsPerMin";
+
 
     @DatabaseField(columnName = ID, id = true)
     public int Id;
@@ -28,14 +30,19 @@ public class RadioStation implements Serializable{
     @DatabaseField(columnName = GENRE, canBeNull = false)
     public String Genre;
 
+
     @DatabaseField(columnName = NUM_CURRENT_CLIPS, canBeNull = false)
     public int NumCurrentClips;
+
+//    @DatabaseField(columnName = BPM, canBeNull = false)
+//    public String BPM;
 
     public String toString(){
         return "{\"Id\":"+ Id
              + ",\"Name\":"+ Name
              + ",\"CreatedBy\":"+CreatedBy
              + ",\"Genre\":"+Genre
+                + ",\"BPM\":"+BPM
              + ",\"NumCurrentClips\":"+NumCurrentClips+"}";
     }
 }

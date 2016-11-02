@@ -12,8 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,6 +65,8 @@ public class StationFragment extends Fragment implements HasSessionInfo{
 
         initButtons(rootView);
         initCurrentSoundsListView(rootView);
+
+
 
         EventBus.getDefault().post(new UnpauseObserverService());
         MainActivity.applyLayoutDesign(rootView);
@@ -173,10 +177,10 @@ public class StationFragment extends Fragment implements HasSessionInfo{
 
         clipListView = (ListView)rootView.findViewById(R.id.station_fragment_current_sounds_listview);
         clipListView.setAdapter(listAdapter);
-        clipListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+        clipListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                String clipName = ((TextView)view.findViewById(R.id.soundclip_listitem_soundname_textview)).getText().toString();
+                String clipName = ((TextView) view.findViewById(R.id.soundclip_listitem_soundname_textview)).getText().toString();
 //                SQLiteHelper db = ApplicationWrapper.getDBManager(getActivity());
 //                SoundClipInfo station = null;
 //                try {
@@ -205,6 +209,8 @@ public class StationFragment extends Fragment implements HasSessionInfo{
             }
         });
     }
+
+
 
     private void populateCurrentSoundsList(){
         RestAPI.getStationSoundClips(CURRENT_STATION, new Callback<List<SoundClipInfo>>() {

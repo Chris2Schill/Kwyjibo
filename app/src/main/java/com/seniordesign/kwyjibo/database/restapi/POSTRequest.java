@@ -20,6 +20,7 @@ public interface POSTRequest {
             @Field("stationName") String stationName,
             @Field("createdBy") String createdBy,
             @Field("genre") String genre,
+            @Field("bpm") String bpm,
             @Field("userId") String userId,
             @Field("authToken") String authToken);
 
