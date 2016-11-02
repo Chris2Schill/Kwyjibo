@@ -11,9 +11,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
@@ -47,12 +49,15 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
     private SwipyRefreshLayout swipeRefreshLayout;
     private static int TRIGGER_DISTANCE = 150;
     private static final String TAG = "StationSelectionFrag";
+    private Spinner spinner;
+    private ArrayAdapter<String> spinnerAdapter;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.station_selection_fragment, container, false);
         ApplicationWrapper.applyLayoutDesign(rootView);
         enableStationListView(rootView);
         enableCreateStationButton(rootView);
+
 
 
         try {//try to connect to database
@@ -158,37 +163,39 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
             public void onClick(View v) {
                 final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
                 final DialogDecorator decorator = new DialogDecorator(R.layout.create_station_fragment, alertDialog, container);
-                decorator.setOnClickListenerFor(R.id.create_station_confirm_button, new View.OnClickListener(){
+                updateSpinner(decorator.getView());
+                decorator.setOnClickListenerFor(R.id.create_station_confirm_button, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        EditText stationNameEditText = (EditText)decorator.getView().findViewById(R.id.create_station_name_edittext);
-                        RadioGroup radioGroup = (RadioGroup) decorator.getView().findViewById(R.id.create_station_radio_group);
+                        EditText stationNameEditText = (EditText) decorator.getView().findViewById(R.id.create_station_name_edittext);
+                        //RadioGroup radioGroup = (RadioGroup) decorator.getView().findViewById(R.id.create_station_radio_group);
                         List<String> genres = new ArrayList<>();
                         genres.add("EDM");
                         genres.add("Dubstep");
                         genres.add("Jazz");
 
-                        if (radioGroup != null) {
-                            int genreIndex = radioGroup.indexOfChild(decorator.getView().findViewById(radioGroup.getCheckedRadioButtonId()));
+                        if (true/*radioGroup != null*/) {
+                            //int genreIndex = radioGroup.indexOfChild(decorator.getView().findViewById(radioGroup.getCheckedRadioButtonId()));
 
                             final RadioStation newStation = new RadioStation();
                             newStation.Name = stationNameEditText.getText().toString();
                             newStation.CreatedBy = MainActivity.getStringPreference(USER_NAME);
-                            newStation.Genre = genres.get(genreIndex);
+                            newStation.Genre = "EDM";
+                            newStation.BPM = (spinner.getSelectedItemPosition() + 1) + "";
                             String userId = MainActivity.getStringPreference(USER_ID);
                             String authToken = MainActivity.getStringPreference(AUTH_TOKEN);
 
                             RestAPI.createStation(newStation, userId, authToken, new Callback<Boolean>() {
                                 @Override
                                 public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                                    if (response.body() != null){
-                                        if (response.body()){
+                                    if (response.body() != null) {
+                                        if (response.body()) {
                                             Toast.makeText(getActivity(), "Station Added", Toast.LENGTH_LONG).show();
                                             listAdapter.add(newStation);
                                             listAdapter.notifyDataSetChanged();
                                             alertDialog.dismiss();
                                         }
-                                    }else{
+                                    } else {
                                         Log.e(TAG, "Response body is null.");
                                     }
                                 }
@@ -196,7 +203,7 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
                                 @Override
                                 public void onFailure(Call<Boolean> call, Throwable t) {
                                     Toast.makeText(getActivity(), "Station Not Added", Toast.LENGTH_LONG).show();
-                                    Log.e(TAG,t.getMessage());
+                                    Log.e(TAG, t.getMessage());
 
                                 }
                             });
@@ -222,6 +229,20 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
         } catch (SQLException e) {
             Log.e(TAG, e.getMessage());
         }
+    }
+
+    private void updateSpinner(View rootView){
+        spinner = (Spinner)rootView.findViewById(R.id.Select_BPM_spinner);
+        spinnerAdapter = new ArrayAdapter<>(getActivity(),
+                android.R.layout.simple_spinner_dropdown_item, new ArrayList<String>());
+        spinner.setAdapter(spinnerAdapter);
+
+        spinnerAdapter.clear();
+        for(int i = 45; i <= 180; i++){
+            spinnerAdapter.add(Integer.toString(i));
+        }
+
+
     }
 }
 

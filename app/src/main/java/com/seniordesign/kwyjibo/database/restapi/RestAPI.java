@@ -65,7 +65,7 @@ public class RestAPI{
     public static void createStation(RadioStation station, String userId, String authToken,
                                      Callback<Boolean> callback){
         POSTRequest api = retrofit.create(POSTRequest.class);
-        final Call<Boolean> call = api.createStation(station.Name, station.CreatedBy, station.Genre,
+        final Call<Boolean> call = api.createStation(station.Name, station.CreatedBy, station.Genre, station.BPM,
                 userId, authToken);
         call.enqueue(callback);
     }
