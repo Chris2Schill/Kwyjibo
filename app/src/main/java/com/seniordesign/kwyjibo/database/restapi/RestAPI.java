@@ -106,7 +106,7 @@ public class RestAPI{
 
     public static void getStationSong(String stationName, Callback<ResponseBody> callback){
         GETRequest api = retrofit.create(GETRequest.class);
-        final Call<ResponseBody> call = api.getSoundClip(stationName);
+        final Call<ResponseBody> call = api.getStationSong(stationName);
 
         call.enqueue(callback);
     }
