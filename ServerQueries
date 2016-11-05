@@ -1,0 +1,27 @@
+Id
+Name
+CreatedBy
+Location
+Category
+Filepath
+Length
+UploadDate
+
+// Create SoundClips Table
+
+CREATE TABLE SoundClips
+(
+    Id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    Name VARCHAR(MAX) NOT NULL,
+    CreatedBy VARCHAR(MAX) NOT NULL,
+    Location VARCHAR(MAX) NOT NULL,
+    Category INT NOT NULL,
+    Filepath VARCHAR(MAX) NOT NULL,
+    "Length" DECIMAL(18,4) NOT NULL,
+    UploadDate DATE NOT NULL
+);
+
+
+
+
+

@@ -182,7 +182,7 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
                             newStation.Name = stationNameEditText.getText().toString();
                             newStation.CreatedBy = MainActivity.getStringPreference(USER_NAME);
                             newStation.Genre = "EDM";
-                            newStation.BPM = (spinner.getSelectedItemPosition() + 1) + "";
+                            newStation.BPM = spinner.getSelectedItem().toString();
                             String userId = MainActivity.getStringPreference(USER_ID);
                             String authToken = MainActivity.getStringPreference(AUTH_TOKEN);
 

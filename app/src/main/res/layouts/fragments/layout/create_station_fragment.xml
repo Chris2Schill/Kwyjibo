@@ -37,17 +37,18 @@
         android:layout_below="@+id/create_station_name_edittext"
         android:id="@+id/create_station_line_separator_2" />
 
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Genre"
+        android:textColorHint="@color/lightestGray"
+        android:text="BPM"
         android:textColor="@color/lightestGray"
-        android:id="@+id/create_station_genre_textview"
-        android:layout_marginTop="15dp"
+        android:id="@+id/create_station_bpm_textview"
         android:layout_below="@+id/create_station_line_separator_2"
-        android:layout_alignTop="@+id/create_station_line_separator_2"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"/>
+
 
     <Spinner
         android:layout_width="wrap_content"
@@ -57,13 +58,14 @@
         android:elevation="3dp"
         android:background="@color/lightYellow"
         android:layout_marginTop="10dp"
-        android:layout_below="@+id/create_station_line_separator_3"
+        android:layout_below="@+id/create_station_bpm_textview"
         android:layout_centerHorizontal="true"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="?android:listDivider"
+        android:layout_below="@+id/Select_BPM_spinner"
         android:id="@+id/create_station_line_separator_3" />
 
     <Button
