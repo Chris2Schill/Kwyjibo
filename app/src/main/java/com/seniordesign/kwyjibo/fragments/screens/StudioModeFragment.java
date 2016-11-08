@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -136,8 +137,7 @@ public class StudioModeFragment extends Fragment {
 
     private void addOverlayView(View overlay, ViewGroup parent){
         PorterDuffColorFilter blueGray_50 = new PorterDuffColorFilter(
-                getResources().getColor(R.color.blueGray_50, null), PorterDuff.Mode.SRC_ATOP
-        );
+                ContextCompat.getColor(getContext(), R.color.blueGray_50), PorterDuff.Mode.SRC_ATOP );
         ((ImageView)overlay.findViewById(R.id.studio_mode_overlay_icon)).setColorFilter(blueGray_50);
         panel.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
         overlay.setOnClickListener(nextHelpHighlight);
