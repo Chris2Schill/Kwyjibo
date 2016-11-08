@@ -23,7 +23,7 @@ public interface GETRequest {
     Call<List<RadioStation>> requestStations();
 
     @GET("api/GetStationSoundClips.aspx")
-    Call<List<SoundClipInfo>> requestSoundClips(@Query("stationName") String name);
+    Call<List<SoundClipInfo>> requestSoundClips(@Query("stationId") int id);
 
     @GET("api/GetCategories.aspx")
     Call<List<String>> requestCategories();
@@ -35,7 +35,7 @@ public interface GETRequest {
     Call<ResponseBody> getSoundClip(@Query("clipName") String clipName);
 
     @GET("api/GetStationSong.aspx")
-    Call<ResponseBody> getStationSong(@Query("stationName") String stationName);
+    Call<ResponseBody> getStationSong(@Query("stationId") int stationId);
 
 
 }

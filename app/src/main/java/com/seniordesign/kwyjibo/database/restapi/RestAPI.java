@@ -49,9 +49,9 @@ public class RestAPI{
         call.enqueue(callback);
     }
 
-    public static void getStationSoundClips(String stationName, Callback<List<SoundClipInfo>> callback){
+    public static void getStationSoundClips(int stationId, Callback<List<SoundClipInfo>> callback){
         GETRequest api = retrofit.create(GETRequest.class);
-        final Call<List<SoundClipInfo>> call = api.requestSoundClips(stationName);
+        final Call<List<SoundClipInfo>> call = api.requestSoundClips(stationId);
         call.enqueue(callback);
     }
 
@@ -70,7 +70,7 @@ public class RestAPI{
         call.enqueue(callback);
     }
 
-    public static void uploadSoundClip(String clipFilepath, SoundClipInfo clipInfo, String stationName,
+    public static void uploadSoundClip(String clipFilepath, SoundClipInfo clipInfo, int stationId,
                                        String userId, String authToken, Callback<SoundClipInfo> callback) {
         POSTRequest api = retrofit.create(POSTRequest.class);
 
@@ -78,7 +78,7 @@ public class RestAPI{
         RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
         MultipartBody.Part soundClipFile = MultipartBody.Part.createFormData(file.getName(), file.getName(), requestFile);
 
-        RequestBody station= RequestBody.create(MediaType.parse("multipart/form-data"), stationName);
+        RequestBody station= RequestBody.create(MediaType.parse("multipart/form-data"), stationId + "");
         RequestBody clipName = RequestBody.create(MediaType.parse("multipart/form-data"), clipInfo.Name);
         RequestBody username = RequestBody.create(MediaType.parse("multipart/form-data"), clipInfo.CreatedBy);
         RequestBody location = RequestBody.create(MediaType.parse("multipart/form-data"), clipInfo.Location);
@@ -104,9 +104,9 @@ public class RestAPI{
         call.enqueue(callback);
     }
 
-    public static void getStationSong(String stationName, Callback<ResponseBody> callback){
+    public static void getStationSong(int stationId, Callback<ResponseBody> callback){
         GETRequest api = retrofit.create(GETRequest.class);
-        final Call<ResponseBody> call = api.getStationSong(stationName);
+        final Call<ResponseBody> call = api.getStationSong(stationId);
 
         call.enqueue(callback);
     }

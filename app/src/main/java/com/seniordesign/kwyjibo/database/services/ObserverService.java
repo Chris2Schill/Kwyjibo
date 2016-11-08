@@ -44,7 +44,7 @@ public class ObserverService extends Service implements HasSessionInfo {
                 try{
                     while (!stopped){
                         if(!paused){
-                            RestAPI.getStationSoundClips(MainActivity.getStringPreference(CURRENT_STATION),
+                            RestAPI.getStationSoundClips(MainActivity.getIntPreference(CURRENT_STATION),
                                     new Callback<List<SoundClipInfo>>() {
                                         @Override
                                         public void onResponse(Call<List<SoundClipInfo>> call, Response<List<SoundClipInfo>> response) {

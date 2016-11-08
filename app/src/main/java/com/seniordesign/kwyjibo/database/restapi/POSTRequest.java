@@ -36,7 +36,7 @@ public interface POSTRequest {
     @POST("api/UploadSoundClipToStation.aspx")
     Call<SoundClipInfo> uploadSoundClip(
             @Part MultipartBody.Part soundClipFile,
-            @Part("stationName") RequestBody stationName,
+            @Part("stationId") RequestBody stationId,
             @Part("clipName") RequestBody clipName,
             @Part("username") RequestBody username,
             @Part("location") RequestBody location,

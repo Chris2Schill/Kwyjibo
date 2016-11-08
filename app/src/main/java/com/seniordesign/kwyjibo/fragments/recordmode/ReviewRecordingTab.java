@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.j256.ormlite.table.TableUtils;
 import com.seniordesign.kwyjibo.core.ApplicationWrapper;
 import com.seniordesign.kwyjibo.core.MainActivity;
 import com.seniordesign.kwyjibo.core.Screens;
@@ -79,6 +80,12 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
             @Override
             public void onClick(View v) {
                 MediaPlayer mPlayer = new MediaPlayer();
+                mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        mp.release();
+                    }
+                });
                 try {
                     mPlayer.setDataSource(tempOutputFile);
                 } catch (IOException e) {
@@ -107,29 +114,24 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
                 }
 
                 SoundClipInfo clipInfo = gatherSoundClipInfo();
-                String station = ApplicationWrapper.getStringPreference(CURRENT_STATION);
+                int stationId = ApplicationWrapper.getIntPreference(CURRENT_STATION);
                 String userId = ApplicationWrapper.getStringPreference(USER_ID);
                 String authToken = ApplicationWrapper.getStringPreference(AUTH_TOKEN);
                 Log.e(TAG, tempOutputFile);
 
 
-                /*
                 //check if there is a current station in use
-                if(station.equals("CurrentStation")){
+                if(stationId == 0){
                     //prompt user with station list
                     try {//try to connect to database
                         SQLiteHelper dbManager = ApplicationWrapper.getDBManager(getActivity());
                         List<RadioStation> stations = dbManager.getStationDao().queryForAll();
-
-                        //updateStationsListView(stations);
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
-
-                    //
                 }
 
-                RestAPI.uploadSoundClip(tempOutputFile, clipInfo, station, userId, authToken,
+                RestAPI.uploadSoundClip(tempOutputFile, clipInfo, stationId, userId, authToken,
                         new Callback<SoundClipInfo>() {
                             @Override
                             public void onResponse(Call<SoundClipInfo> call, Response<SoundClipInfo> response) {
@@ -150,7 +152,6 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
                                 Log.e(TAG, t.getMessage());
                             }
                         });
-                        */
             }
         });
     }
@@ -170,6 +171,7 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
         String dirPath = getActivity().getFilesDir().toString();
         return new File(dirPath+filePath).delete();
     }
+
 
     private void updateSpinner(View rootView){
         spinner = (Spinner)rootView.findViewById(R.id.review_recording_category_spinner);

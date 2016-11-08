@@ -190,7 +190,7 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo, 
         storePreference(AUTH_TOKEN, "");
         storePreference(USER_NAME, "");
         storePreference(USER_EMAIL, "");
-        storePreference(CURRENT_STATION, "");
+        storePreference(CURRENT_STATION, 0);
         storePreference(IS_AUTHENTICATED, false);
     }
 
