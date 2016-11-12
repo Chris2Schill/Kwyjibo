@@ -48,10 +48,14 @@ public class ObserverService extends Service implements HasSessionInfo {
                                     new Callback<List<SoundClipInfo>>() {
                                         @Override
                                         public void onResponse(Call<List<SoundClipInfo>> call, Response<List<SoundClipInfo>> response) {
-                                            SoundClipInfo[] clips = response.body().toArray(new SoundClipInfo[response.body().size()]);
-                                            if (dataSetChanged(currentStationSoundClips, clips)) {
-                                                EventBus.getDefault().post(new SoundClipsDataSetChanged(clips));
-                                                currentStationSoundClips = clips;
+                                            if (response.body() != null){
+                                                SoundClipInfo[] clips = response.body().toArray(new SoundClipInfo[response.body().size()]);
+                                                if (dataSetChanged(currentStationSoundClips, clips)) {
+                                                    EventBus.getDefault().post(new SoundClipsDataSetChanged(clips));
+                                                    currentStationSoundClips = clips;
+                                                }
+                                            }else{
+                                                Log.d(TAG, "getStationSoundClips() response.body() is null.");
                                             }
                                         }
 
