@@ -32,7 +32,7 @@ public interface GETRequest {
     Call<List<SoundClipInfo>> getAllSoundClipInfo();
 
     @GET("api/GetSoundClip.aspx")
-    Call<ResponseBody> getSoundClip(@Query("clipName") String clipName);
+    Call<ResponseBody> getSoundClip(@Query("clipId") int clipId);
 
     @GET("api/GetStationSong.aspx")
     Call<ResponseBody> getStationSong(@Query("stationId") int stationId);

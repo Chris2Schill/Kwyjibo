@@ -38,7 +38,7 @@ public interface POSTRequest {
             @Part MultipartBody.Part soundClipFile,
             @Part("stationId") RequestBody stationId,
             @Part("clipName") RequestBody clipName,
-            @Part("username") RequestBody username,
+            @Part("createdById") RequestBody createdById,
             @Part("location") RequestBody location,
             @Part("category") RequestBody category,
             @Part("userId") RequestBody userId,

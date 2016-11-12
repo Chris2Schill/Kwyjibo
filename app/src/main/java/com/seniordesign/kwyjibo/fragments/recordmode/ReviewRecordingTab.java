@@ -159,7 +159,7 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
     private SoundClipInfo gatherSoundClipInfo(){
         SoundClipInfo clip = new SoundClipInfo();
         clip.Name = clipNameEditText.getText().toString();
-        clip.CreatedBy = ApplicationWrapper.getStringPreference(USER_NAME);
+        clip.CreatedById = ApplicationWrapper.getIntPreference(USER_ID);
         clip.Location = MainActivity.getLocation();
         clip.Category = (spinner.getSelectedItemPosition() + 1) + "";
         return clip;

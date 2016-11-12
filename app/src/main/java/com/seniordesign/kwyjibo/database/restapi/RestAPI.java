@@ -25,6 +25,10 @@ public class RestAPI{
 
     private static final String API_BASE_URL = "http://motw.tech/";
 
+    private static final Retrofit retrofit = new Retrofit.Builder().baseUrl(API_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+
     public static void requestLogin(String username, String password, Callback<SessionInfo> callback){
         GETRequest api = retrofit.create(GETRequest.class);
         final Call<SessionInfo> call = api.login(username, password);
@@ -80,7 +84,7 @@ public class RestAPI{
 
         RequestBody station= RequestBody.create(MediaType.parse("multipart/form-data"), stationId + "");
         RequestBody clipName = RequestBody.create(MediaType.parse("multipart/form-data"), clipInfo.Name);
-        RequestBody username = RequestBody.create(MediaType.parse("multipart/form-data"), clipInfo.CreatedBy);
+        RequestBody username = RequestBody.create(MediaType.parse("multipart/form-data"), clipInfo.CreatedById + "");
         RequestBody location = RequestBody.create(MediaType.parse("multipart/form-data"), clipInfo.Location);
         RequestBody category = RequestBody.create(MediaType.parse("multipart/form-data"), clipInfo.Category);
         RequestBody id = RequestBody.create(MediaType.parse("multipart/form-data"), userId);
@@ -97,24 +101,16 @@ public class RestAPI{
         call.enqueue(callback);
     }
 
-    public static void getSoundClip(String clipName, Callback<ResponseBody> callback){
+    public static void getSoundClip(int clipId, Callback<ResponseBody> callback){
         GETRequest api = retrofit.create(GETRequest.class);
-        final Call<ResponseBody> call = api.getSoundClip(clipName);
-
+        final Call<ResponseBody> call = api.getSoundClip(clipId);
         call.enqueue(callback);
     }
 
     public static void getStationSong(int stationId, Callback<ResponseBody> callback){
         GETRequest api = retrofit.create(GETRequest.class);
         final Call<ResponseBody> call = api.getStationSong(stationId);
-
         call.enqueue(callback);
     }
-
-    private static final Retrofit retrofit = new Retrofit.Builder().baseUrl(API_BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build();
-
-
 
 }
