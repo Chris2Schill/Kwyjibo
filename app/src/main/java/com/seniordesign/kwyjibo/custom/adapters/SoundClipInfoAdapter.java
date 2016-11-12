@@ -3,12 +3,17 @@ package com.seniordesign.kwyjibo.custom.adapters;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
+import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.seniordesign.kwyjibo.kwyjibo.R;
 import com.seniordesign.kwyjibo.database.models.SoundClipInfo;
@@ -20,7 +25,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.StringTokenizer;
 
+import okhttp3.Headers;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,99 +37,169 @@ public class SoundClipInfoAdapter extends ArrayAdapter<SoundClipInfo> {
 
     private List<SoundClipInfo> soundClipInfoList;
     private Typeface font = null;
+    private String baseFilepathForClips;
+    private static final String TAG = "SoundClipInfoAdapter";
+
+
+    View.OnClickListener downloadClipListener;
+    View.OnClickListener playSoundClipListener;
 
     public SoundClipInfoAdapter(Context context, int resource, List<SoundClipInfo> clips) {
         super(context, resource, clips);
         this.soundClipInfoList = clips;
+        baseFilepathForClips = context.getExternalFilesDir(null).toString();
     }
 
     public SoundClipInfoAdapter(Context context, int resource, List<SoundClipInfo> clips, Typeface font){
         super(context, resource, clips);
         this.soundClipInfoList = clips;
         this.font = font;
+        baseFilepathForClips = context.getExternalFilesDir(null).toString();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
+        // We are caching the views in the list view. A common pattern for android list views to improve performance.
+        final ViewHolder holder;
         if (convertView == null){
-            convertView = LayoutInflater.from(getContext())
-                    .inflate(R.layout.sound_clip_list_item,parent,false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.sound_clip_list_item,parent,false);
+            // cache views into view holder
+            holder = new ViewHolder(convertView, downloadClipListener, playSoundClipListener);
+            holder.soundName = (TextView) convertView.findViewById(R.id.soundclip_listitem_soundname_textview);
+            holder.contributor = (TextView) convertView.findViewById(R.id.soundclip_listitem_contributorsname_textview);
+            holder.location = (TextView) convertView.findViewById(R.id.soundclip_listitem_location_textview);
+            holder.icon = (ImageView) convertView.findViewById(R.id.soundclip_listitem_playsoundclip_button);
+            convertView.setTag(holder);
+        }else{
+            holder = (ViewHolder)convertView.getTag();
         }
 
+        // We get the sound clip at this position and get a filepath for where it will be stored on the device.
         final SoundClipInfo clip = soundClipInfoList.get(position);
-        if (clip != null){
-            TextView soundName = (TextView) convertView
-                    .findViewById(R.id.soundclip_listitem_soundname_textview);
-            TextView contributor = (TextView) convertView
-                    .findViewById(R.id.soundclip_listitem_contributorsname_textview);
-            TextView location = (TextView) convertView
-                    .findViewById(R.id.soundclip_listitem_location_textview);
-            if (soundName != null){
-                if (font != null){
-                    soundName.setTypeface(font);
-                }
-                soundName.setText(clip.Name);
-            }
-            if (contributor != null){
-                if (font != null){
-                    contributor.setTypeface(font);
-                }
-                contributor.setText(clip.CreatedBy);
-            }
-            if (location != null){
-                if (font != null){
-                    location.setTypeface(font);
-                }
-                location.setText(clip.Location);
-            }
+        final String clipFilepath = getLocalFilepathFor(clip);
 
-            convertView.findViewById(R.id.soundclip_listitem_playsoundclip_button)
-                    .setOnClickListener(new View.OnClickListener(){
-                        @Override
-                        public void onClick(View v) {
-//                        Toast.makeText(getContext(), "Play button not implemented yet!", Toast.LENGTH_LONG).show();
-                            RestAPI.getSoundClip(clip.Name, new Callback<ResponseBody>(){
-                                @Override
-                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                                    if (response.body() != null){
-                                        Log.d("SoundClipAdapter", "Successful Download");
-                                        writeSoundClipToCategoryDir(clip.Category, clip.Name.replace(" ","_"), response.body());
-                                        MediaPlayer mPlayer = new MediaPlayer();
-                                        try {
-                                            mPlayer.setDataSource(getContext().getExternalFilesDir(null) + File.separator + clip.Category +
-                                                    File.separator + clip.Name.replace(" ","_") + ".wav");
-                                        } catch (IOException e) {
-                                            Log.e("SoundClipAdapter", e.getMessage());
-                                        }
-                                        try {
-                                            mPlayer.prepare();
-                                        } catch (IOException e) {
-                                            Log.e("SoundClipAdapter", e.getMessage());
-                                        }
-                                        mPlayer.start();
-                                        //mPlayer.release();
-                                    }
-                                }
-                                @Override
-                                public void onFailure(Call<ResponseBody> call, Throwable t) {
 
-                                }
-                            });
-                        }
-                    });
+        if (clip != null) {
+//            if (holder.soundName != null){
+            if (font != null){
+                holder.soundName.setTypeface(font);
+                holder.contributor.setTypeface(font);
+                holder.location.setTypeface(font);
+            }
+            holder.soundName.setText(clip.Name);
+//            }
+////            if (holder.contributor != null){
+//            if (font != null){
+//                holder.contributor.setTypeface(font);
+//            }
+            holder.contributor.setText(clip.CreatedByName);
+////            }
+////            if (holder.location != null){
+//            if (font != null){
+//                holder.location.setTypeface(font);
+//            }
+            holder.location.setText(clip.Location);
+//            }
         }
 
+
+        // Define two click listeners for the same button. We will use one for downloading
+        // when the file doesn't exist, and one for playing the clip when it does.
+        downloadClipListener = new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "Download started. Wait for the icon to change.",
+                        Toast.LENGTH_LONG).show();
+                RestAPI.getSoundClip(clip.Id, new Callback<ResponseBody>(){
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.body() != null){
+                            String filepath = getLocalFilepathFor(clip);
+                            writeSoundClipToCategoryDir(filepath, clip.Category, response.body());
+                            if (holder.icon != null){
+                                holder.icon.setOnClickListener(playSoundClipListener);
+                                holder.icon.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_play));
+                                Log.d(TAG, "Successful Download");
+                            }
+                        }else{
+                            Log.e(TAG, "Download Sound Clip responseBody() null.");
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Log.e(TAG, "Sound clip download failed");
+                    }
+                });
+            }
+        };
+
+        playSoundClipListener =  new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                playSoundClip(clip);
+            }
+        };
+
+        String filepath = getLocalFilepathFor(clip);
+        if (!new File(filepath).exists()){
+            holder.icon.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_download));
+            holder.icon.setOnClickListener(downloadClipListener);
+        }else{
+            holder.icon.setOnClickListener(playSoundClipListener);
+            holder.icon.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_play));
+        }
         return convertView;
     }
 
-    private boolean writeSoundClipToCategoryDir(String category, String filename, ResponseBody body) {
-        try {
-            String localFilepath = getContext().getExternalFilesDir(null) + File.separator + category +
-                    File.separator + filename + ".wav";
-            File soundClip = new File(localFilepath);
+    private String getLocalFilepathFor(SoundClipInfo clip){
+//        String categoryName = "";
+//        switch(clip.Category){
+//            case "1":
+//                categoryName = "percussive"; break;
+//            case "2":
+//                categoryName = "drone"; break;
+//            case "3":
+//                categoryName = "ambient"; break;
+//            case "4":
+//                categoryName = "melodic"; break;
+//            case "5":
+//                categoryName = "other"; break;
+//            default:
+//                categoryName = "other";
+//        }
 
-            Log.d("RestAPI", localFilepath);
+        String fileExtension = clip.Filepath.substring(clip.Filepath.lastIndexOf('.'));
+
+        return getContext().getExternalFilesDir(null) + "/" + clip.Category + "/" + clip.Name.replace(" ","_") +
+                "_" + clip.CreatedById + fileExtension;
+    }
+
+
+    private void playSoundClip(SoundClipInfo clip){
+        MediaPlayer mPlayer = new MediaPlayer();
+        try {
+            mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    mp.release();
+                }
+            });
+            String filepath = getLocalFilepathFor(clip);
+            mPlayer.setDataSource(filepath);
+            mPlayer.prepare();
+        } catch (IOException e) {
+            Log.e("SoundClipAdapter", e.getMessage());
+        }
+        mPlayer.start();
+    }
+
+    private boolean writeSoundClipToCategoryDir(String filepath, String category, ResponseBody body) {
+        try {
+            Log.d("RestAPI", filepath);
+
+            // Make the file object for that file
+            File soundClip = new File(filepath);
 
             InputStream inputStream = null;
             OutputStream outputStream = null;
@@ -132,6 +209,7 @@ public class SoundClipInfoAdapter extends ArrayAdapter<SoundClipInfo> {
                 long fileSize = body.contentLength();
                 long fileSizeDownloaded = 0;
 
+                // Make sure the directory for the sound clip exists and create it if not
                 File f = new File(getContext().getExternalFilesDir(null), category);
                 if (!f.exists()) {
                     f.mkdirs();
@@ -164,4 +242,53 @@ public class SoundClipInfoAdapter extends ArrayAdapter<SoundClipInfo> {
             return false;
         }
     }
+
+    @Override
+    public int getCount() {
+        return soundClipInfoList.size();
+    }
+
+    @Override
+    public SoundClipInfo getItem(int position) {
+        return soundClipInfoList.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return soundClipInfoList.hashCode();
+    }
+
+    static class ViewHolder{
+        public TextView soundName;
+        public TextView location;
+        public TextView contributor;
+        public ImageView icon;
+
+//        interface IOnClick{
+//            void onItemClick(View view, int position);
+//        }
+//
+//        public IOnClick listener;
+
+        public ViewHolder(View itemView, View.OnClickListener downloadListener, View.OnClickListener playListener) {
+            soundName = (TextView)itemView.findViewById(R.id.soundclip_listitem_soundname_textview);
+            location = (TextView)itemView.findViewById(R.id.soundclip_listitem_location_textview);
+            contributor = (TextView)itemView.findViewById(R.id.soundclip_listitem_contributorsname_textview);
+            icon = (ImageView)itemView.findViewById(R.id.soundclip_listitem_playsoundclip_button);
+        }
+
+//        @Override
+//        public void onClick(View v) {
+//            listener.onItemClick(v, getLayoutPosition());
+//        }
+
+    }
+
+    private String getSoundClipFilepath(Headers headers, String category){
+        String songFilenameHeader = headers.get("Content-Disposition");
+        String songFilename = songFilenameHeader.substring(songFilenameHeader.indexOf("\"")+2, songFilenameHeader.lastIndexOf("\""));
+        return getContext().getExternalFilesDir(null) + File.separator + category + File.separator + songFilename;
+    }
+
+
 }
