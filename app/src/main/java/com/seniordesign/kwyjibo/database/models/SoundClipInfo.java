@@ -4,7 +4,8 @@ package com.seniordesign.kwyjibo.database.models;
 public class SoundClipInfo{
     public int Id;
     public String Name;
-    public String CreatedBy;
+    public int CreatedById;
+    public String CreatedByName;
     public String Location;
     public String Category;
     public String Filepath;
@@ -14,11 +15,12 @@ public class SoundClipInfo{
     public SoundClipInfo() {
     }
 
-    public SoundClipInfo(int id, String name, String createdBy, String location, String category,
+    public SoundClipInfo(int id, String name, int createdById, String createdByName, String location, String category,
                         String filepath, String uploadDate) {
         Id = id;
         Name = name;
-        CreatedBy = createdBy;
+        CreatedById = createdById;
+        CreatedByName = createdByName;
         Location = location;
         Category = category;
         Filepath = filepath;
@@ -28,7 +30,8 @@ public class SoundClipInfo{
     public String toString(){
         return "{\"Id\":\"" + Id + "\","
              + " \"Name\":\"" + Name + "\","
-             + " \"CreatedBy\":\"" + CreatedBy + "\","
+             + " \"CreatedById\":\"" + CreatedById + "\","
+             + " \"CreatedByName\":\"" + CreatedByName + "\","
              + " \"Location\":\"" + Location + "\","
              + " \"Category\":\"" + Category + "\","
              + " \"Filepath\":\"" + Filepath + "\","
