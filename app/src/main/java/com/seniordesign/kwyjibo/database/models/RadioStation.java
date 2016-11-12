@@ -15,6 +15,7 @@ public class RadioStation implements Serializable{
     public static final String CREATED_BY = "CreatedBy";
     public static final String GENRE = "Genre";
     public static final String NUM_CURRENT_CLIPS = "NumCurrentClips";
+    public static final double LENGTH = 0.0;
     public static String BPM = "BeatsPerMin";
 
 
@@ -36,6 +37,9 @@ public class RadioStation implements Serializable{
 
 //    @DatabaseField(columnName = BPM, canBeNull = false)
 //    public String BPM;
+//
+//    @DatabaseField(columnName = LENGTH, canBeNull = false)
+//    public double LENGTH;
 
     public String toString(){
         return "{\"Id\":"+ Id
