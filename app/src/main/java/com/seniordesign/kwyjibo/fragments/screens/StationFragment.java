@@ -1,11 +1,19 @@
 package com.seniordesign.kwyjibo.fragments.screens;
 
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -45,7 +54,6 @@ import java.util.List;
 
 import okhttp3.Headers;
 import okhttp3.ResponseBody;
-import okhttp3.internal.framed.Header;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,21 +64,91 @@ public class StationFragment extends Fragment implements HasSessionInfo{
     private ListView clipListView;
 
     private Button addSoundButton;
+    private ImageView playButton;
+
+    private String songFilename;
+
+    private MediaPlayer mPlayer;
+    private View.OnClickListener playButtonListener;
 
     private static final String TAG = "StationFragment";
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.station_fragment, container, false);
+        final View rootView = inflater.inflate(R.layout.station_fragment, container, false);
 
         initButtons(rootView);
+
+        // Populate the clips listview
         initCurrentSoundsListView(rootView);
 
+        // Define the action when the play button is clicked
+        playButtonListener = new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if (songFilename != null){
+                    playSongClip();
+                }
+            }
+        };
 
+        // Download the song and attach the listener when finished
+        downloadStationSong(playButtonListener);
 
+        // Start the service that refreshes the list in pseudo real-time
         EventBus.getDefault().post(new UnpauseObserverService());
-        MainActivity.applyLayoutDesign(rootView);
+
+        // Apply our theme settings
+        ApplicationWrapper.applyLayoutDesign(rootView);
         return rootView;
+    }
+
+    private void downloadStationSong(final View.OnClickListener playButtonListener){
+        RestAPI.getStationSong(MainActivity.getIntPreference(CURRENT_STATION), new Callback<ResponseBody>(){
+
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                if (response.body() != null){
+                    saveStationSong(response.headers(), response.body());
+                    // We only want the button to work after the song has finished downloading
+                    playButton.setOnClickListener(playButtonListener);
+                    playButton.setAlpha(1.0f);
+//                    if (playButton != null) {
+//                        PorterDuffColorFilter porterDuffColorFilter = new PorterDuffColorFilter(ContextCompat.getColor(getContext(), R.color.blueGray_600),
+//                                PorterDuff.Mode.SRC_ATOP);
+
+//                        playButton.setColorFilter(porterDuffColorFilter);
+//                    }
+                }else{
+                    Log.d(TAG, "getStationSong() response body is null");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e(TAG, "getStationSong() api call failed");
+            }
+        });
+    }
+
+    private void playSongClip(){
+        String songFilepath = getContext().getExternalFilesDir(null) + "/station-songs/" + songFilename;
+        try {
+            mPlayer = new MediaPlayer();
+            mPlayer.setDataSource(songFilepath);
+            mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    mp.release();
+                }
+            });
+            mPlayer.prepare();
+            mPlayer.start();
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
     }
 
     @Override
@@ -129,44 +207,10 @@ public class StationFragment extends Fragment implements HasSessionInfo{
             }
         });
 
-        rootView.findViewById(R.id.station_fragment_play_stream_imagebutton).setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                String s = MainActivity.getStringPreference(CURRENT_STATION);
-                RestAPI.getStationSong(MainActivity.getStringPreference(CURRENT_STATION), new Callback<ResponseBody>(){
-
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
-                        if (response.body() != null){
-                            MediaPlayer mPlayer = new MediaPlayer();
-                            String songFilepath = getContext().getExternalFilesDir(null) + "/station-songs/" + getSongFilename(response.headers());
-                            saveStationSong(response.headers(), response.body());
-                            try {
-                                mPlayer.setDataSource(songFilepath);
-                            } catch (IOException e) {
-                                Log.e(TAG, e.getMessage());
-                            }
-                            try {
-                                mPlayer.prepare();
-                            } catch (IOException e) {
-                                Log.e(TAG, e.getMessage());
-                            }
-                            mPlayer.start();
-                            //mPlayer.release();
-                            Toast.makeText(getContext(), "Play button clicked.", Toast.LENGTH_LONG);
-                        }else{
-                            Log.d(TAG, "getStationSong() response body is null");
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Log.e(TAG, "getStationSong() api call failed");
-                    }
-                });
-            }
-        });
+        // Set the button to be almost transparent to indicate that it isn't ready to be clicked.
+        // Will be set to no transparency when song for the station is finished downloading
+        playButton = (ImageView) rootView.findViewById(R.id.station_fragment_play_stream_imagebutton);
+        playButton.setAlpha(0.2f);
     }
 
     private void initCurrentSoundsListView(View rootView){
@@ -181,20 +225,9 @@ public class StationFragment extends Fragment implements HasSessionInfo{
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 String clipName = ((TextView) view.findViewById(R.id.soundclip_listitem_soundname_textview)).getText().toString();
-//                SQLiteHelper db = ApplicationWrapper.getDBManager(getActivity());
-//                SoundClipInfo station = null;
-//                try {
-//                    QueryBuilder<RadioStation, Integer> queryBuilder = db.getStationDao().queryBuilder();
-//                    queryBuilder.where().eq(RadioStation.NAME, clipName);
-//                    station = queryBuilder.query().get(0);
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                }
-//                if (station == null){
-//                    return true;
-//                }
 
                 new AlertDialog.Builder(getActivity())
+                        .setTitle(clipName)
                         .setPositiveButton("Ok!", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
 
@@ -213,7 +246,7 @@ public class StationFragment extends Fragment implements HasSessionInfo{
 
 
     private void populateCurrentSoundsList(){
-        RestAPI.getStationSoundClips(CURRENT_STATION, new Callback<List<SoundClipInfo>>() {
+        RestAPI.getStationSoundClips(ApplicationWrapper.getIntPreference(CURRENT_STATION), new Callback<List<SoundClipInfo>>() {
             @Override
             public void onResponse(Call<List<SoundClipInfo>> call, Response<List<SoundClipInfo>> response) {
                 listAdapter.clear();
@@ -234,7 +267,7 @@ public class StationFragment extends Fragment implements HasSessionInfo{
     private boolean saveStationSong(Headers headers, ResponseBody body){
         InputStream inputStream = null;
         OutputStream outputStream = null;
-        String songFilename = getSongFilename(headers);
+        songFilename = getSongFilename(headers);
 
         // Save the file
         File stationSong = new File(getContext().getExternalFilesDir(null) + "/station-songs/" + songFilename);
@@ -285,5 +318,9 @@ public class StationFragment extends Fragment implements HasSessionInfo{
         String songFilename = songFilenameHeader.substring(songFilenameHeader.indexOf("\"")+1, songFilenameHeader.lastIndexOf("\""));
         return songFilename;
     }
+
+
+
+
 }
 
