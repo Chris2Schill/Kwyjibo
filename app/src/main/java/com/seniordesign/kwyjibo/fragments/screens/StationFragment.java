@@ -1,6 +1,7 @@
 package com.seniordesign.kwyjibo.fragments.screens;
 
 import android.content.DialogInterface;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
@@ -9,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -29,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.seniordesign.kwyjibo.core.ApplicationWrapper;
+import com.seniordesign.kwyjibo.core.LoopMediaPlayer;
 import com.seniordesign.kwyjibo.core.Screens;
 import com.seniordesign.kwyjibo.database.restapi.RestAPI;
 import com.seniordesign.kwyjibo.core.MainActivity;
@@ -66,10 +69,14 @@ public class StationFragment extends Fragment implements HasSessionInfo{
     private Button addSoundButton;
     private ImageView playButton;
 
+
+    private LoopMediaPlayer loopPlayer;
+
     private String songFilename;
 
     private MediaPlayer mPlayer;
     private View.OnClickListener playButtonListener;
+    private View.OnClickListener stopSongListener;
 
     private static final String TAG = "StationFragment";
 
@@ -83,12 +90,28 @@ public class StationFragment extends Fragment implements HasSessionInfo{
         // Populate the clips listview
         initCurrentSoundsListView(rootView);
 
+        stopSongListener = new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                if(songFilename != null){
+                    loopPlayer.stop();
+                    playButton.setOnClickListener(playButtonListener);
+                    playButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_play_circle_outline));
+                }
+            }
+        };
+
         // Define the action when the play button is clicked
         playButtonListener = new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 if (songFilename != null){
                     playSongClip();
+                    Drawable stopImage = ContextCompat.getDrawable(getContext(), R.drawable.ic_stop_circle_outline);
+                    playButton.setOnClickListener(stopSongListener);
+                    playButton.setImageDrawable(stopImage);
+
+
                 }
             }
         };
@@ -136,6 +159,8 @@ public class StationFragment extends Fragment implements HasSessionInfo{
     private void playSongClip(){
         String songFilepath = getContext().getExternalFilesDir(null) + "/station-songs/" + songFilename;
         try {
+            loopPlayer = LoopMediaPlayer.create(songFilepath);
+
             mPlayer = new MediaPlayer();
             mPlayer.setDataSource(songFilepath);
             mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -145,7 +170,7 @@ public class StationFragment extends Fragment implements HasSessionInfo{
                 }
             });
             mPlayer.prepare();
-            mPlayer.start();
+            //mPlayer.start();
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
