@@ -3,9 +3,7 @@ package com.seniordesign.kwyjibo.custom.adapters;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import okhttp3.Headers;
 import okhttp3.ResponseBody;
@@ -81,26 +78,12 @@ public class SoundClipInfoAdapter extends ArrayAdapter<SoundClipInfo> {
 
 
         if (clip != null) {
-//            if (holder.soundName != null){
-            if (font != null){
-                holder.soundName.setTypeface(font);
-                holder.contributor.setTypeface(font);
-                holder.location.setTypeface(font);
-            }
+            holder.soundName.setTypeface(font);
+            holder.contributor.setTypeface(font);
+            holder.location.setTypeface(font);
             holder.soundName.setText(clip.Name);
-//            }
-////            if (holder.contributor != null){
-//            if (font != null){
-//                holder.contributor.setTypeface(font);
-//            }
             holder.contributor.setText(clip.CreatedByName);
-////            }
-////            if (holder.location != null){
-//            if (font != null){
-//                holder.location.setTypeface(font);
-//            }
             holder.location.setText(clip.Location);
-//            }
         }
 
 

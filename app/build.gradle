@@ -15,6 +15,7 @@ android {
         multiDexEnabled true
 
         // Enable vector drawable support library
+        vectorDrawables.useSupportLibrary = true
         generatedDensities = []
 
         dexOptions{
