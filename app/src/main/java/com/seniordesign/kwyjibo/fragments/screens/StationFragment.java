@@ -161,16 +161,7 @@ public class StationFragment extends Fragment implements HasSessionInfo{
         try {
             loopPlayer = LoopMediaPlayer.create(songFilepath);
 
-            mPlayer = new MediaPlayer();
-            mPlayer.setDataSource(songFilepath);
-            mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    mp.release();
-                }
-            });
-            mPlayer.prepare();
-            //mPlayer.start();
+
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
