@@ -80,6 +80,8 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo, 
         fragments.put(Screens.RADIO_STATION, new StationFragment());
         fragments.put(Screens.STUDIO_MODE, new StudioModeFragment());
 
+        ApplicationWrapper.storePreference("fromMode", 0);
+
         EventBus.getDefault().register(getFragment(Screens.RADIO_STATION));
 
         if (findViewById(R.id.main_activity_fragment_container) != null){

@@ -138,12 +138,13 @@ public class RecordTab extends android.support.v4.app.Fragment{
     }
 
     private void startRecording(){
+        //bufferSize = AudioRecord.getMinBufferSize(8000,
+               // AudioFormat.CHANNEL_IN_MONO,
+               // AudioFormat.ENCODING_PCM_16BIT);
+
         recorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
                 RECORDER_SAMPLERATE, RECORDER_CHANNELS,RECORDER_AUDIO_ENCODING, bufferSize);
 
-        bufferSize = AudioRecord.getMinBufferSize(8000,
-                AudioFormat.CHANNEL_IN_MONO,
-                AudioFormat.ENCODING_PCM_16BIT);
 
         int i = recorder.getState();
         if(i==1)
