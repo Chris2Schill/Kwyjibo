@@ -17,7 +17,7 @@ public interface GETRequest {
     Call<SessionInfo> login(@Query("username") String username, @Query("password") String password);
 
     @GET("api/AuthenticateUser.aspx")
-    Call<Boolean> requestAuthentication(@Query("userId") String userId, @Query("authToken") String authToken);
+    Call<Boolean> requestAuthentication(@Query("userId") int userId, @Query("authToken") String authToken);
 
     @GET("api/GetStations.aspx")
     Call<List<RadioStation>> requestStations();

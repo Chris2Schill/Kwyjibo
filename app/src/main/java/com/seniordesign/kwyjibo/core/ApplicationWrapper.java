@@ -119,9 +119,8 @@ public class ApplicationWrapper extends AppCompatActivity{
         return false;
     }
 
-    // TODO: Make this compatible with API level 14.
     public static Drawable getDrawableFromId(int id){
-        return context.getResources().getDrawable(id, null);
+        return ContextCompat.getDrawable(context, id);
     }
 
     public static boolean haveDevicePermission(String permission) {

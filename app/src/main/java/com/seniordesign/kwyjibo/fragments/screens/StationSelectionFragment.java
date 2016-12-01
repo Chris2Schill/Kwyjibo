@@ -183,7 +183,7 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
                             newStation.CreatedBy = MainActivity.getStringPreference(USER_NAME);
                             newStation.Genre = "EDM";
                             newStation.BPM = spinner.getSelectedItem().toString();
-                            String userId = MainActivity.getStringPreference(USER_ID);
+                            String userId = MainActivity.getIntPreference(USER_ID) + "";
                             String authToken = MainActivity.getStringPreference(AUTH_TOKEN);
 
                             RestAPI.createStation(newStation, userId, authToken, new Callback<Boolean>() {

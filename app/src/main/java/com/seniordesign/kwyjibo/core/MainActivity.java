@@ -130,7 +130,7 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo, 
     @Override
     protected void onResume() {
         super.onResume();
-        RestAPI.authenticateSession(getStringPreference(USER_ID), getStringPreference(AUTH_TOKEN),
+        RestAPI.authenticateSession(getIntPreference(USER_ID), getStringPreference(AUTH_TOKEN),
                 new Callback<Boolean>() {
                     @Override
                     public void onResponse(Call<Boolean> call, Response<Boolean> response) {
@@ -191,7 +191,7 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo, 
     }
 
     public static void destroyUserSession(){
-        storePreference(USER_ID, "");
+        storePreference(USER_ID, 0);
         storePreference(AUTH_TOKEN, "");
         storePreference(USER_NAME, "");
         storePreference(USER_EMAIL, "");
