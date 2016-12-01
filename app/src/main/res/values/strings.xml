@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Kwyjibo</string>
+    <string name="appName">SoundNStein</string>
     <string name="name_preference_key">name</string>
     <string name="name_preference_default_value">Chris</string>
     <string name="output_file_name_preference_key">Output File</string>
