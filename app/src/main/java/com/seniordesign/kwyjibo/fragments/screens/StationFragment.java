@@ -109,6 +109,8 @@ public class StationFragment extends Fragment implements HasSessionInfo{
         // Download the song
         downloadStationSong(playButtonListener);
 
+        MainActivity.getLoopPlayer().setMode(LoopMediaPlayer.Modes.RADIO);
+
         // Start the service that refreshes the list in pseudo real-time
         EventBus.getDefault().post(new UnpauseObserverService());
 

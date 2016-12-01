@@ -71,13 +71,12 @@ public class StudioModeFragment extends Fragment {
     private View.OnClickListener playButtonListener;
     private View.OnClickListener stopSongListener;
     private LoopMediaPlayer loopPlayer;
-    private String songFilename;
-
     private Spinner spinnerBPM;
     private Spinner spinnerTimeSignature;
     private ArrayAdapter<String> spinnerAdapterBPM;
     private ArrayAdapter<String> spinnerAdapterTimeSignature;
     private EditText searchQuery;
+    private String songFilepath;
 
     private boolean firstTimeRunning = true;
 
@@ -91,10 +90,13 @@ public class StudioModeFragment extends Fragment {
         initViews(rootView);
         updateSpinners(rootView);
 
-        songFilename = getContext().getExternalFilesDir(null) + "/" + "studio-song.wav";
+        songFilepath = getContext().getExternalFilesDir(null) + "/" + "studio-song.wav";
         initButtons(rootView);
 
-        //searchQuery.setText(((SearchView)(rootView.findViewById(R.id.studio_mode_search_edittext))).getQuery());
+        MainActivity.getLoopPlayer().setMode(LoopMediaPlayer.Modes.STUDIO);
+
+        songFilepath = getContext().getExternalFilesDir(null) + "/" + "studio-song.wav";
+
         // Create list adapters
         Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/ProximaNova-Semibold.otf");
         allClipsListAdapter = new SoundClipInfoAdapter(getActivity(), R.layout.sound_clip_list_item, new ArrayList<SoundClipInfo>(), font);
@@ -157,14 +159,20 @@ public class StudioModeFragment extends Fragment {
         v.startAnimation(fadeIn);
     }
 
-    private void fadeOut(final View v, float start, final float end){
+    private void fadeOut(final View v, float start, final float end) {
         Animation fade = new AlphaAnimation(start, end);
         //fade.setInterpolator(new AccelerateInterpolator());
         fade.setDuration(250);
         fade.setAnimationListener(new Animation.AnimationListener() {
-            public void onAnimationEnd(Animation animation) { v.setAlpha(end); }
-            public void onAnimationRepeat(Animation animation) {}
-            public void onAnimationStart(Animation animation) {}
+            public void onAnimationEnd(Animation animation) {
+                v.setAlpha(end);
+            }
+
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            public void onAnimationStart(Animation animation) {
+            }
         });
         v.startAnimation(fade);
     }
@@ -217,7 +225,6 @@ public class StudioModeFragment extends Fragment {
     }
 
     private void playSongClip(){
-        String songFilepath = getContext().getExternalFilesDir(null) + "/studio-mode/" + songFilename;
         List<Integer> clipIds = new ArrayList<Integer>();
         for(int i = 0; i < currentSoundsListAdapter.getCount(); i++){
             clipIds.add(currentSoundsListAdapter.getItem(i).Id);
@@ -250,8 +257,10 @@ public class StudioModeFragment extends Fragment {
         });
 
         try {
-            loopPlayer = LoopMediaPlayer.create(songFilename);
-
+            MainActivity.getLoopPlayer().reset();
+            MainActivity.getLoopPlayer().setDataSource(songFilepath);
+            MainActivity.getLoopPlayer().prepare();
+            MainActivity.getLoopPlayer().start();
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
@@ -263,7 +272,7 @@ public class StudioModeFragment extends Fragment {
 
 
         // Save the file
-        File stationSong = new File(songFilename);
+        File stationSong = new File(songFilepath);
         try{
             try {
                 byte[] fileReader = new byte[4096];
@@ -336,21 +345,22 @@ public class StudioModeFragment extends Fragment {
         });
 
 
+//        searchView.setOnQueryTextListener(queryTextListener);
 
-       new SwipeDetector(mainFragViewGroup).setOnSwipeListener(new SwipeDetector.onSwipeEvent() {
-            @Override
-            public void SwipeEventDetected(View v, SwipeDetector.SwipeType swipeType) {
-                if (swipeType == SwipeDetector.SwipeType.LEFT_TO_RIGHT) {
-                    getActivity().getSupportFragmentManager().popBackStack();
-                }
-            }
-        });
+//       new SwipeDetector(mainFragViewGroup).setOnSwipeListener(new SwipeDetector.onSwipeEvent() {
+//            @Override
+//            public void SwipeEventDetected(View v, SwipeDetector.SwipeType swipeType) {
+//                if (swipeType == SwipeDetector.SwipeType.LEFT_TO_RIGHT) {
+//                    getActivity().getSupportFragmentManager().popBackStack();
+//                }
+//            }
+//        });
 
         stopSongListener = new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                if(songFilename != null){
-                    loopPlayer.stop();
+                if(songFilepath != null){
+                    MainActivity.getLoopPlayer().stop();
                     playButton.setOnClickListener(playButtonListener);
                     playButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_play_circle_outline));
                 }
@@ -361,7 +371,7 @@ public class StudioModeFragment extends Fragment {
         playButtonListener = new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                if (songFilename != null){
+                if (songFilepath != null){
                     playSongClip();
                     Drawable stopImage = ContextCompat.getDrawable(getContext(), R.drawable.ic_stop_circle_outline);
                     playButton.setOnClickListener(stopSongListener);

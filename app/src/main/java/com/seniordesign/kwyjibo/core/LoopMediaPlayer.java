@@ -20,6 +20,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.seniordesign.kwyjibo.core.HasSessionInfo.CURRENT_STATION;
+import static com.seniordesign.kwyjibo.core.LoopMediaPlayer.Modes.RADIO;
 
 /**
  * Created by jamie on 11/12/2016.
@@ -33,7 +34,12 @@ public class LoopMediaPlayer {
         IDLE, INITIALIZED, PREPARED, STARTED, STOPPED, PAUSED, PLAYBACK_COMPLETED, PREPARING, END
     }
 
+    public enum Modes{
+        RADIO, STUDIO
+    }
+
     private State state;
+    private Modes mode;
 
     private int mCounter = 1;
 
@@ -54,6 +60,10 @@ public class LoopMediaPlayer {
 
     public static LoopMediaPlayer create(Context context) {
         return new LoopMediaPlayer(context);
+    }
+
+    public void setMode(Modes m){
+        mode = m;
     }
 
     public void setDataSource(String filepath) throws IOException, IllegalStateException{
@@ -175,31 +185,33 @@ public class LoopMediaPlayer {
 
             // After n loops, we want to download the song again and set it to the currently unused mediaplayer
             // This way, any changes to the song on the server will be reflected here seamlessly
-            if (mCounter == 2){
-                mCounter = 1;
-                int stationId = ApplicationWrapper.getIntPreference(CURRENT_STATION);
-                RestAPI.getStationSong(stationId, new Callback<ResponseBody>(){
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response.body() != null){
-                            if (currentFilePath.equals(mSongFilePath1)){
-                                saveStationSong(response.headers(),response.body(), mSongFilePath2);
-                                currentFilePath = mSongFilePath2;
-                            }else if (currentFilePath.equals(mSongFilePath2)){
-                                saveStationSong(response.headers(),response.body(), mSongFilePath1);
-                                currentFilePath = mSongFilePath1;
+            if (mode == RADIO){
+                if (mCounter == 2){
+                    mCounter = 1;
+                    int stationId = ApplicationWrapper.getIntPreference(CURRENT_STATION);
+                    RestAPI.getStationSong(stationId, new Callback<ResponseBody>(){
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            if (response.body() != null){
+                                if (currentFilePath.equals(mSongFilePath1)){
+                                    saveStationSong(response.headers(),response.body(), mSongFilePath2);
+                                    currentFilePath = mSongFilePath2;
+                                }else if (currentFilePath.equals(mSongFilePath2)){
+                                    saveStationSong(response.headers(),response.body(), mSongFilePath1);
+                                    currentFilePath = mSongFilePath1;
+                                }
+                                Log.d(TAG, "Station song download successful.");
+                            }else{
+                                Log.e(TAG, "Station song download failed. getStationSong() response.body() == null.");
                             }
-//                            saveStationSong(response.headers(), response.body(), currentFilePath);
-                            Log.d(TAG, "Station song download successful.");
-                        }else{
-                            Log.e(TAG, "Station song download failed. getStationSong() response.body() == null.");
                         }
-                    }
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Log.e(TAG, "Station song download failed. No response from server.");
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            Log.e(TAG, "Station song download failed. No response from server.");
+                        }
+                    });
+                }
+
             }
             mCounter++;
 
@@ -258,8 +270,4 @@ public class LoopMediaPlayer {
         }
     }
 
-    private String getSongFilename(String songFilepath){
-        String songFilename = songFilepath.substring(songFilepath.indexOf("/")+1);
-        return songFilename;
-    }
 }
