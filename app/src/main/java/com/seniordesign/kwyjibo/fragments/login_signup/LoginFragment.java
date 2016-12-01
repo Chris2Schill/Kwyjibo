@@ -70,7 +70,7 @@ public class LoginFragment extends Fragment implements HasSessionInfo{
                     @Override
                     public void onResponse(Call<SessionInfo> call, Response<SessionInfo> response) {
                         if (response.body().IS_AUTHENTICATED) {
-                            ApplicationWrapper.storePreference(USER_ID, response.body().USER_ID);
+                            ApplicationWrapper.storePreference(USER_ID, Integer.parseInt(response.body().USER_ID));
                             ApplicationWrapper.storePreference(USER_NAME, response.body().USER_NAME);
                             ApplicationWrapper.storePreference(USER_EMAIL, response.body().USER_EMAIL);
                             ApplicationWrapper.storePreference(AUTH_TOKEN, response.body().AUTH_TOKEN);
@@ -103,7 +103,7 @@ public class LoginFragment extends Fragment implements HasSessionInfo{
                     public void onResponse(Call<SessionInfo> call, Response<SessionInfo> response) {
                         try{
                             if (response.body().IS_AUTHENTICATED) {
-                                ApplicationWrapper.storePreference(USER_ID, response.body().USER_ID);
+                                ApplicationWrapper.storePreference(USER_ID, Integer.parseInt(response.body().USER_ID));
                                 ApplicationWrapper.storePreference(USER_NAME, response.body().USER_NAME);
                                 ApplicationWrapper.storePreference(USER_EMAIL, response.body().USER_EMAIL);
                                 ApplicationWrapper.storePreference(AUTH_TOKEN, response.body().AUTH_TOKEN);
@@ -166,7 +166,7 @@ public class LoginFragment extends Fragment implements HasSessionInfo{
                     @Override
                     public void onResponse(Call<SessionInfo> call, Response<SessionInfo> response) {
                         if (response.body().IS_AUTHENTICATED) {
-                            ApplicationWrapper.storePreference(USER_ID, response.body().USER_ID);
+                            ApplicationWrapper.storePreference(USER_ID, Integer.parseInt(response.body().USER_ID));
                             ApplicationWrapper.storePreference(USER_NAME, response.body().USER_NAME);
                             ApplicationWrapper.storePreference(USER_EMAIL, response.body().USER_EMAIL);
                             ApplicationWrapper.storePreference(AUTH_TOKEN, response.body().AUTH_TOKEN);

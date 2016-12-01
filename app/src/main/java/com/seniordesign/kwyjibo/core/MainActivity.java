@@ -62,6 +62,7 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo, 
     private static final String TAG = "MainActivity";
     private static boolean firstRun = true;
     public static GoogleApiClient mGoogleApiClient;
+    private static LoopMediaPlayer loopPlayer;
 
 
     @Override
@@ -96,6 +97,10 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo, 
                 .requestEmail()
                 .build();
 
+
+        // Creat the media player used to play the songs
+        loopPlayer = LoopMediaPlayer.create(context);
+
         //create an instance of the GoogleAPIClient
         if(mGoogleApiClient == null)
         {
@@ -125,7 +130,7 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo, 
     @Override
     protected void onResume() {
         super.onResume();
-        RestAPI.authenticateSession(getStringPreference(USER_ID), getStringPreference(AUTH_TOKEN),
+        RestAPI.authenticateSession(getIntPreference(USER_ID), getStringPreference(AUTH_TOKEN),
                 new Callback<Boolean>() {
                     @Override
                     public void onResponse(Call<Boolean> call, Response<Boolean> response) {
@@ -186,15 +191,13 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo, 
     }
 
     public static void destroyUserSession(){
-        storePreference(USER_ID, "");
+        storePreference(USER_ID, 0);
         storePreference(AUTH_TOKEN, "");
         storePreference(USER_NAME, "");
         storePreference(USER_EMAIL, "");
         storePreference(CURRENT_STATION, 0);
         storePreference(IS_AUTHENTICATED, false);
     }
-
-
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -223,8 +226,9 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo, 
         return null;
     }
 
-
-
+    public static LoopMediaPlayer getLoopPlayer(){
+        return loopPlayer;
+    }
 
     @Override
     public void onConnectionSuspended(int i) {

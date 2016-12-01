@@ -156,10 +156,16 @@ public class StationFragment extends Fragment implements HasSessionInfo{
 
     private void playSongClip(){
         try {
+<<<<<<< HEAD
             MainActivity.getLoopPlayer().reset();
             MainActivity.getLoopPlayer().setDataSource(getContext().getExternalFilesDir(null) + "/station-songs/" + songFilename);
             MainActivity.getLoopPlayer().prepare();
             MainActivity.getLoopPlayer().start();
+=======
+            loopPlayer = LoopMediaPlayer.create(songFilepath);
+
+
+>>>>>>> 79931263c549e52a2e8974ed04671a3a3316d9b5
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
@@ -208,7 +214,6 @@ public class StationFragment extends Fragment implements HasSessionInfo{
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 ApplicationWrapper.storePreference("fromStation", true);
-
                                 MainActivity.replaceScreen(Screens.RECORD_MODE, "RECORD_MODE",
                                         android.R.anim.fade_in, android.R.anim.fade_out);
                             }

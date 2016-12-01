@@ -41,7 +41,7 @@ public class RestAPI{
         call.enqueue(callback);
     }
 
-    public static void authenticateSession(String userId, String authToken, Callback<Boolean> callback){
+    public static void authenticateSession(int userId, String authToken, Callback<Boolean> callback){
         GETRequest api = retrofit.create(GETRequest.class);
         final Call<Boolean> call = api.requestAuthentication(userId, authToken);
         call.enqueue(callback);

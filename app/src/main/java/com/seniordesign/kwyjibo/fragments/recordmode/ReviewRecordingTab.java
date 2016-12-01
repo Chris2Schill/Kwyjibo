@@ -115,7 +115,7 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
 
                 SoundClipInfo clipInfo = gatherSoundClipInfo();
                 int stationId = ApplicationWrapper.getIntPreference(CURRENT_STATION);
-                String userId = ApplicationWrapper.getStringPreference(USER_ID);
+                String userId = ApplicationWrapper.getIntPreference(USER_ID) + "";
                 String authToken = ApplicationWrapper.getStringPreference(AUTH_TOKEN);
                 Log.e(TAG, tempOutputFile);
 

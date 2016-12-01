@@ -65,7 +65,7 @@ public class SignupFragment extends Fragment implements HasSessionInfo{
                                 Log.e(TAG, response.body().toString());
                                 boolean creationSuccessful = response.body().IS_AUTHENTICATED;
                                 if (creationSuccessful) {
-                                    MainActivity.storePreference(USER_ID, response.body().USER_ID);
+                                    MainActivity.storePreference(USER_ID, Integer.parseInt(response.body().USER_ID));
                                     MainActivity.storePreference(USER_NAME, response.body().USER_NAME);
                                     MainActivity.storePreference(USER_EMAIL, response.body().USER_EMAIL);
                                     MainActivity.storePreference(AUTH_TOKEN, response.body().AUTH_TOKEN);
