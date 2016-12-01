@@ -82,6 +82,10 @@ public class RestAPI{
         RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
         MultipartBody.Part soundClipFile = MultipartBody.Part.createFormData(file.getName(), file.getName(), requestFile);
 
+        if (clipInfo.Location == null){
+            clipInfo.Location = "None";
+        }
+
         RequestBody station= RequestBody.create(MediaType.parse("multipart/form-data"), stationId + "");
         RequestBody clipName = RequestBody.create(MediaType.parse("multipart/form-data"), clipInfo.Name);
         RequestBody username = RequestBody.create(MediaType.parse("multipart/form-data"), clipInfo.CreatedById + "");

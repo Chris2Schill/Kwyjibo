@@ -5,13 +5,16 @@ import android.media.MediaPlayer;
 import android.util.Log;
 
 import com.seniordesign.kwyjibo.database.restapi.RestAPI;
+import com.seniordesign.kwyjibo.fragments.screens.StudioModeFragment;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.IllegalFormatCodePointException;
+import java.util.List;
 
 import okhttp3.ResponseBody;
 import okhttp3.Headers;
@@ -29,6 +32,12 @@ import static com.seniordesign.kwyjibo.core.LoopMediaPlayer.Modes.RADIO;
 public class LoopMediaPlayer {
     public static final String TAG = LoopMediaPlayer.class.getSimpleName();
     private Context mContext;
+
+    private StudioModeFragment studioFragment;
+
+    public void setStudioFragmentReference(StudioModeFragment studioFragmentReference) {
+        this.studioFragment = studioFragmentReference;
+    }
 
     private enum State{
         IDLE, INITIALIZED, PREPARED, STARTED, STOPPED, PAUSED, PLAYBACK_COMPLETED, PREPARING, END
@@ -185,9 +194,9 @@ public class LoopMediaPlayer {
 
             // After n loops, we want to download the song again and set it to the currently unused mediaplayer
             // This way, any changes to the song on the server will be reflected here seamlessly
-            if (mode == RADIO){
-                if (mCounter == 2){
-                    mCounter = 1;
+            if (mCounter == 2){
+                mCounter = 1;
+                if (mode == Modes.RADIO){
                     int stationId = ApplicationWrapper.getIntPreference(CURRENT_STATION);
                     RestAPI.getStationSong(stationId, new Callback<ResponseBody>(){
                         @Override
@@ -210,6 +219,9 @@ public class LoopMediaPlayer {
                             Log.e(TAG, "Station song download failed. No response from server.");
                         }
                     });
+                }
+                if (mode == Modes.STUDIO){
+                   studioFragment.getStudioModeSong();
                 }
 
             }
@@ -249,7 +261,7 @@ public class LoopMediaPlayer {
                     }
                     outputStream.write(fileReader, 0, read);
                     fileSizeDownloaded += read;
-                    Log.d(TAG, "file download: " + fileSizeDownloaded + " of " + fileSize);
+                   // Log.d(TAG, "file download: " + fileSizeDownloaded + " of " + fileSize);
                 }
                 outputStream.flush();
                 return true;
@@ -269,5 +281,7 @@ public class LoopMediaPlayer {
             return false;
         }
     }
+
+
 
 }

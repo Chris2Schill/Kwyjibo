@@ -145,14 +145,14 @@ public class StationSelectionFragment extends Fragment implements HasSessionInfo
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
 
-        new SwipeDetector(recyclerView).setOnSwipeListener(new SwipeDetector.onSwipeEvent() {
-            @Override
-            public void SwipeEventDetected(View v, SwipeDetector.SwipeType swipeType) {
-                if (swipeType == SwipeDetector.SwipeType.LEFT_TO_RIGHT){
-                    getActivity().getSupportFragmentManager().popBackStack();
-                }
-            }
-        });
+//        new SwipeDetector(recyclerView).setOnSwipeListener(new SwipeDetector.onSwipeEvent() {
+//            @Override
+//            public void SwipeEventDetected(View v, SwipeDetector.SwipeType swipeType) {
+//                if (swipeType == SwipeDetector.SwipeType.LEFT_TO_RIGHT){
+//                    getActivity().getSupportFragmentManager().popBackStack();
+//                }
+//            }
+//        });
     }
 
     private void enableCreateStationButton(View v){

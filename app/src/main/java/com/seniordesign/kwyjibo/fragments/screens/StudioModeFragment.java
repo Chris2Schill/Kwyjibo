@@ -26,6 +26,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.seniordesign.kwyjibo.core.ApplicationWrapper;
 import com.seniordesign.kwyjibo.core.LoopMediaPlayer;
@@ -70,7 +71,6 @@ public class StudioModeFragment extends Fragment {
     private ImageView playButton;
     private View.OnClickListener playButtonListener;
     private View.OnClickListener stopSongListener;
-    private LoopMediaPlayer loopPlayer;
     private Spinner spinnerBPM;
     private Spinner spinnerTimeSignature;
     private ArrayAdapter<String> spinnerAdapterBPM;
@@ -90,7 +90,6 @@ public class StudioModeFragment extends Fragment {
         initViews(rootView);
         updateSpinners(rootView);
 
-        songFilepath = getContext().getExternalFilesDir(null) + "/" + "studio-song.wav";
         initButtons(rootView);
 
         MainActivity.getLoopPlayer().setMode(LoopMediaPlayer.Modes.STUDIO);
@@ -224,7 +223,8 @@ public class StudioModeFragment extends Fragment {
         //playButton.setAlpha(0.2f);
     }
 
-    private void playSongClip(){
+
+    public void getStudioModeSong(){
         List<Integer> clipIds = new ArrayList<Integer>();
         for(int i = 0; i < currentSoundsListAdapter.getCount(); i++){
             clipIds.add(currentSoundsListAdapter.getItem(i).Id);
@@ -236,18 +236,23 @@ public class StudioModeFragment extends Fragment {
 
         int bpm = Integer.parseInt(spinnerBPM.getSelectedItem().toString());
         int timeSig = Integer.parseInt(spinnerTimeSignature.getSelectedItem().toString());
-
         RestAPI.getStudioModeSong(clipsIds, bpm, timeSig, new Callback<ResponseBody>(){
 
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if(response.body() != null){
                     saveStationSong(response.headers(), response.body());
+                    if (!MainActivity.getLoopPlayer().isPlaying()){
+                        playSong();
+                        Drawable stopImage = ContextCompat.getDrawable(getContext(), R.drawable.ic_stop_circle_outline);
+                        playButton.setOnClickListener(stopSongListener);
+                        playButton.setImageDrawable(stopImage);
+                    }
                 }
                 else{
                     Log.d(TAG, "getStudioModeSong() response body is null");
+                    Toast.makeText(getContext(), "getStudioModeSong() response body is null",Toast.LENGTH_LONG).show();
                 }
-
             }
 
             @Override
@@ -256,9 +261,13 @@ public class StudioModeFragment extends Fragment {
             }
         });
 
+    }
+
+    private void playSong(){
         try {
             MainActivity.getLoopPlayer().reset();
             MainActivity.getLoopPlayer().setDataSource(songFilepath);
+            MainActivity.getLoopPlayer().setStudioFragmentReference(this);
             MainActivity.getLoopPlayer().prepare();
             MainActivity.getLoopPlayer().start();
         } catch (Exception e) {
@@ -269,7 +278,6 @@ public class StudioModeFragment extends Fragment {
     private boolean saveStationSong(Headers headers, ResponseBody body){
         InputStream inputStream = null;
         OutputStream outputStream = null;
-
 
         // Save the file
         File stationSong = new File(songFilepath);
@@ -289,10 +297,9 @@ public class StudioModeFragment extends Fragment {
                     }
                     outputStream.write(fileReader, 0, read);
                     fileSizeDownloaded += read;
-                    Log.d("API", "file download: " + fileSizeDownloaded + " of " + fileSize);
+                    //Log.d("API", "file download: " + fileSizeDownloaded + " of " + fileSize);
                 }
                 outputStream.flush();
-                return true;
             } catch (IOException e) {
                 return false;
             } finally {
@@ -307,6 +314,7 @@ public class StudioModeFragment extends Fragment {
             Log.e(TAG, ex.getMessage());
             return false;
         }
+        return true;
     }
 
     private void setListeners(){
@@ -372,12 +380,7 @@ public class StudioModeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (songFilepath != null){
-                    playSongClip();
-                    Drawable stopImage = ContextCompat.getDrawable(getContext(), R.drawable.ic_stop_circle_outline);
-                    playButton.setOnClickListener(stopSongListener);
-                    playButton.setImageDrawable(stopImage);
-
-
+                    getStudioModeSong();
                 }
             }
         };

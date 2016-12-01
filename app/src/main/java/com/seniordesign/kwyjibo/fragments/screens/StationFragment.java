@@ -317,10 +317,9 @@ public class StationFragment extends Fragment implements HasSessionInfo{
                     }
                     outputStream.write(fileReader, 0, read);
                     fileSizeDownloaded += read;
-                    Log.d("API", "file download: " + fileSizeDownloaded + " of " + fileSize);
+                   // Log.d("API", "file download: " + fileSizeDownloaded + " of " + fileSize);
                 }
                 outputStream.flush();
-                return true;
             } catch (IOException e) {
                 return false;
             } finally {
@@ -335,6 +334,7 @@ public class StationFragment extends Fragment implements HasSessionInfo{
             Log.e(TAG, ex.getMessage());
             return false;
         }
+        return true;
     }
 
     private String getSongFilename(Headers headers){
