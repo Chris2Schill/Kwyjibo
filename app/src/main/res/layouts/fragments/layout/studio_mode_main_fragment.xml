@@ -63,13 +63,6 @@
                 android:layout_below="@+id/studio_mode_current_sounds_framelayout"
                 android:layout_alignParentBottom="true">
 
-                <TextView
-                    android:text="BPM"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/Studio_mode_bpm_textView"
-                    android:layout_alignParentTop="true"
-                    android:layout_width="wrap_content" />
-
                 <ImageView
                     android:id="@+id/studio_mode_play_stream_button"
                     android:layout_width="100dp"
@@ -78,6 +71,16 @@
                     tools:ignore="MissingPrefix"
                     android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true" />
+
+                <TextView
+                    android:text="BPM"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/Studio_mode_bpm_textView"
+                    android:layout_alignParentTop="true"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentLeft="true"/>
+
+
 
                 <TextView
                     android:text="time signature"
@@ -92,6 +95,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/studio_mode_time_signature"
+                    android:spinnerMode="dialog"
                     android:layout_alignTop="@+id/studio_mode_time_signature_textview"
                     android:layout_toRightOf="@+id/studio_mode_time_signature_textview"
                     android:layout_alignBottom="@+id/studio_mode_time_signature_textview" />
@@ -102,9 +106,9 @@
                     android:id="@+id/studio_mode_bpm"
                     android:spinnerMode="dialog"
                     android:layout_above="@+id/studio_mode_time_signature_textview"
+                    android:layout_alignTop="@+id/Studio_mode_bpm_textView"
                     android:layout_toRightOf="@+id/Studio_mode_bpm_textView"
-                    android:layout_toLeftOf="@+id/studio_mode_time_signature"
-                    android:layout_toStartOf="@+id/studio_mode_time_signature" />
+                    android:layout_alignBottom="@+id/Studio_mode_bpm_textView" />
 
             </RelativeLayout>
 

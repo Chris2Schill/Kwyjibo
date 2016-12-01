@@ -34,6 +34,7 @@ import com.seniordesign.kwyjibo.core.Screens;
 import com.seniordesign.kwyjibo.custom.adapters.SoundClipInfoAdapter;
 import com.seniordesign.kwyjibo.custom.decorators.SwipeDetector;
 import com.seniordesign.kwyjibo.database.models.SoundClipInfo;
+import com.seniordesign.kwyjibo.fragments.recordmode.ReviewRecordingTab;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 import com.seniordesign.kwyjibo.database.restapi.RestAPI;
 import com.seniordesign.kwyjibo.custom.sorting.AscendingClipName;
@@ -203,7 +204,8 @@ public class StudioModeFragment extends Fragment {
 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                ApplicationWrapper.storePreference("fromStation", false);
+                                ApplicationWrapper.storePreference("fromMode", 2);
+
 
                                 MainActivity.replaceScreen(Screens.RECORD_MODE, "RECORD_MODE",
                                         android.R.anim.fade_in, android.R.anim.fade_out);

@@ -209,7 +209,7 @@ public class StationFragment extends Fragment implements HasSessionInfo{
 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                ApplicationWrapper.storePreference("fromStation", true);
+                                ApplicationWrapper.storePreference("fromMode", 1);
 
                                 MainActivity.replaceScreen(Screens.RECORD_MODE, "RECORD_MODE",
                                         android.R.anim.fade_in, android.R.anim.fade_out);

@@ -64,6 +64,7 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
         return rootView;
     }
 
+
     public void enableButtons(View v){
         enablePlaybackButton(v);
         enableUploadSoundButton(v);
@@ -131,6 +132,7 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
                     }
                 }
 
+
                 RestAPI.uploadSoundClip(tempOutputFile, clipInfo, stationId, userId, authToken, ApplicationWrapper.getBooleanPreference("fromStation") ? 1: 0,
                         new Callback<SoundClipInfo>() {
                             @Override
@@ -139,8 +141,19 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
                                     Log.d(TAG, "" + response.body().toString());
                                     deleteFile(tempOutputFile);
                                     getActivity().getSupportFragmentManager().popBackStack();
-                                    MainActivity.replaceScreen(Screens.RADIO_STATION, "RADIO_STATION",
-                                            android.R.anim.fade_in, android.R.anim.fade_out);
+                                    if(ApplicationWrapper.getIntPreference("fromMode") == 1){
+                                        MainActivity.replaceScreen(Screens.RADIO_STATION, "RADIO_STATION",
+                                                android.R.anim.fade_in, android.R.anim.fade_out);
+                                    }
+                                    else if(ApplicationWrapper.getIntPreference("fromMode") == 2){
+                                        MainActivity.replaceScreen(Screens.STUDIO_MODE, "STUDIO_MODE",
+                                                android.R.anim.fade_in, android.R.anim.fade_out);
+                                    }
+                                    else{
+                                        MainActivity.replaceScreen(Screens.RECORD_MODE, "RECORD_MODE",
+                                                android.R.anim.fade_in, android.R.anim.fade_out);
+                                    }
+
                                 } else{
                                         Log.e(TAG, "Http status:" + response.code());
                                 }
