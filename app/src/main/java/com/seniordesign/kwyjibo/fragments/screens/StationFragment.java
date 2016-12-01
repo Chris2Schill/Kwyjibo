@@ -69,54 +69,44 @@ public class StationFragment extends Fragment implements HasSessionInfo{
     private Button addSoundButton;
     private ImageView playButton;
 
-
-    private LoopMediaPlayer loopPlayer;
-
     private String songFilename;
 
-    private MediaPlayer mPlayer;
-    private View.OnClickListener playButtonListener;
-    private View.OnClickListener stopSongListener;
+    private View.OnClickListener playButtonListener = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            if (songFilename != null){
+                playSongClip();
+                Drawable stopImage = ContextCompat.getDrawable(getContext(), R.drawable.ic_stop_circle_outline);
+                playButton.setOnClickListener(stopSongListener);
+                playButton.setImageDrawable(stopImage);
+            }
+        }
+    };
+
+    private View.OnClickListener stopSongListener = new View.OnClickListener(){
+        @Override
+        public void onClick(View v){
+            if(songFilename != null){
+                MainActivity.getLoopPlayer().stop();
+                playButton.setOnClickListener(playButtonListener);
+                playButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_play_circle_outline));
+            }
+        }
+    };
 
     private static final String TAG = "StationFragment";
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.station_fragment, container, false);
+
 
         initButtons(rootView);
 
         // Populate the clips listview
         initCurrentSoundsListView(rootView);
 
-        stopSongListener = new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                if(songFilename != null){
-                    loopPlayer.stop();
-                    playButton.setOnClickListener(playButtonListener);
-                    playButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_play_circle_outline));
-                }
-            }
-        };
-
-        // Define the action when the play button is clicked
-        playButtonListener = new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                if (songFilename != null){
-                    playSongClip();
-                    Drawable stopImage = ContextCompat.getDrawable(getContext(), R.drawable.ic_stop_circle_outline);
-                    playButton.setOnClickListener(stopSongListener);
-                    playButton.setImageDrawable(stopImage);
-
-
-                }
-            }
-        };
-
-        // Download the song and attach the listener when finished
+        // Download the song
         downloadStationSong(playButtonListener);
 
         // Start the service that refreshes the list in pseudo real-time
@@ -136,7 +126,14 @@ public class StationFragment extends Fragment implements HasSessionInfo{
                 if (response.body() != null){
                     saveStationSong(response.headers(), response.body());
                     // We only want the button to work after the song has finished downloading
-                    playButton.setOnClickListener(playButtonListener);
+                    if (MainActivity.getLoopPlayer().isPlaying()){
+                        playButton.setOnClickListener(stopSongListener);
+                        playButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_stop_circle_outline));
+
+                    }else{
+                        playButton.setOnClickListener(playButtonListener);
+                        playButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_play_circle_outline));
+                    }
                     playButton.setAlpha(1.0f);
 //                    if (playButton != null) {
 //                        PorterDuffColorFilter porterDuffColorFilter = new PorterDuffColorFilter(ContextCompat.getColor(getContext(), R.color.blueGray_600),
@@ -154,23 +151,15 @@ public class StationFragment extends Fragment implements HasSessionInfo{
                 Log.e(TAG, "getStationSong() api call failed");
             }
         });
+
     }
 
     private void playSongClip(){
-        String songFilepath = getContext().getExternalFilesDir(null) + "/station-songs/" + songFilename;
         try {
-            loopPlayer = LoopMediaPlayer.create(songFilepath);
-
-            mPlayer = new MediaPlayer();
-            mPlayer.setDataSource(songFilepath);
-            mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    mp.release();
-                }
-            });
-            mPlayer.prepare();
-            //mPlayer.start();
+            MainActivity.getLoopPlayer().reset();
+            MainActivity.getLoopPlayer().setDataSource(getContext().getExternalFilesDir(null) + "/station-songs/" + songFilename);
+            MainActivity.getLoopPlayer().prepare();
+            MainActivity.getLoopPlayer().start();
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
@@ -232,10 +221,17 @@ public class StationFragment extends Fragment implements HasSessionInfo{
             }
         });
 
-        // Set the button to be almost transparent to indicate that it isn't ready to be clicked.
-        // Will be set to no transparency when song for the station is finished downloading
+        // Set the play song button to the proper icon and transparency
         playButton = (ImageView) rootView.findViewById(R.id.station_fragment_play_stream_imagebutton);
-        playButton.setAlpha(0.2f);
+        if (MainActivity.getLoopPlayer() != null && MainActivity.getLoopPlayer().isPlaying()){
+            playButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_stop_circle_outline));
+            playButton.setOnClickListener(stopSongListener);
+            playButton.setAlpha(1f);
+        }else{
+            playButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_play_circle_outline));
+            playButton.setOnClickListener(playButtonListener);
+            playButton.setAlpha(0.2f);
+        }
     }
 
     private void initCurrentSoundsListView(View rootView){
@@ -343,7 +339,6 @@ public class StationFragment extends Fragment implements HasSessionInfo{
         String songFilename = songFilenameHeader.substring(songFilenameHeader.indexOf("\"")+1, songFilenameHeader.lastIndexOf("\""));
         return songFilename;
     }
-
 
 
 

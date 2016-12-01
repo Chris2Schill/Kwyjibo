@@ -62,6 +62,7 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo, 
     private static final String TAG = "MainActivity";
     private static boolean firstRun = true;
     public static GoogleApiClient mGoogleApiClient;
+    private static LoopMediaPlayer loopPlayer;
 
 
     @Override
@@ -95,6 +96,10 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo, 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
+
+
+        // Creat the media player used to play the songs
+        loopPlayer = LoopMediaPlayer.create(context);
 
         //create an instance of the GoogleAPIClient
         if(mGoogleApiClient == null)
@@ -194,8 +199,6 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo, 
         storePreference(IS_AUTHENTICATED, false);
     }
 
-
-
     @Override
     public void onConnected(Bundle bundle) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
@@ -223,8 +226,9 @@ public class MainActivity extends ApplicationWrapper implements HasSessionInfo, 
         return null;
     }
 
-
-
+    public static LoopMediaPlayer getLoopPlayer(){
+        return loopPlayer;
+    }
 
     @Override
     public void onConnectionSuspended(int i) {

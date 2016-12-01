@@ -76,7 +76,6 @@ public class SoundClipInfoAdapter extends ArrayAdapter<SoundClipInfo> {
         final SoundClipInfo clip = soundClipInfoList.get(position);
         final String clipFilepath = getLocalFilepathFor(clip);
 
-
         if (clip != null) {
             holder.soundName.setTypeface(font);
             holder.contributor.setTypeface(font);
@@ -85,7 +84,6 @@ public class SoundClipInfoAdapter extends ArrayAdapter<SoundClipInfo> {
             holder.contributor.setText(clip.CreatedByName);
             holder.location.setText(clip.Location);
         }
-
 
         // Define two click listeners for the same button. We will use one for downloading
         // when the file doesn't exist, and one for playing the clip when it does.
