@@ -14,9 +14,26 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <android.support.design.widget.FloatingActionButton
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            app:layout_anchorGravity="bottom|right|end"
+            app:fabSize="normal"
+            android:src="@drawable/ic_plus"
+            android:clickable="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="368dp"
+            android:id="@+id/studio_mode_add_sound_button" />
+
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
 
             <FrameLayout
                 android:id="@+id/studio_mode_current_sounds_framelayout"
@@ -46,34 +63,53 @@
                 android:layout_below="@+id/studio_mode_current_sounds_framelayout"
                 android:layout_alignParentBottom="true">
 
+                <TextView
+                    android:text="BPM"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/Studio_mode_bpm_textView"
+                    android:layout_alignParentTop="true"
+                    android:layout_width="wrap_content" />
+
                 <ImageView
                     android:id="@+id/studio_mode_play_stream_button"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:layout_centerInParent="true"
-                    android:layout_marginBottom="16dp"
-                    android:layout_alignParentBottom="false"
                     app:srcCompat="@drawable/ic_play_circle_outline"
-                    tools:ignore="MissingPrefix"/>
+                    tools:ignore="MissingPrefix"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true" />
+
+                <TextView
+                    android:text="time signature"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/studio_mode_time_signature_textview"
+                    android:layout_below="@+id/Studio_mode_bpm_textView"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
+
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/studio_mode_time_signature"
+                    android:layout_alignTop="@+id/studio_mode_time_signature_textview"
+                    android:layout_toRightOf="@+id/studio_mode_time_signature_textview"
+                    android:layout_alignBottom="@+id/studio_mode_time_signature_textview" />
+
+                <Spinner
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/studio_mode_bpm"
+                    android:spinnerMode="dialog"
+                    android:layout_above="@+id/studio_mode_time_signature_textview"
+                    android:layout_toRightOf="@+id/Studio_mode_bpm_textView"
+                    android:layout_toLeftOf="@+id/studio_mode_time_signature"
+                    android:layout_toStartOf="@+id/studio_mode_time_signature" />
 
             </RelativeLayout>
 
 
         </RelativeLayout>
-
-        <android.support.design.widget.FloatingActionButton
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            app:layout_anchorGravity="bottom|right|end"
-            app:fabSize="normal"
-            android:src="@drawable/ic_plus"
-            android:clickable="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginRight="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="368dp"
-            android:id="@+id/studio_mode_add_sound_button" />
 
     </RelativeLayout>
 

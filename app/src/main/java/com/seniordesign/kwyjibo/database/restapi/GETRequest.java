@@ -37,5 +37,8 @@ public interface GETRequest {
     @GET("api/GetStationSong.aspx")
     Call<ResponseBody> getStationSong(@Query("stationId") int stationId);
 
+    @GET("api/GetStudioModeSong.aspx")
+    Call<ResponseBody> getStudioModeSong(@Query("soundClipIds") int[] clipIds, @Query("bpm") int bpm, @Query("timeSignature") int timeSig);
+
 
 }

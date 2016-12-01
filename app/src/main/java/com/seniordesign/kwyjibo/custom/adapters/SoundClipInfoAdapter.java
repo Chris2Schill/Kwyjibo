@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.seniordesign.kwyjibo.custom.sorting.AscendingClipName;
 import com.seniordesign.kwyjibo.kwyjibo.R;
 import com.seniordesign.kwyjibo.database.models.SoundClipInfo;
 import com.seniordesign.kwyjibo.database.restapi.RestAPI;
@@ -22,6 +23,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import okhttp3.Headers;
@@ -40,6 +44,18 @@ public class SoundClipInfoAdapter extends ArrayAdapter<SoundClipInfo> {
 
     View.OnClickListener downloadClipListener;
     View.OnClickListener playSoundClipListener;
+
+
+
+    public void sort(Comparator compare) {
+        List<SoundClipInfo> clips = new ArrayList<SoundClipInfo>();
+        for(int i = 0; i < soundClipInfoList.size(); i++){
+            clips.add(soundClipInfoList.get(i));
+        }
+        Collections.sort(clips, new AscendingClipName());
+        soundClipInfoList = clips;
+        notifyDataSetChanged();
+    }
 
     public SoundClipInfoAdapter(Context context, int resource, List<SoundClipInfo> clips) {
         super(context, resource, clips);

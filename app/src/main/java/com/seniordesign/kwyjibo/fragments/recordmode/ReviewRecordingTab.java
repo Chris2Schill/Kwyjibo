@@ -131,7 +131,7 @@ public class ReviewRecordingTab extends Fragment implements HasSessionInfo{
                     }
                 }
 
-                RestAPI.uploadSoundClip(tempOutputFile, clipInfo, stationId, userId, authToken,
+                RestAPI.uploadSoundClip(tempOutputFile, clipInfo, stationId, userId, authToken, ApplicationWrapper.getBooleanPreference("fromStation") ? 1: 0,
                         new Callback<SoundClipInfo>() {
                             @Override
                             public void onResponse(Call<SoundClipInfo> call, Response<SoundClipInfo> response) {

@@ -75,7 +75,7 @@ public class RestAPI{
     }
 
     public static void uploadSoundClip(String clipFilepath, SoundClipInfo clipInfo, int stationId,
-                                       String userId, String authToken, Callback<SoundClipInfo> callback) {
+                                       String userId, String authToken, int toStation, Callback<SoundClipInfo> callback) {
         POSTRequest api = retrofit.create(POSTRequest.class);
 
         File file = new File(clipFilepath);
@@ -88,10 +88,11 @@ public class RestAPI{
         RequestBody location = RequestBody.create(MediaType.parse("multipart/form-data"), clipInfo.Location);
         RequestBody category = RequestBody.create(MediaType.parse("multipart/form-data"), clipInfo.Category);
         RequestBody id = RequestBody.create(MediaType.parse("multipart/form-data"), userId);
+        RequestBody tostation = RequestBody.create(MediaType.parse("multipart/form-data"), toStation + "");
         RequestBody token = RequestBody.create(MediaType.parse("multipart/form-data"), authToken);
 
         final Call<SoundClipInfo> call = api.uploadSoundClip(soundClipFile, station, clipName,
-                username, location, category, id, token);
+                username, location, category, id, tostation, token);
         call.enqueue(callback);
     }
 
@@ -110,6 +111,12 @@ public class RestAPI{
     public static void getStationSong(int stationId, Callback<ResponseBody> callback){
         GETRequest api = retrofit.create(GETRequest.class);
         final Call<ResponseBody> call = api.getStationSong(stationId);
+        call.enqueue(callback);
+    }
+
+    public static void getStudioModeSong(int[] clipIds, int bpm, int timeSig, Callback<ResponseBody> callback){
+        GETRequest api = retrofit.create(GETRequest.class);
+        final Call<ResponseBody> call = api.getStudioModeSong(clipIds, bpm,  timeSig);
         call.enqueue(callback);
     }
 

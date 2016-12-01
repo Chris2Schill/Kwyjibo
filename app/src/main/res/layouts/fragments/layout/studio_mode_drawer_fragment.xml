@@ -8,32 +8,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <RelativeLayout
-        android:id="@+id/studio_mode_searchbar_viewgroup"
-        android:orientation="horizontal"
-        android:layout_alignParentTop="true"
-        android:elevation="3dp"
-        android:outlineProvider="bounds"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize">
-
-        <SearchView
-            android:id="@+id/studio_mode_search_edittext"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_centerVertical="true"
-            android:textColor="@color/lightestGray"
-            android:inputType="text"/>
-
-    </RelativeLayout>
-
     <ListView
         android:id="@+id/studio_mode_allclips_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/studio_mode_header"
-        android:layout_below="@id/studio_mode_searchbar_viewgroup">
+        android:layout_below="@+id/studio_mode_searchbar_viewgroup">
 
     </ListView>
 
@@ -70,5 +50,29 @@
             android:background="@color/lightestGray"/>
 
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/studio_mode_searchbar_viewgroup"
+        android:orientation="horizontal"
+        android:elevation="3dp"
+        android:outlineProvider="bounds"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <SearchView
+            android:id="@+id/studio_mode_search_edittext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/lightestGray"
+            android:inputType="text"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

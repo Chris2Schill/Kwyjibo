@@ -42,5 +42,6 @@ public interface POSTRequest {
             @Part("location") RequestBody location,
             @Part("category") RequestBody category,
             @Part("userId") RequestBody userId,
+            @Part("toStation") RequestBody toStation,
             @Part("authToken") RequestBody authToken);
 }
